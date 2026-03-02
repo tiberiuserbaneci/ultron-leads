@@ -97,18 +97,18 @@ const agents = [
   },
 ];
 
-// Perfect pentagon inscribed in circle with center (400,300), radius 200
-// Angles: top=-90deg, upper-right=-18deg, lower-right=54deg, lower-left=126deg, upper-left=198deg
+// Perfect pentagon inscribed in circle with center (400,340), radius 240
+// Bigger viewbox height (680) and larger radius give the diagram more breathing room
 const VIEWBOX_W = 800;
-const VIEWBOX_H = 580;
-const CENTER = { x: 400, y: 300 };
+const VIEWBOX_H = 680;
+const CENTER = { x: 400, y: 340 };
 
 const nodeCoords: Record<string, { x: number; y: number }> = {
   cortex:   { x: 400, y: 100 },  // top center        (-90deg)
-  specter:  { x: 590, y: 238 },  // upper right       (-18deg)
-  striker:  { x: 518, y: 462 },  // lower right       ( 54deg)
-  pulse:    { x: 282, y: 462 },  // lower left        (126deg)
-  sentinel: { x: 210, y: 238 },  // upper left        (198deg)
+  specter:  { x: 628, y: 266 },  // upper right       (-18deg)
+  striker:  { x: 541, y: 534 },  // lower right       ( 54deg)
+  pulse:    { x: 259, y: 534 },  // lower left        (126deg)
+  sentinel: { x: 172, y: 266 },  // upper left        (198deg)
 };
 
 const ringEdges: [string, string][] = [
@@ -194,8 +194,8 @@ export default function BlueprintDiagram() {
                 transform: "translate(-50%, -50%)",
               }}
             >
-              <div className="w-24 h-24 rounded-full bg-[#0a0a0a] border border-[#DA4E24]/40 flex items-center justify-center node-glow">
-                <Image src="/logo.png" alt="Ultron" width={48} height={48} className="rounded-sm" />
+              <div className="w-32 h-32 rounded-full bg-[#0a0a0a] border border-[#DA4E24]/40 flex items-center justify-center node-glow">
+                <Image src="/logo.png" alt="Ultron" width={60} height={60} className="rounded-sm" />
               </div>
             </div>
 
@@ -327,7 +327,7 @@ function AgentNode({
     <button
       onClick={onClick}
       style={style}
-      className={`absolute w-36 p-3 rounded-xl border text-center transition-all duration-200 cursor-pointer ${
+      className={`absolute w-44 p-4 rounded-xl border text-center transition-all duration-200 cursor-pointer ${
         active
           ? "bg-[#DA4E24]/10 border-[#DA4E24]/40 scale-105 node-glow"
           : dimmed

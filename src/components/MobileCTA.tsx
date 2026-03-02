@@ -1,4 +1,13 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+
 export default function MobileCTA() {
+  const pathname = usePathname();
+
+  // Homepage has its own CTAs — don't stack a third one
+  if (pathname === "/") return null;
+
   return (
     <div className="sm:hidden fixed bottom-0 left-0 right-0 z-50 p-3 bg-black border-t border-[#1a1a1a]">
       <a

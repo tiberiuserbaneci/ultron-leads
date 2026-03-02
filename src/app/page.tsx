@@ -75,7 +75,7 @@ export default function HomePage() {
       >
         {[
           { value: "5", label: "specialized agents" },
-          { value: "$19", label: "per month, all agents" },
+          { value: "70%", label: "of your work delegated" },
           { value: "10 min", label: "to deploy" },
           { value: "24/7", label: "autonomous execution" },
         ].map((stat) => (
