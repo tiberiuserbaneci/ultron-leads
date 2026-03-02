@@ -226,7 +226,7 @@ export default function BlueprintPage() {
         </p>
         <Link
           href="https://app.51ultron.com/signup"
-          className="inline-flex items-center gap-2 bg-[#DA4E24] hover:bg-[#c44320] text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 glow-accent text-lg"
+          className="inline-flex items-center gap-2 btn-gradient glow-accent text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 text-lg"
         >
           Try Ultron Free
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

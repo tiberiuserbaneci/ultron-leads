@@ -329,7 +329,7 @@ export default function CompetitorPage() {
         <p className="text-[#999] mb-8 max-w-lg mx-auto">
           5 agents. $19/month. Deploy in 10 minutes. Every day you wait is another day they&apos;re ahead.
         </p>
-        <Link href="https://app.51ultron.com/signup" className="inline-flex items-center gap-2 bg-[#DA4E24] hover:bg-[#c44320] text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 glow-accent text-lg">
+        <Link href="https://app.51ultron.com/signup" className="inline-flex items-center gap-2 btn-gradient glow-accent text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 text-lg">
           Deploy 5 Agents Free
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 12h14M12 5l7 7-7 7"/>

@@ -114,12 +114,20 @@ input[type="range"]:focus { outline: none; }
   background: linear-gradient(135deg, #9F4E00 0%, #A22904 30%, #000000 50%, #0098F3 100%);
 }
 
+/* Orange gradient button */
+.btn-gradient {
+  background: linear-gradient(135deg, #FF7847 0%, #DA4E24 55%, #B83A18 100%);
+}
+.btn-gradient:hover {
+  background: linear-gradient(135deg, #FF8C5A 0%, #E85E34 55%, #C84A24 100%);
+}
+
 /* Glow effects */
 .glow-accent {
-  box-shadow: 0 0 18px rgba(218, 78, 36, 0.35);
+  box-shadow: 0 0 20px rgba(218, 78, 36, 0.4);
 }
 .glow-accent:hover {
-  box-shadow: 0 0 28px rgba(218, 78, 36, 0.55);
+  box-shadow: 0 0 36px rgba(218, 78, 36, 0.65);
 }
 
 /* Hero radial glow */
