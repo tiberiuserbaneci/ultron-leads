@@ -93,10 +93,10 @@ export default function HomePage() {
         }`}
       >
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-5 leading-tight">
-          What&apos;s slowing your<br className="hidden sm:block"/>business down?
+          Are you buried in tasks<br className="hidden sm:block"/> that agents should handle?
         </h1>
         <p className="text-lg sm:text-xl text-[#999] max-w-xl mx-auto">
-          Pick your biggest problem. We&apos;ll show you exactly how AI agents fix it.
+          Delegate 70% of your work to Ultron in 10 minutes.
         </p>
       </div>
 
