@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 const agents = [
   {
@@ -36,9 +37,7 @@ const agents = [
     cost: "$4,500/mo",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <circle cx="12" cy="12" r="6"/>
-        <circle cx="12" cy="12" r="2"/>
+        <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
       </svg>
     ),
   },
@@ -98,100 +97,127 @@ const agents = [
   },
 ];
 
-// SVG coordinates for pentagon layout (cx=400, cy=300, r=210)
+// Perfect pentagon inscribed in circle with center (400,300), radius 200
+// Angles: top=-90deg, upper-right=-18deg, lower-right=54deg, lower-left=126deg, upper-left=198deg
+const VIEWBOX_W = 800;
+const VIEWBOX_H = 580;
+const CENTER = { x: 400, y: 300 };
+
 const nodeCoords: Record<string, { x: number; y: number }> = {
-  cortex:   { x: 400, y:  90 },
-  specter:  { x: 650, y: 165 },
-  striker:  { x: 560, y: 455 },
-  pulse:    { x: 240, y: 455 },
-  sentinel: { x: 150, y: 165 },
+  cortex:   { x: 400, y: 100 },  // top center        (-90deg)
+  specter:  { x: 590, y: 238 },  // upper right       (-18deg)
+  striker:  { x: 518, y: 462 },  // lower right       ( 54deg)
+  pulse:    { x: 282, y: 462 },  // lower left        (126deg)
+  sentinel: { x: 210, y: 238 },  // upper left        (198deg)
 };
 
-const CENTER = { x: 400, y: 300 };
+const ringEdges: [string, string][] = [
+  ["cortex", "specter"],
+  ["specter", "striker"],
+  ["striker", "pulse"],
+  ["pulse", "sentinel"],
+  ["sentinel", "cortex"],
+];
+
+const pct = (val: number, total: number) => `${(val / total) * 100}%`;
 
 export default function BlueprintDiagram() {
   const [activeAgent, setActiveAgent] = useState<string | null>(null);
-
   const active = agents.find((a) => a.id === activeAgent);
 
-  function isHighlighted(agentId: string) {
-    return activeAgent === null || activeAgent === agentId;
-  }
+  const isHighlighted = (id: string) => activeAgent === null || activeAgent === id;
 
   return (
     <div>
-      {/* Desktop: Pentagon layout */}
+      {/* Desktop: pentagon diagram */}
       <div className="hidden lg:block">
-        <div className="relative" style={{ height: "580px" }}>
-          {/* SVG for lines */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            viewBox="0 0 800 580"
-            preserveAspectRatio="xMidYMid meet"
-          >
-            <defs>
-              <filter id="glow-line">
-                <feGaussianBlur stdDeviation="2" result="blur"/>
-                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-            </defs>
+        {/*
+          Aspect-ratio-locked wrapper (800:580 = 72.5%).
+          The SVG and DOM nodes share the same coordinate space so
+          spokes always connect to the center of each node box.
+        */}
+        <div className="relative w-full" style={{ paddingTop: `${(VIEWBOX_H / VIEWBOX_W) * 100}%` }}>
+          <div className="absolute inset-0">
 
-            {/* Hub-to-agent animated dashed lines */}
+            {/* SVG spokes + pentagon ring */}
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              viewBox={`0 0 ${VIEWBOX_W} ${VIEWBOX_H}`}
+              preserveAspectRatio="none"
+            >
+              <defs>
+                <filter id="glow-line">
+                  <feGaussianBlur stdDeviation="2" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+
+              {/* Hub spokes */}
+              {agents.map((agent) => {
+                const c = nodeCoords[agent.id];
+                const lit = isHighlighted(agent.id);
+                return (
+                  <line
+                    key={`spoke-${agent.id}`}
+                    x1={CENTER.x} y1={CENTER.y}
+                    x2={c.x} y2={c.y}
+                    stroke="#DA4E24"
+                    strokeWidth={lit ? "1.5" : "0.8"}
+                    strokeDasharray="6,6"
+                    strokeOpacity={lit ? "0.55" : "0.15"}
+                    className="flow-anim"
+                    style={{ transition: "stroke-opacity 0.3s, stroke-width 0.3s" }}
+                  />
+                );
+              })}
+
+              {/* Pentagon edges */}
+              {ringEdges.map(([a, b]) => {
+                const ca = nodeCoords[a];
+                const cb = nodeCoords[b];
+                return (
+                  <line
+                    key={`ring-${a}-${b}`}
+                    x1={ca.x} y1={ca.y} x2={cb.x} y2={cb.y}
+                    stroke="#2a2a2a" strokeWidth="1" strokeOpacity="0.9"
+                  />
+                );
+              })}
+            </svg>
+
+            {/* Center hub — Ultron logo */}
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: pct(CENTER.x, VIEWBOX_W),
+                top: pct(CENTER.y, VIEWBOX_H),
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <div className="w-24 h-24 rounded-full bg-[#0a0a0a] border border-[#DA4E24]/40 flex items-center justify-center node-glow">
+                <Image src="/logo.png" alt="Ultron" width={48} height={48} className="rounded-sm" />
+              </div>
+            </div>
+
+            {/* Agent nodes — percentage-positioned, aligned with SVG coords */}
             {agents.map((agent) => {
               const c = nodeCoords[agent.id];
-              const active = isHighlighted(agent.id);
               return (
-                <line
-                  key={`hub-${agent.id}`}
-                  x1={CENTER.x} y1={CENTER.y}
-                  x2={c.x} y2={c.y}
-                  stroke="#DA4E24"
-                  strokeWidth={active ? "1.5" : "0.8"}
-                  strokeDasharray="6,6"
-                  strokeOpacity={active ? "0.55" : "0.15"}
-                  className="flow-anim"
-                  style={{ transition: "stroke-opacity 0.3s, stroke-width 0.3s" }}
+                <AgentNode
+                  key={agent.id}
+                  agent={agent}
+                  style={{
+                    left: pct(c.x, VIEWBOX_W),
+                    top: pct(c.y, VIEWBOX_H),
+                    transform: "translate(-50%, -50%)",
+                  }}
+                  active={activeAgent === agent.id}
+                  dimmed={activeAgent !== null && activeAgent !== agent.id}
+                  onClick={() => setActiveAgent(activeAgent === agent.id ? null : agent.id)}
                 />
               );
             })}
-
-            {/* Ring connections (static, subtle) */}
-            {[
-              ["cortex", "specter"],
-              ["specter", "striker"],
-              ["striker", "pulse"],
-              ["pulse", "sentinel"],
-              ["sentinel", "cortex"],
-            ].map(([a, b]) => {
-              const ca = nodeCoords[a];
-              const cb = nodeCoords[b];
-              return (
-                <line
-                  key={`ring-${a}-${b}`}
-                  x1={ca.x} y1={ca.y}
-                  x2={cb.x} y2={cb.y}
-                  stroke="#333"
-                  strokeWidth="1"
-                  strokeOpacity="0.5"
-                />
-              );
-            })}
-          </svg>
-
-          {/* Center hub */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-28 h-28 rounded-full bg-[#0a0a0a] border border-[#DA4E24]/40 flex flex-col items-center justify-center text-center node-glow">
-              <div className="text-[#DA4E24] font-bold text-sm tracking-widest">ULTRON</div>
-              <div className="text-[#555] text-xs mt-0.5 font-terminal">OS</div>
-            </div>
           </div>
-
-          {/* Agent nodes */}
-          <AgentNode agent={agents[0]} style={{ top: "14px", left: "50%", transform: "translateX(-50%)" }} active={activeAgent === agents[0].id} dimmed={activeAgent !== null && activeAgent !== agents[0].id} onClick={() => setActiveAgent(activeAgent === agents[0].id ? null : agents[0].id)} />
-          <AgentNode agent={agents[1]} style={{ top: "90px", right: "50px" }} active={activeAgent === agents[1].id} dimmed={activeAgent !== null && activeAgent !== agents[1].id} onClick={() => setActiveAgent(activeAgent === agents[1].id ? null : agents[1].id)} />
-          <AgentNode agent={agents[2]} style={{ bottom: "62px", right: "90px" }} active={activeAgent === agents[2].id} dimmed={activeAgent !== null && activeAgent !== agents[2].id} onClick={() => setActiveAgent(activeAgent === agents[2].id ? null : agents[2].id)} />
-          <AgentNode agent={agents[3]} style={{ bottom: "62px", left: "90px" }} active={activeAgent === agents[3].id} dimmed={activeAgent !== null && activeAgent !== agents[3].id} onClick={() => setActiveAgent(activeAgent === agents[3].id ? null : agents[3].id)} />
-          <AgentNode agent={agents[4]} style={{ top: "90px", left: "50px" }} active={activeAgent === agents[4].id} dimmed={activeAgent !== null && activeAgent !== agents[4].id} onClick={() => setActiveAgent(activeAgent === agents[4].id ? null : agents[4].id)} />
         </div>
 
         {/* Detail panel */}
@@ -206,7 +232,9 @@ export default function BlueprintDiagram() {
                 </div>
               </div>
               <button onClick={() => setActiveAgent(null)} className="text-[#555] hover:text-[#999] transition-colors">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
               </button>
             </div>
             <div className="grid sm:grid-cols-2 gap-6">
@@ -236,39 +264,46 @@ export default function BlueprintDiagram() {
         )}
       </div>
 
-      {/* Mobile: vertical list */}
-      <div className="lg:hidden grid sm:grid-cols-2 gap-3">
-        {agents.map((agent) => (
-          <button
-            key={agent.id}
-            onClick={() => setActiveAgent(activeAgent === agent.id ? null : agent.id)}
-            className={`text-left p-4 rounded-xl border transition-all duration-200 ${
-              activeAgent === agent.id
-                ? "bg-[#DA4E24]/10 border-[#DA4E24]/30"
-                : "bg-[#0a0a0a] border-[#1a1a1a] hover:border-[#333]"
-            }`}
-          >
-            <div className="flex items-start gap-3">
-              <div className="mt-0.5 text-[#DA4E24] flex-shrink-0">{agent.icon}</div>
-              <div className="flex-1">
-                <div className="font-bold text-sm text-[#DA4E24] font-terminal">{agent.name}</div>
-                <div className="text-white text-sm">{agent.role}</div>
-                {activeAgent === agent.id && (
-                  <ul className="mt-3 space-y-1.5">
-                    {agent.tasks.map((task, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-[#999]">
-                        <span className="text-[#DA4E24] mt-0.5 flex-shrink-0">+</span>
-                        {task}
+      {/* Mobile: vertical list with dashed connectors */}
+      <div className="lg:hidden">
+        {agents.map((agent, i) => (
+          <div key={agent.id}>
+            <button
+              onClick={() => setActiveAgent(activeAgent === agent.id ? null : agent.id)}
+              className={`w-full text-left p-4 rounded-xl border transition-all duration-200 ${
+                activeAgent === agent.id
+                  ? "bg-[#DA4E24]/10 border-[#DA4E24]/30"
+                  : "bg-[#0a0a0a] border-[#1a1a1a] hover:border-[#333]"
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 text-[#DA4E24] flex-shrink-0">{agent.icon}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-bold text-sm text-[#DA4E24] font-terminal">{agent.name}</div>
+                  <div className="text-white text-sm">{agent.role}</div>
+                  {activeAgent === agent.id && (
+                    <ul className="mt-3 space-y-1.5">
+                      {agent.tasks.map((task, j) => (
+                        <li key={j} className="flex items-start gap-2 text-sm text-[#999]">
+                          <span className="text-[#DA4E24] mt-0.5 flex-shrink-0">+</span>
+                          {task}
+                        </li>
+                      ))}
+                      <li className="mt-2 pt-2 border-t border-[#1a1a1a] text-xs text-[#555]">
+                        Replaces: <span className="text-[#999]">{agent.replaces} ({agent.cost})</span>
                       </li>
-                    ))}
-                    <li className="mt-2 pt-2 border-t border-[#1a1a1a] text-xs text-[#555]">
-                      Replaces: <span className="text-[#999]">{agent.replaces} ({agent.cost})</span>
-                    </li>
-                  </ul>
-                )}
+                    </ul>
+                  )}
+                </div>
               </div>
-            </div>
-          </button>
+            </button>
+
+            {i < agents.length - 1 && (
+              <div className="flex justify-center py-1">
+                <div className="h-7 border-l-2 border-dashed border-[#DA4E24]/30" />
+              </div>
+            )}
+          </div>
         ))}
       </div>
     </div>

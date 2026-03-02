@@ -35,6 +35,11 @@ const diagnosticOptions = [
     sub: "Take the 10-question assessment. Get your score in 2 minutes.",
     route: "/assess",
   },
+  {
+    pain: "I'm using AI tools but nothing is connected and I'm still doing everything",
+    sub: "See the 4 levels of AI automation and where you stand",
+    route: "/levels",
+  },
 ];
 
 const allResources = [
@@ -44,6 +49,7 @@ const allResources = [
   { route: "/stack", title: "The $10K/Month Stack", tag: "Revenue Model", desc: "From content to leads to close. Every node mapped." },
   { route: "/competitor", title: "Your Competitor's AI Stack in 2026", tag: "Reality Check", desc: "Monday morning to end of quarter. Them vs you." },
   { route: "/assess", title: "Business Automation Assessment", tag: "Quiz", desc: "10 questions. Find out what's missing in your stack." },
+  { route: "/levels", title: "The 4 Levels of AI Automation", tag: "Framework", desc: "Self-assess your level. Understand the gap. See the bridge." },
 ];
 
 export default function HomePage() {
