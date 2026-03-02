@@ -10,37 +10,36 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          orange: "#F97316",
-          amber: "#F59E0B",
-          dark: "#0A0A0A",
-          surface: "#111111",
-          card: "#171717",
-          border: "#262626",
-          muted: "#404040",
-          text: "#A3A3A3",
+          orange: "#DA4E24",
+          blue: "#1F77F6",
+          dark: "#000000",
+          surface: "#0a0a0a",
+          card: "#111111",
+          border: "#1a1a1a",
+          muted: "#999999",
         },
       },
       fontFamily: {
-        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"],
+        sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+        terminal: ["ui-monospace", "SF Mono", "Menlo", "Monaco", "Consolas", "monospace"],
       },
       animation: {
-        "fade-in": "fadeIn 0.5s ease-in-out",
-        "slide-up": "slideUp 0.4s ease-out",
+        "fade-in": "fadeIn 0.4s ease-out forwards",
+        "slide-up": "slideUp 0.4s ease-out forwards",
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
       keyframes: {
         fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
+          from: { opacity: "0" },
+          to: { opacity: "1" },
         },
         slideUp: {
-          "0%": { opacity: "0", transform: "translateY(20px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
+          from: { opacity: "0", transform: "translateY(16px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
         },
       },
     },
   },
   plugins: [],
 };
-
 export default config;

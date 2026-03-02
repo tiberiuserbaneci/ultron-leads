@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[#1a1a1a] bg-[#0A0A0A] mt-24">
+    <footer className="border-t border-[#1a1a1a] bg-black mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
@@ -11,17 +11,17 @@ export default function Footer() {
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            <span className="text-sm text-neutral-400">Powered by Ultron OS</span>
+            <span className="text-sm text-[#999]">Powered by Ultron OS</span>
           </div>
 
-          <div className="flex items-center gap-6 text-sm text-neutral-500">
-            <Link href="https://51ultron.com" className="hover:text-orange-400 transition-colors">
+          <div className="flex items-center gap-6 text-sm text-[#999]">
+            <Link href="https://51ultron.com" className="hover:text-[#DA4E24] transition-colors">
               51ultron.com
             </Link>
-            <Link href="https://docs.51ultron.com" className="hover:text-orange-400 transition-colors">
+            <Link href="https://docs.51ultron.com" className="hover:text-[#DA4E24] transition-colors">
               docs.51ultron.com
             </Link>
-            <Link href="https://app.51ultron.com" className="hover:text-orange-400 transition-colors">
+            <Link href="https://app.51ultron.com" className="hover:text-[#DA4E24] transition-colors">
               app.51ultron.com
             </Link>
           </div>
