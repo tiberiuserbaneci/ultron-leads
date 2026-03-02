@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ShareButtons from "@/components/ShareButtons";
 import StackDiagram from "./StackDiagram";
-import FounderTerminal from "@/components/FounderTerminal";
 
 export const metadata: Metadata = {
   title: "The $10K/Month Stack",
@@ -146,7 +145,23 @@ export default function StackPage() {
         <ShareButtons page="stack" />
       </div>
 
-      <FounderTerminal />
+      {/* CTA */}
+      <div className="mt-12 text-center">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-4">Deploy the $10K stack</h2>
+        <p className="text-[#999] mb-8">
+          The system is ready. You just have to turn it on.
+        </p>
+        <Link
+          href="https://app.51ultron.com/signup"
+          className="inline-flex items-center gap-2 bg-[#DA4E24] hover:bg-[#c44320] text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 glow-accent text-lg"
+        >
+          Start Free
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </Link>
+        <p className="mt-3 text-[#666] text-sm">Free plan. No credit card required.</p>
+      </div>
     </div>
   );
 }

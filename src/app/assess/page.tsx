@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import AssessmentQuiz from "./AssessmentQuiz";
-import FounderTerminal from "@/components/FounderTerminal";
 
 export const metadata: Metadata = {
   title: "Business Automation Assessment",
@@ -27,8 +26,6 @@ export default function AssessPage() {
       </div>
 
       <AssessmentQuiz />
-
-      <FounderTerminal />
     </div>
   );
 }
