@@ -10,6 +10,10 @@ export const metadata: Metadata = {
     template: "%s | Ultron",
   },
   description: "5 AI agents that replace a full team. Research, leads, sales, content, and monitoring - running 24/7 for $19/month.",
+  icons: {
+    icon: [{ url: "/logo.png", type: "image/png" }],
+    apple: [{ url: "/logo.png" }],
+  },
   openGraph: {
     type: "website",
     siteName: "Ultron",

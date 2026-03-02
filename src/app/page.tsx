@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
+import FounderTerminal from "@/components/FounderTerminal";
 
 const diagnosticOptions = [
   {
@@ -130,7 +131,7 @@ export default function HomePage() {
       </div>
 
       {/* Explore all toggle */}
-      <div className="mt-10 text-center">
+      <div className="mt-8 text-center">
         <button
           onClick={() => setShowAll(!showAll)}
           className="text-sm text-[#555] hover:text-[#999] transition-colors underline underline-offset-4"
@@ -161,6 +162,8 @@ export default function HomePage() {
           </div>
         )}
       </div>
+
+      <FounderTerminal />
     </div>
   );
 }

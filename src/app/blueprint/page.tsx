@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ShareButtons from "@/components/ShareButtons";
 import BlueprintDiagram from "./BlueprintDiagram";
+import FounderTerminal from "@/components/FounderTerminal";
 
 export const metadata: Metadata = {
   title: "The 5-Agent Blueprint",
@@ -218,23 +219,7 @@ export default function BlueprintPage() {
         <ShareButtons page="blueprint" />
       </div>
 
-      {/* CTA */}
-      <div className="mt-16 text-center">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-4">Deploy all 5 agents in 10 minutes</h2>
-        <p className="text-[#999] mb-8">
-          No setup required. Connect your tools, describe your business, and your agents start working.
-        </p>
-        <Link
-          href="https://app.51ultron.com/signup"
-          className="inline-flex items-center gap-2 bg-[#DA4E24] hover:bg-[#c44320] text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 glow-accent text-lg"
-        >
-          Try Ultron Free
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
-        </Link>
-        <p className="mt-3 text-[#666] text-sm">Free plan. No credit card required.</p>
-      </div>
+      <FounderTerminal />
     </div>
   );
 }

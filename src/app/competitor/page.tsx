@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ShareButtons from "@/components/ShareButtons";
+import FounderTerminal from "@/components/FounderTerminal";
 
 export const metadata: Metadata = {
   title: "Your Competitor's AI Stack in 2026",
@@ -323,20 +324,7 @@ export default function CompetitorPage() {
         <ShareButtons page="competitor" />
       </div>
 
-      {/* CTA */}
-      <div className="mt-12 text-center">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-3">Close the gap.</h2>
-        <p className="text-[#999] mb-8 max-w-lg mx-auto">
-          5 agents. $19/month. Deploy in 10 minutes. Every day you wait is another day they&apos;re ahead.
-        </p>
-        <Link href="https://app.51ultron.com/signup" className="inline-flex items-center gap-2 bg-[#DA4E24] hover:bg-[#c44320] text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 glow-accent text-lg">
-          Deploy 5 Agents Free
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
-        </Link>
-        <p className="mt-3 text-[#555] text-sm">Free plan. No credit card required.</p>
-      </div>
+      <FounderTerminal />
     </div>
   );
 }
