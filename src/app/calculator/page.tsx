@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ShareButtons from "@/components/ShareButtons";
 import ROICalculator from "./ROICalculator";
 
 export const metadata: Metadata = {
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
     title: "AI Team ROI Calculator | Ultron",
     description: "Calculate how much doing everything manually is costing you. See your savings with 5 AI agents at $19/month.",
     url: "https://work.51ultron.com/calculator",
+    images: [{ url: "/og/calculator.png", width: 1200, height: 630 }],
   },
   twitter: {
     title: "AI Team ROI Calculator | Ultron",
@@ -39,77 +41,53 @@ export default function CalculatorPage() {
       {/* Calculator */}
       <ROICalculator />
 
-      {/* What you get */}
-      <div className="mt-20">
-        <h2 className="text-2xl font-bold mb-2 text-center">What you get for $19/month</h2>
-        <p className="text-neutral-500 text-center mb-8">5 agents running 24/7. Vs hiring the equivalent team at $20,000/month.</p>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[
-            {
-              name: "CORTEX",
-              color: "text-indigo-400",
-              border: "border-indigo-500/20",
-              bg: "bg-indigo-500/5",
-              desc: "Daily competitor monitoring, prospect research, market intel.",
-              cost: "$3,000/mo equivalent",
-            },
-            {
-              name: "SPECTER",
-              color: "text-emerald-400",
-              border: "border-emerald-500/20",
-              bg: "bg-emerald-500/5",
-              desc: "Finds leads, scores them, drafts personalized outreach.",
-              cost: "$4,500/mo equivalent",
-            },
-            {
-              name: "STRIKER",
-              color: "text-orange-400",
-              border: "border-orange-500/20",
-              bg: "bg-orange-500/5",
-              desc: "Triages inbox, tracks deals, writes follow-ups.",
-              cost: "$3,500/mo equivalent",
-            },
-            {
-              name: "PULSE",
-              color: "text-pink-400",
-              border: "border-pink-500/20",
-              bg: "bg-pink-500/5",
-              desc: "LinkedIn posts, threads, blogs — in your voice.",
-              cost: "$4,000/mo equivalent",
-            },
-            {
-              name: "SENTINEL",
-              color: "text-sky-400",
-              border: "border-sky-500/20",
-              bg: "bg-sky-500/5",
-              desc: "Uptime checks, competitor tracking, security audits.",
-              cost: "$5,000/mo equivalent",
-            },
-            {
-              name: "TOTAL",
-              color: "text-orange-400",
-              border: "border-orange-500/30",
-              bg: "bg-orange-500/10",
-              desc: "Full execution. All 5 agents. Unlimited conversations.",
-              cost: "$19/mo — not $20,000",
-            },
-          ].map((agent) => (
-            <div key={agent.name} className={`p-5 rounded-xl border ${agent.border} ${agent.bg}`}>
-              <div className={`font-mono font-bold text-sm mb-2 ${agent.color}`}>{agent.name}</div>
-              <p className="text-sm text-neutral-400 mb-3">{agent.desc}</p>
-              <div className="text-xs text-neutral-600">{agent.cost}</div>
-            </div>
-          ))}
-        </div>
+      {/* Instead of agent cards — single line cross-link */}
+      <div className="mt-12 text-center p-6 bg-[#0e0e0e] border border-[#191919] rounded-2xl">
+        <p className="text-neutral-400 text-sm">
+          5 agents. Every department. Full breakdown →{" "}
+          <Link href="/blueprint" className="text-[#E8541A] hover:text-[#F97316] transition-colors font-medium underline underline-offset-2">
+            See the Blueprint
+          </Link>
+        </p>
+      </div>
+
+      {/* Cross-page nav */}
+      <div className="mt-8 grid sm:grid-cols-2 gap-4">
+        <Link href="/blueprint" className="group flex items-center justify-between gap-3 p-5 bg-[#0e0e0e] border border-[#191919] hover:border-[#333] rounded-2xl transition-all duration-200">
+          <div>
+            <div className="text-xs text-neutral-600 mb-1 font-mono">SEE THE ARCHITECTURE</div>
+            <div className="font-semibold text-white text-sm">See the 5-agent architecture</div>
+            <div className="text-xs text-neutral-500 mt-0.5">The 5-Agent Blueprint</div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-700 group-hover:text-[#E8541A] flex-shrink-0 transition-colors">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </Link>
+        <Link href="/stack" className="group flex items-center justify-between gap-3 p-5 bg-[#0e0e0e] border border-[#191919] hover:border-[#333] rounded-2xl transition-all duration-200">
+          <div>
+            <div className="text-xs text-neutral-600 mb-1 font-mono">SEE THE REVENUE</div>
+            <div className="font-semibold text-white text-sm">See how it generates $10K/month</div>
+            <div className="text-xs text-neutral-500 mt-0.5">The $10K/Month Stack</div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-700 group-hover:text-[#E8541A] flex-shrink-0 transition-colors">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </Link>
+      </div>
+
+      {/* Share */}
+      <div className="mt-6 p-5 bg-[#0e0e0e] border border-[#191919] rounded-2xl">
+        <p className="text-sm text-neutral-400 mb-3 text-center">Know a founder who needs to see this?</p>
+        <ShareButtons page="calculator" />
       </div>
 
       {/* CTA */}
-      <div className="mt-16 text-center">
+      <div className="mt-12 text-center">
         <h2 className="text-2xl font-bold mb-3">Stop overpaying.</h2>
-        <p className="text-neutral-400 mb-8">Deploy your AI team and reclaim the hours — and money — you're burning every month.</p>
+        <p className="text-neutral-400 mb-8">Deploy your AI team and reclaim the hours — and money — you&apos;re burning every month.</p>
         <Link
           href="https://app.51ultron.com/signup"
-          className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 glow-orange text-lg"
+          className="inline-flex items-center gap-2 bg-[#E8541A] hover:bg-[#F97316] text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 glow-orange text-lg"
         >
           Try Ultron Free
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

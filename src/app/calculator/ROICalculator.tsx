@@ -41,7 +41,7 @@ function Slider({
           onChange={(e) => onChange(Number(e.target.value))}
           className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
           style={{
-            background: `linear-gradient(to right, #F97316 ${pct}%, #262626 ${pct}%)`,
+            background: `linear-gradient(to right, #E8541A ${pct}%, #262626 ${pct}%)`,
           }}
         />
       </div>
@@ -56,13 +56,14 @@ function formatCurrency(n: number) {
 }
 
 export default function ROICalculator() {
-  const [researchHours, setResearchHours] = useState(5);
-  const [contentHours, setContentHours] = useState(8);
-  const [leadGenHours, setLeadGenHours] = useState(10);
-  const [salesHours, setSalesHours] = useState(6);
-  const [infraHours, setInfraHours] = useState(2);
-  const [hourlyRate, setHourlyRate] = useState(150);
-  const [freelancers, setFreelancers] = useState(0);
+  // Fixed defaults per spec
+  const [researchHours, setResearchHours] = useState(3);
+  const [contentHours, setContentHours] = useState(5);
+  const [leadGenHours, setLeadGenHours] = useState(5);
+  const [salesHours, setSalesHours] = useState(4);
+  const [infraHours, setInfraHours] = useState(1);
+  const [hourlyRate, setHourlyRate] = useState(75);
+  const [freelancers, setFreelancers] = useState(500);
   const [saasTools, setSaasTools] = useState(200);
 
   const totalHoursPerWeek = researchHours + contentHours + leadGenHours + salesHours + infraHours;
@@ -71,18 +72,19 @@ export default function ROICalculator() {
   const totalMonthlyCost = monthlyTimeValue + monthlyExternal;
   const totalAnnualCost = totalMonthlyCost * 12;
 
-  const ultronMonthly = 49;
+  const ultronMonthly = 39; // $19 + $20 AI credits
   const ultronAnnual = ultronMonthly * 12;
   const savings = totalAnnualCost - ultronAnnual;
 
   const barWidth = Math.min(100, (ultronAnnual / totalAnnualCost) * 100);
+  const hoursPerMonth = Math.round(totalHoursPerWeek * 4.3);
 
   return (
     <div className="space-y-8">
       {/* Inputs */}
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Section 1 */}
-        <div className="lg:col-span-2 bg-[#111111] border border-[#262626] rounded-2xl p-6 space-y-6">
+        <div className="lg:col-span-2 bg-[#0e0e0e] border border-[#191919] rounded-2xl p-6 space-y-6">
           <div>
             <h3 className="font-semibold text-white mb-1">Your current time cost</h3>
             <p className="text-xs text-neutral-500">Hours per week you spend on these tasks</p>
@@ -93,21 +95,21 @@ export default function ROICalculator() {
           <Slider label="Sales follow-up & deal tracking" unit="hrs/wk" value={salesHours} min={0} max={40} step={1} onChange={setSalesHours} />
           <Slider label="Infrastructure & system monitoring" unit="hrs/wk" value={infraHours} min={0} max={20} step={1} onChange={setInfraHours} />
 
-          <div className="border-t border-[#1a1a1a] pt-4">
+          <div className="border-t border-[#191919] pt-4">
             <h3 className="font-semibold text-white mb-4">Your time value</h3>
             <Slider
               label="What could you earn per hour on high-value work?"
               unit="/hr"
               value={hourlyRate}
-              min={50}
+              min={25}
               max={500}
-              step={10}
+              step={5}
               onChange={setHourlyRate}
               displayValue={`$${hourlyRate}/hr`}
             />
           </div>
 
-          <div className="border-t border-[#1a1a1a] pt-4">
+          <div className="border-t border-[#191919] pt-4">
             <h3 className="font-semibold text-white mb-4">External costs</h3>
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
@@ -118,8 +120,8 @@ export default function ROICalculator() {
                     type="number"
                     value={freelancers}
                     onChange={(e) => setFreelancers(Math.max(0, Number(e.target.value)))}
-                    className="w-full bg-[#0A0A0A] border border-[#262626] rounded-lg pl-7 pr-3 py-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors"
-                    placeholder="0"
+                    className="w-full bg-[#060606] border border-[#262626] rounded-lg pl-7 pr-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#E8541A] transition-colors"
+                    placeholder="500"
                     min={0}
                   />
                 </div>
@@ -132,7 +134,7 @@ export default function ROICalculator() {
                     type="number"
                     value={saasTools}
                     onChange={(e) => setSaasTools(Math.max(0, Number(e.target.value)))}
-                    className="w-full bg-[#0A0A0A] border border-[#262626] rounded-lg pl-7 pr-3 py-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors"
+                    className="w-full bg-[#060606] border border-[#262626] rounded-lg pl-7 pr-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#E8541A] transition-colors"
                     placeholder="200"
                     min={0}
                   />
@@ -142,16 +144,22 @@ export default function ROICalculator() {
           </div>
         </div>
 
-        {/* Output */}
+        {/* Output column */}
         <div className="space-y-4">
+          {/* Hours saved — prominent */}
+          <div className="bg-[#0a0f0a] border border-emerald-900/40 rounded-2xl p-6">
+            <div className="text-sm font-medium text-emerald-400 mb-3">Hours you get back</div>
+            <div className="text-4xl font-bold font-mono text-white mb-1">{totalHoursPerWeek} <span className="text-xl text-neutral-400 font-normal">hrs/week</span></div>
+            <div className="text-sm text-emerald-400 font-mono">{hoursPerMonth} hours per month</div>
+            <p className="text-xs text-neutral-500 mt-3">
+              That&apos;s {hoursPerMonth} hours you can spend on strategy, sales calls, or not working.
+            </p>
+          </div>
+
           {/* Without Ultron */}
-          <div className="bg-[#1a0a0a] border border-red-900/30 rounded-2xl p-6">
+          <div className="bg-[#0f0606] border border-red-900/30 rounded-2xl p-6">
             <div className="text-sm font-medium text-red-400 mb-4">Without Ultron</div>
             <div className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-neutral-500">Hours/week on operations</span>
-                <span className="text-white font-mono">{totalHoursPerWeek} hrs</span>
-              </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Monthly cost of your time</span>
                 <span className="text-white font-mono">{formatCurrency(Math.round(monthlyTimeValue))}</span>
@@ -179,24 +187,24 @@ export default function ROICalculator() {
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Hours/week on operations</span>
-                <span className="text-white font-mono">2 hrs</span>
+                <span className="text-white font-mono">~2 hrs</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-neutral-500">Ultron Max plan</span>
+                <span className="text-neutral-500">Ultron plan</span>
                 <span className="text-white font-mono">$19/mo</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-neutral-500">AI credits (estimated)</span>
-                <span className="text-white font-mono">$10-30/mo</span>
+                <span className="text-neutral-500">AI credits (average)</span>
+                <span className="text-white font-mono">$20/mo</span>
               </div>
               <div className="border-t border-emerald-900/30 pt-3">
                 <div className="flex justify-between">
                   <span className="text-sm text-neutral-300 font-medium">Monthly total</span>
-                  <span className="text-emerald-400 font-bold font-mono text-lg">~$49/mo</span>
+                  <span className="text-emerald-400 font-bold font-mono text-lg">$39/mo</span>
                 </div>
                 <div className="flex justify-between mt-1">
                   <span className="text-xs text-neutral-600">Annual total</span>
-                  <span className="text-emerald-400/70 font-mono text-sm">$588/yr</span>
+                  <span className="text-emerald-400/70 font-mono text-sm">$468/yr</span>
                 </div>
               </div>
             </div>
@@ -205,19 +213,19 @@ export default function ROICalculator() {
       </div>
 
       {/* The Gap */}
-      <div className="bg-[#111111] border border-[#262626] rounded-2xl p-6 sm:p-8">
+      <div className="bg-[#0e0e0e] border border-[#191919] rounded-2xl p-6 sm:p-8">
         <div className="text-center mb-8">
           <p className="text-2xl sm:text-3xl font-bold">
             You&apos;re spending{" "}
             <span className="text-red-400">{formatCurrency(Math.round(totalAnnualCost))}/year</span>
             {" "}on work that costs{" "}
-            <span className="text-emerald-400">$588</span>
+            <span className="text-emerald-400">$468</span>
             {" "}with Ultron.
           </p>
           {savings > 0 && (
             <p className="mt-3 text-xl text-neutral-400">
               That&apos;s{" "}
-              <span className="text-orange-400 font-semibold">{formatCurrency(Math.round(savings))}</span>
+              <span className="text-[#E8541A] font-semibold">{formatCurrency(Math.round(savings))}</span>
               {" "}back in your pocket. Every year.
             </p>
           )}
@@ -230,8 +238,8 @@ export default function ROICalculator() {
               <span>Without Ultron</span>
               <span className="text-red-400 font-mono">{formatCurrency(Math.round(totalAnnualCost))}/yr</span>
             </div>
-            <div className="h-8 bg-[#0A0A0A] rounded-lg overflow-hidden">
-              <div className="h-full bg-red-500/30 border border-red-500/40 rounded-lg w-full flex items-center pl-3">
+            <div className="h-8 bg-[#060606] rounded-lg overflow-hidden border border-[#191919]">
+              <div className="h-full bg-red-500/25 border border-red-500/30 rounded-lg w-full flex items-center pl-3">
                 <span className="text-red-400 text-xs font-mono">{formatCurrency(Math.round(totalAnnualCost))}</span>
               </div>
             </div>
@@ -239,14 +247,14 @@ export default function ROICalculator() {
           <div>
             <div className="flex justify-between text-sm text-neutral-500 mb-1.5">
               <span>With Ultron</span>
-              <span className="text-emerald-400 font-mono">$588/yr</span>
+              <span className="text-emerald-400 font-mono">$468/yr</span>
             </div>
-            <div className="h-8 bg-[#0A0A0A] rounded-lg overflow-hidden">
+            <div className="h-8 bg-[#060606] rounded-lg overflow-hidden border border-[#191919]">
               <div
-                className="h-full bg-emerald-500/30 border border-emerald-500/40 rounded-lg flex items-center pl-3 transition-all duration-500"
+                className="h-full bg-emerald-500/25 border border-emerald-500/30 rounded-lg flex items-center pl-3 transition-all duration-500"
                 style={{ width: `${Math.max(barWidth, 3)}%` }}
               >
-                <span className="text-emerald-400 text-xs font-mono whitespace-nowrap">$588</span>
+                <span className="text-emerald-400 text-xs font-mono whitespace-nowrap">$468</span>
               </div>
             </div>
           </div>
@@ -255,7 +263,7 @@ export default function ROICalculator() {
         <div className="mt-8 text-center">
           <Link
             href="https://app.51ultron.com/signup"
-            className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 glow-orange"
+            className="inline-flex items-center gap-2 bg-[#E8541A] hover:bg-[#F97316] text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 glow-orange"
           >
             Deploy 5 agents for $19/mo
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
