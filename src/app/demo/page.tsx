@@ -3,11 +3,16 @@
 import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
-import { prompts, getPromptBySlug, type PromptData } from "./workflowData";
+import { prompts, getPromptBySlug, categories, type PromptData, type Category } from "./workflowData";
 import ShareButtons from "@/components/ShareButtons";
 import FounderTerminal from "@/components/FounderTerminal";
 
 const WorkflowVisualizer = dynamic(() => import("./WorkflowVisualizer"), { ssr: false });
+
+/* ─── Haptic helper ─── */
+function haptic(ms = 15) {
+  try { navigator?.vibrate?.(ms); } catch {}
+}
 
 /* ─── Chat Simulation ─── */
 function ChatInput({
@@ -26,7 +31,6 @@ function ChatInput({
   const typingRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // Reset
     setDisplayedText("");
     setShowThinking(false);
     setShowResponse(false);
@@ -34,7 +38,6 @@ function ChatInput({
 
     if (!promptText) return;
 
-    // Typewriter effect
     let i = 0;
     const typeChar = () => {
       if (i < promptText.length) {
@@ -42,7 +45,6 @@ function ChatInput({
         i++;
         typingRef.current = setTimeout(typeChar, 30 + Math.random() * 30);
       } else {
-        // Typing complete
         setSendPulse(true);
         setTimeout(() => {
           setShowThinking(true);
@@ -63,16 +65,12 @@ function ChatInput({
 
   return (
     <div className="max-w-2xl mx-auto">
-      {/* Chat input bar */}
       <div className="flex items-center gap-3 p-3 bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl">
-        {/* Ultron logo placeholder */}
         <div className="w-8 h-8 rounded-lg bg-[#111] border border-[#222] flex items-center justify-center flex-shrink-0">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DA4E24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
           </svg>
         </div>
-
-        {/* Text field */}
         <div className="flex-1 min-w-0">
           <p className={`text-sm ${displayedText ? "text-white" : "text-[#444]"} truncate`}>
             {displayedText || "Tell Ultron what you need..."}
@@ -81,8 +79,6 @@ function ChatInput({
             )}
           </p>
         </div>
-
-        {/* Send button */}
         <button
           className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all ${
             sendPulse
@@ -97,7 +93,6 @@ function ChatInput({
         </button>
       </div>
 
-      {/* Brain response */}
       {(showThinking || showResponse) && (
         <div className="mt-3 pl-11">
           {showThinking && !showResponse && (
@@ -119,6 +114,88 @@ function ChatInput({
   );
 }
 
+/* ─── Share Modal ─── */
+function ShareModal({ prompt, onClose }: { prompt: PromptData; onClose: () => void }) {
+  const [copied, setCopied] = useState(false);
+  const shareUrl = `https://work.51ultron.com/demo?prompt=${prompt.slug}`;
+  const tweetText = `Watch 5 AI agents execute "${prompt.prompt}" in real time. This is insane.`;
+  const whatsappText = `This broke my brain. Watch AI agents execute "${prompt.prompt}" in real time: ${shareUrl}`;
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {}
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/70" />
+      <div
+        className="relative bg-[#0a0a0a] border border-[#1a1a1a] rounded-2xl p-6 max-w-md w-full animate-fade-up"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button onClick={onClose} className="absolute top-4 right-4 text-[#555] hover:text-white">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+
+        <h3 className="text-lg font-bold text-white mb-4">Share this demo</h3>
+
+        {/* URL with copy */}
+        <div className="flex items-center gap-2 mb-4">
+          <input
+            readOnly
+            value={shareUrl}
+            className="flex-1 bg-[#111] border border-[#222] rounded-lg px-3 py-2 text-xs font-terminal text-[#999] outline-none"
+          />
+          <button
+            onClick={handleCopy}
+            className="px-3 py-2 bg-[#111] hover:bg-[#1a1a1a] border border-[#222] rounded-lg text-xs text-white transition-colors"
+          >
+            {copied ? "Copied!" : "Copy"}
+          </button>
+        </div>
+
+        {/* Social buttons */}
+        <div className="space-y-2">
+          <a
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(shareUrl)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 w-full p-3 bg-[#111] hover:bg-[#1a1a1a] border border-[#1a1a1a] rounded-xl text-sm text-white transition-colors"
+          >
+            <span className="text-[#999]">X</span>
+            <span className="text-xs text-[#666] truncate">{tweetText}</span>
+          </a>
+          <a
+            href={`https://wa.me/?text=${encodeURIComponent(whatsappText)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 w-full p-3 bg-[#111] hover:bg-[#1a1a1a] border border-[#1a1a1a] rounded-xl text-sm text-white transition-colors"
+          >
+            <span className="text-[#25D366]">WhatsApp</span>
+            <span className="text-xs text-[#666]">Share via WhatsApp</span>
+          </a>
+          <a
+            href={`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(tweetText)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 w-full p-3 bg-[#111] hover:bg-[#1a1a1a] border border-[#1a1a1a] rounded-xl text-sm text-white transition-colors"
+          >
+            <span className="text-[#0088cc]">Telegram</span>
+            <span className="text-xs text-[#666]">Share via Telegram</span>
+          </a>
+        </div>
+
+        <p className="text-xs text-[#444] mt-4 text-center">Pro tip: Screen record this demo for maximum impact</p>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Prompt Card ─── */
 function PromptCard({
   prompt,
@@ -131,20 +208,53 @@ function PromptCard({
 }) {
   return (
     <button
-      onClick={onClick}
-      className={`text-left w-full p-4 sm:p-5 rounded-xl border transition-all duration-200 group ${
+      onClick={() => { haptic(); onClick(); }}
+      className={`relative text-left w-full p-4 sm:p-5 rounded-xl border transition-all duration-200 group ${
         selected
           ? "bg-[#111] border-[#DA4E24] shadow-[0_0_16px_rgba(218,78,36,0.2)]"
-          : "bg-[#0a0a0a] border-[#1a1a1a] hover:border-[#DA4E24]/40 hover:shadow-[0_0_12px_rgba(218,78,36,0.1)]"
+          : "bg-[#0a0a0a] border-[#1a1a1a] hover:border-[#DA4E24]/40 hover:shadow-[0_0_12px_rgba(218,78,36,0.1)] hover:-translate-y-[3px]"
       }`}
     >
-      <p className="text-sm sm:text-base font-semibold text-white leading-snug mb-2">
+      {/* Most Popular badge */}
+      {prompt.popular && (
+        <span className="absolute -top-2 right-3 px-2 py-0.5 bg-[#DA4E24] text-white text-[9px] font-bold uppercase tracking-wider rounded-full">
+          Most Popular
+        </span>
+      )}
+
+      <p className="text-sm sm:text-base font-semibold text-white leading-snug mb-2 pr-6">
         &ldquo;{prompt.prompt}&rdquo;
       </p>
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#1a1a1a] text-[10px] font-terminal text-[#DA4E24] uppercase tracking-wider">
-        {prompt.tags}
-      </span>
+      <div className="flex items-center justify-between">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#1a1a1a] text-[10px] font-terminal text-[#DA4E24] uppercase tracking-wider group-hover:shadow-[0_0_8px_rgba(218,78,36,0.15)]">
+          {prompt.tags}
+        </span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#222] group-hover:text-[#DA4E24] transition-colors opacity-0 group-hover:opacity-100">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </div>
     </button>
+  );
+}
+
+/* ─── Category Tabs ─── */
+function CategoryTabs({ active, onChange }: { active: Category; onChange: (c: Category) => void }) {
+  return (
+    <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1 scrollbar-none">
+      {categories.map((cat) => (
+        <button
+          key={cat.id}
+          onClick={() => onChange(cat.id)}
+          className={`px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+            active === cat.id
+              ? "bg-[#DA4E24] text-white"
+              : "bg-[#111] text-[#666] hover:text-[#999] border border-[#1a1a1a] hover:border-[#333]"
+          }`}
+        >
+          {cat.label}
+        </button>
+      ))}
+    </div>
   );
 }
 
@@ -155,7 +265,13 @@ function DemoContent() {
   const [workflowStarted, setWorkflowStarted] = useState(false);
   const [workflowComplete, setWorkflowComplete] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<Category>("all");
+  const [showShareModal, setShowShareModal] = useState(false);
   const workflowRef = useRef<HTMLDivElement>(null);
+
+  const filteredPrompts = activeCategory === "all"
+    ? prompts
+    : prompts.filter((p) => p.category === activeCategory);
 
   // URL parameter handling
   useEffect(() => {
@@ -164,9 +280,9 @@ function DemoContent() {
       const found = getPromptBySlug(slug);
       if (found) {
         setSelectedPrompt(found);
-        // Auto-start after short delay
         setTimeout(() => {
           setWorkflowStarted(true);
+          haptic(20);
           setTimeout(() => {
             workflowRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
           }, 300);
@@ -181,14 +297,54 @@ function DemoContent() {
     return () => clearTimeout(t);
   }, []);
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      // Don't handle if typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      // Escape: back to grid
+      if (e.key === "Escape" && workflowStarted) {
+        handleReset();
+        return;
+      }
+
+      // R: replay
+      if (e.key === "r" && workflowComplete && selectedPrompt) {
+        handleReplay();
+        return;
+      }
+
+      // Number keys for prompt selection
+      let promptIndex = -1;
+      if (e.shiftKey) {
+        // Shift+1-0 = prompts 11-20
+        const shiftMap: Record<string, number> = { "!": 10, "@": 11, "#": 12, "$": 13, "%": 14, "^": 15, "&": 16, "*": 17, "(": 18, ")": 19 };
+        if (shiftMap[e.key] !== undefined) promptIndex = shiftMap[e.key];
+      } else {
+        // 1-9, 0 = prompts 1-10
+        if (e.key >= "1" && e.key <= "9") promptIndex = parseInt(e.key) - 1;
+        if (e.key === "0") promptIndex = 9;
+      }
+
+      if (promptIndex >= 0 && promptIndex < prompts.length && !workflowStarted) {
+        handlePromptSelect(prompts[promptIndex]);
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [workflowStarted, workflowComplete, selectedPrompt]);
+
   const handlePromptSelect = useCallback((prompt: PromptData) => {
     setSelectedPrompt(prompt);
     setWorkflowStarted(false);
     setWorkflowComplete(false);
+    haptic();
   }, []);
 
   const handleTypingComplete = useCallback(() => {
     setWorkflowStarted(true);
+    haptic(20);
     setTimeout(() => {
       workflowRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 300);
@@ -196,6 +352,7 @@ function DemoContent() {
 
   const handleWorkflowComplete = useCallback(() => {
     setWorkflowComplete(true);
+    haptic(20);
   }, []);
 
   const handleReset = useCallback(() => {
@@ -203,9 +360,22 @@ function DemoContent() {
     setWorkflowStarted(false);
     setWorkflowComplete(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    // Clean URL
     window.history.replaceState({}, "", "/demo");
   }, []);
+
+  const handleReplay = useCallback(() => {
+    if (!selectedPrompt) return;
+    setWorkflowStarted(false);
+    setWorkflowComplete(false);
+    // Re-trigger after a tick
+    setTimeout(() => {
+      setWorkflowStarted(true);
+      haptic(20);
+      setTimeout(() => {
+        workflowRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 300);
+    }, 100);
+  }, [selectedPrompt]);
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
@@ -225,6 +395,7 @@ function DemoContent() {
         <p className="text-lg text-[#999] max-w-md mx-auto">
           Pick a command. Watch every agent work.
         </p>
+        <p className="text-xs text-[#444] mt-2">{prompts.length} workflows available</p>
       </div>
 
       {/* Chat Input */}
@@ -247,8 +418,9 @@ function DemoContent() {
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
         >
+          <CategoryTabs active={activeCategory} onChange={setActiveCategory} />
           <div className="grid sm:grid-cols-2 gap-3">
-            {prompts.map((p) => (
+            {filteredPrompts.map((p) => (
               <PromptCard
                 key={p.id}
                 prompt={p}
@@ -257,12 +429,13 @@ function DemoContent() {
               />
             ))}
           </div>
+          <p className="text-center text-[10px] text-[#333] mt-4">Press 1-0 to quick-select prompts. Shift+1-0 for 11-20.</p>
         </div>
       )}
 
-      {/* Reset button when workflow is running */}
+      {/* Controls when workflow is running */}
       {workflowStarted && (
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center gap-4 mb-6">
           <button
             onClick={handleReset}
             className="inline-flex items-center gap-2 text-xs text-[#555] hover:text-[#999] transition-colors"
@@ -273,6 +446,29 @@ function DemoContent() {
             </svg>
             Try another prompt
           </button>
+          {workflowComplete && (
+            <>
+              <button
+                onClick={handleReplay}
+                className="inline-flex items-center gap-2 text-xs text-[#555] hover:text-[#DA4E24] transition-colors"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                Replay
+              </button>
+              <button
+                onClick={() => setShowShareModal(true)}
+                className="inline-flex items-center gap-2 text-xs text-[#555] hover:text-[#1F77F6] transition-colors"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                </svg>
+                Share this demo
+              </button>
+            </>
+          )}
         </div>
       )}
 
@@ -280,7 +476,7 @@ function DemoContent() {
       {workflowStarted && selectedPrompt && (
         <div ref={workflowRef} className="scroll-mt-20">
           <WorkflowVisualizer
-            key={selectedPrompt.id}
+            key={selectedPrompt.id + (workflowComplete ? "" : "-running")}
             prompt={selectedPrompt}
             onComplete={handleWorkflowComplete}
           />
@@ -299,6 +495,11 @@ function DemoContent() {
       <div className="mt-12">
         <FounderTerminal />
       </div>
+
+      {/* Share Modal */}
+      {showShareModal && selectedPrompt && (
+        <ShareModal prompt={selectedPrompt} onClose={() => setShowShareModal(false)} />
+      )}
     </div>
   );
 }

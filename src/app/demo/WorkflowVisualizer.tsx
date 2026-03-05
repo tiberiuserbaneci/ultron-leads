@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import type { PromptData, AgentBranch, WorkflowNode, NodeIcon, TimelineEntry, OutputUpdate } from "./workflowData";
+import type { PromptData, AgentBranch, WorkflowNode, NodeIcon } from "./workflowData";
+import { nodeCostMap } from "./workflowData";
 
 /* ─── Icon Components ─── */
 function NodeIconSvg({ icon, size = 14 }: { icon: NodeIcon; size?: number }) {
@@ -32,24 +33,58 @@ function NodeIconSvg({ icon, size = 14 }: { icon: NodeIcon; size?: number }) {
   }
 }
 
-/* ─── Agent Status Dot ─── */
-function StatusDot({ status }: { status: "waiting" | "active" | "complete" }) {
-  if (status === "complete") return <span className="inline-block w-2 h-2 rounded-full bg-green-500" />;
-  if (status === "active") return <span className="inline-block w-2 h-2 rounded-full bg-[#DA4E24] pulse-soft" />;
-  return <span className="inline-block w-2 h-2 rounded-full bg-[#333]" />;
+/* ─── Agent Avatar Icons ─── */
+function AgentAvatar({ agent, status }: { agent: string; status: "waiting" | "active" | "complete" }) {
+  const size = 16;
+  const props = { width: size, height: size, viewBox: "0 0 24 24", fill: "none", strokeWidth: "2", strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  const color = status === "complete" ? "#22c55e" : status === "active" ? "#DA4E24" : "#333";
+  const glowClass = status === "active" ? "agent-avatar-glow" : "";
+
+  const icon = (() => {
+    switch (agent) {
+      case "CORTEX": // brain/lightbulb
+        return <svg {...props} stroke={color}><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>;
+      case "SPECTER": // crosshair/target
+        return <svg {...props} stroke={color}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
+      case "STRIKER": // lightning bolt
+        return <svg {...props} stroke={color}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
+      case "PULSE": // broadcast/megaphone
+        return <svg {...props} stroke={color}><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.4"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.4"/><path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/></svg>;
+      case "SENTINEL": // shield/eye
+        return <svg {...props} stroke={color}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="2"/></svg>;
+      default:
+        return <svg {...props} stroke={color}><circle cx="12" cy="12" r="10"/></svg>;
+    }
+  })();
+
+  return <span className={`inline-flex ${glowClass}`}>{icon}</span>;
+}
+
+/* ─── Hover Preview Tooltip ─── */
+function HoverPreview({ text, visible }: { text: string; visible: boolean }) {
+  if (!visible || !text) return null;
+  return (
+    <div className="absolute z-20 left-0 top-full mt-1 p-2.5 bg-[#111] border border-[#2a2a2a] rounded-lg shadow-xl max-w-[250px] animate-fade-in pointer-events-none">
+      <pre className="text-[10px] font-terminal text-[#999] whitespace-pre-wrap leading-relaxed">{text}</pre>
+    </div>
+  );
 }
 
 /* ─── Single Workflow Node ─── */
 function WorkflowNodeCard({ node, active, complete }: { node: WorkflowNode; active: boolean; complete: boolean }) {
+  const [hovered, setHovered] = useState(false);
+
   return (
     <div
-      className={`flex items-start gap-3 p-3 rounded-xl border transition-all duration-500 ${
+      className={`relative flex items-start gap-3 p-3 rounded-xl border transition-all duration-500 ${
         complete
           ? "bg-[#111] border-[#1a1a1a]"
           : active
           ? "bg-[#111] border-[#DA4E24] shadow-[0_0_12px_rgba(218,78,36,0.3)]"
           : "bg-[#0a0a0a] border-[#111] opacity-30"
       }`}
+      onMouseEnter={() => complete && node.hoverPreview && setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <div className={`flex-shrink-0 mt-0.5 ${active ? "text-[#DA4E24]" : complete ? "text-[#666]" : "text-[#333]"}`}>
         <NodeIconSvg icon={node.icon} />
@@ -65,25 +100,31 @@ function WorkflowNodeCard({ node, active, complete }: { node: WorkflowNode; acti
         </div>
         <p className={`text-sm leading-snug ${active || complete ? "text-[#ccc]" : "text-[#444]"}`}>{node.text}</p>
       </div>
+      <HoverPreview text={node.hoverPreview || ""} visible={hovered} />
     </div>
   );
 }
 
-/* ─── Connection Line (vertical) ─── */
+/* ─── Connection Line with particle trail ─── */
 function ConnectionLine({ active, crossAgent }: { active: boolean; crossAgent?: boolean }) {
   const color = crossAgent ? "#1F77F6" : active ? "#DA4E24" : "#222";
   return (
     <div className="flex justify-start pl-6 py-0.5">
       <div className="relative w-0.5 h-5" style={{ background: color, opacity: active ? 1 : 0.3 }}>
         {active && (
-          <div
-            className="absolute w-1.5 h-1.5 rounded-full -left-[2px]"
-            style={{
-              background: crossAgent ? "#1F77F6" : "#DA4E24",
-              boxShadow: `0 0 6px ${crossAgent ? "#1F77F6" : "#DA4E24"}`,
-              animation: "dataPacket 0.8s ease-in-out",
-            }}
-          />
+          <div className="data-packet-container">
+            <div
+              className="absolute w-1.5 h-1.5 rounded-full -left-[2px]"
+              style={{
+                background: crossAgent ? "#1F77F6" : "#DA4E24",
+                boxShadow: `0 0 6px ${crossAgent ? "#1F77F6" : "#DA4E24"}`,
+                animation: "dataPacket 0.8s ease-in-out",
+              }}
+            />
+            {/* Particle trail */}
+            <div className="absolute w-1 h-1 rounded-full -left-[1px] opacity-40" style={{ background: crossAgent ? "#1F77F6" : "#DA4E24", animation: "dataPacket 0.8s ease-in-out 0.1s" }} />
+            <div className="absolute w-0.5 h-0.5 rounded-full -left-[0px] opacity-20" style={{ background: crossAgent ? "#1F77F6" : "#DA4E24", animation: "dataPacket 0.8s ease-in-out 0.2s" }} />
+          </div>
         )}
       </div>
     </div>
@@ -94,12 +135,10 @@ function ConnectionLine({ active, crossAgent }: { active: boolean; crossAgent?: 
 function AgentBranchView({
   branch,
   activeNodeIndex,
-  startTime,
   elapsed,
 }: {
   branch: AgentBranch;
-  activeNodeIndex: number; // -1 = waiting, nodes.length = all complete
-  startTime: number;
+  activeNodeIndex: number;
   elapsed: number;
 }) {
   const branchStarted = elapsed >= branch.startDelay;
@@ -110,7 +149,7 @@ function AgentBranchView({
     <div className={`transition-opacity duration-500 ${branchStarted ? "opacity-100" : "opacity-40"}`}>
       {/* Agent Header */}
       <div className="flex items-center gap-2 mb-3">
-        <StatusDot status={status} />
+        <AgentAvatar agent={branch.agent} status={status} />
         <span className="text-sm font-bold text-[#DA4E24]">{branch.agent}</span>
         <span className="text-xs text-[#555]">{branch.subtitle}</span>
       </div>
@@ -141,14 +180,7 @@ function AgentBranchView({
 }
 
 /* ─── Timeline Entry ─── */
-function TimelineEntryView({ entry, visible }: { entry: TimelineEntry; visible: boolean }) {
-  const agentColors: Record<string, string> = {
-    CORTEX: "#DA4E24",
-    SPECTER: "#DA4E24",
-    STRIKER: "#DA4E24",
-    PULSE: "#DA4E24",
-    SENTINEL: "#DA4E24",
-  };
+function TimelineEntryView({ entry, visible }: { entry: { time: string; agent: string; text: string }; visible: boolean }) {
   return (
     <div
       className={`flex items-start gap-3 py-2.5 border-b border-[#111] transition-all duration-500 ${
@@ -156,24 +188,59 @@ function TimelineEntryView({ entry, visible }: { entry: TimelineEntry; visible: 
       }`}
     >
       <span className="text-xs font-terminal text-[#555] flex-shrink-0 w-16 mt-0.5">{entry.time}</span>
-      <span
-        className="text-xs font-bold flex-shrink-0 w-20 mt-0.5"
-        style={{ color: agentColors[entry.agent] || "#DA4E24" }}
-      >
-        {entry.agent}
-      </span>
+      <span className="text-xs font-bold flex-shrink-0 w-20 mt-0.5 text-[#DA4E24]">{entry.agent}</span>
       <span className="text-sm text-[#ccc] leading-snug">{entry.text}</span>
     </div>
   );
 }
 
+/* ─── Timer Display ─── */
+function Timer({ elapsed, complete }: { elapsed: number; complete: boolean }) {
+  const secs = Math.floor(elapsed / 1000);
+  const mins = Math.floor(secs / 60);
+  const display = `${String(mins).padStart(2, "0")}:${String(secs % 60).padStart(2, "0")}`;
+  return (
+    <div className={`flex items-center gap-1.5 text-xs font-terminal ${complete ? "text-green-500" : "text-[#555]"}`}>
+      <span>&#9201;</span>
+      <span>{display}</span>
+    </div>
+  );
+}
+
+/* ─── Progress Bar ─── */
+function ProgressBar({ progress, complete }: { progress: number; complete: boolean }) {
+  return (
+    <div className={`fixed top-0 left-0 right-0 z-50 h-0.5 transition-opacity duration-500 ${complete ? "opacity-0" : "opacity-100"}`}>
+      <div
+        className="h-full bg-[#DA4E24] transition-all duration-300 ease-out"
+        style={{ width: `${Math.min(progress * 100, 100)}%`, boxShadow: "0 0 8px rgba(218,78,36,0.5)" }}
+      />
+    </div>
+  );
+}
+
 /* ─── Output Panel ─── */
-function OutputPanel({ items, summary, complete }: { items: { icon: NodeIcon; text: string; count?: number }[]; summary: PromptData["summary"]; complete: boolean }) {
+function OutputPanel({
+  items,
+  summary,
+  complete,
+  costSaved,
+  elapsed,
+}: {
+  items: { icon: NodeIcon; text: string; count?: number }[];
+  summary: PromptData["summary"];
+  complete: boolean;
+  costSaved: number;
+  elapsed: number;
+}) {
   return (
     <div className="bg-[#0A0A0A] border border-[#1a1a1a] rounded-2xl p-4 sm:p-5">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-2 h-2 rounded-full bg-[#DA4E24] pulse-soft" />
-        <span className="text-xs font-semibold text-[#999] uppercase tracking-widest">Live Output</span>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className={`w-2 h-2 rounded-full ${complete ? "bg-green-500" : "bg-[#DA4E24] pulse-soft"}`} />
+          <span className="text-xs font-semibold text-[#999] uppercase tracking-widest">Live Output</span>
+        </div>
+        <Timer elapsed={elapsed} complete={complete} />
       </div>
 
       <div className="space-y-2.5">
@@ -198,20 +265,30 @@ function OutputPanel({ items, summary, complete }: { items: { icon: NodeIcon; te
         ))}
       </div>
 
+      {/* Cost saved counter */}
+      {costSaved > 0 && (
+        <div className="mt-4 pt-3 border-t border-[#111]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-[#555]">Money saved so far</span>
+            <span className="text-sm font-terminal font-bold text-[#DA4E24]">${costSaved.toLocaleString()}</span>
+          </div>
+        </div>
+      )}
+
       {complete && (
-        <div className="mt-5 pt-4 border-t border-[#1a1a1a]">
+        <div className={`mt-4 pt-4 border-t border-[#1a1a1a] ${complete ? "summary-complete-anim" : ""}`}>
           <div className="grid grid-cols-3 gap-3 text-center">
             <div>
               <div className="text-lg font-bold text-white font-terminal">{summary.actions}</div>
               <div className="text-xs text-[#555]">actions</div>
             </div>
             <div>
-              <div className="text-lg font-bold text-white font-terminal">{summary.time}s</div>
+              <div className="text-lg font-bold text-white font-terminal">{Math.floor(elapsed / 1000)}s</div>
               <div className="text-xs text-[#555]">execution</div>
             </div>
             <div>
-              <div className="text-lg font-bold text-[#DA4E24] font-terminal">{summary.humanCost}</div>
-              <div className="text-xs text-[#555]">if done manually</div>
+              <div className="text-lg font-bold text-[#DA4E24] font-terminal">${costSaved.toLocaleString()}</div>
+              <div className="text-xs text-[#555]">saved</div>
             </div>
           </div>
         </div>
@@ -221,7 +298,7 @@ function OutputPanel({ items, summary, complete }: { items: { icon: NodeIcon; te
 }
 
 /* ─── Summary Card ─── */
-function SummaryCard({ prompt }: { prompt: PromptData }) {
+function SummaryCard({ prompt, elapsed, costSaved }: { prompt: PromptData; elapsed: number; costSaved: number }) {
   const [copied, setCopied] = useState(false);
   const shareUrl = `https://work.51ultron.com/demo?prompt=${prompt.slug}`;
 
@@ -234,11 +311,10 @@ function SummaryCard({ prompt }: { prompt: PromptData }) {
   };
 
   return (
-    <div className="mt-8 animate-fade-up">
-      {/* Main summary */}
+    <div className="mt-8 summary-complete-anim">
       <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-2xl p-6 sm:p-8 text-center">
         <p className="text-lg sm:text-xl font-semibold text-white mb-2">
-          {prompt.summary.actions} actions executed across {prompt.agentNames.length} departments in {prompt.summary.time} seconds.
+          {prompt.summary.actions} actions executed across {prompt.agentNames.length} departments in {Math.floor(elapsed / 1000)} seconds.
         </p>
         <p className="text-[#999] mb-6">
           A human team would take {prompt.summary.humanTime} and cost {prompt.summary.humanCost}.
@@ -297,10 +373,18 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
   const [elapsed, setElapsed] = useState(0);
   const [outputItems, setOutputItems] = useState<{ icon: NodeIcon; text: string; count?: number }[]>([]);
   const [isComplete, setIsComplete] = useState(false);
+  const [costSaved, setCostSaved] = useState(0);
+  const [progress, setProgress] = useState(0);
   const startRef = useRef(0);
   const rafRef = useRef<number>(0);
   const outputTracker = useRef<Set<string>>(new Set());
+  const costTracker = useRef<Set<string>>(new Set());
   const completeRef = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll state
+  const userScrolledRef = useRef(false);
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   // Calculate total workflow duration
   const getTotalDuration = useCallback(() => {
@@ -320,6 +404,11 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
     return 10000;
   }, [prompt]);
 
+  // Count total nodes for progress
+  const totalNodes = prompt.branches
+    ? prompt.branches.reduce((sum, b) => sum + b.nodes.length, 0)
+    : prompt.timeline?.length || 0;
+
   // Get active node index for a branch
   const getActiveNodeIndex = useCallback((branch: AgentBranch, currentElapsed: number) => {
     if (currentElapsed < branch.startDelay) return -1;
@@ -330,21 +419,48 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
         activeIndex = i;
       }
     }
-    // If last node has been active for 1.2s, mark branch as complete
     if (activeIndex === branch.nodes.length - 1) {
       const lastNodeTime = branchElapsed - branch.nodes[activeIndex].delay;
-      if (lastNodeTime > 1200) return branch.nodes.length; // all complete
+      if (lastNodeTime > 1200) return branch.nodes.length;
     }
     return activeIndex;
   }, []);
 
-  // Check for new output updates
+  // Count completed nodes for progress bar
+  const getCompletedNodeCount = useCallback((currentElapsed: number) => {
+    if (!prompt.branches) {
+      // Timeline mode
+      if (!prompt.timeline) return 0;
+      return prompt.timeline.filter((e) => currentElapsed >= e.delay + 800).length;
+    }
+    let count = 0;
+    for (const branch of prompt.branches) {
+      const idx = getActiveNodeIndex(branch, currentElapsed);
+      count += Math.max(0, idx);
+    }
+    return count;
+  }, [prompt, getActiveNodeIndex]);
+
+  // Check for new output updates + cost tracking
   const checkOutputUpdates = useCallback((currentElapsed: number) => {
     if (!prompt.branches) return;
     const newItems: { icon: NodeIcon; text: string; count?: number }[] = [];
+    let newCost = 0;
 
     for (const branch of prompt.branches) {
       const activeIdx = getActiveNodeIndex(branch, currentElapsed);
+
+      // Cost tracking: count cost for each completed node
+      for (let i = 0; i < branch.nodes.length; i++) {
+        if (i < activeIdx) {
+          const nodeKey = branch.nodes[i].id;
+          if (!costTracker.current.has(nodeKey)) {
+            costTracker.current.add(nodeKey);
+            newCost += nodeCostMap[branch.nodes[i].icon] || 150;
+          }
+        }
+      }
+
       for (const update of branch.outputUpdates) {
         if (outputTracker.current.has(update.afterNodeId + update.text)) continue;
         const nodeIdx = branch.nodes.findIndex((n) => n.id === update.afterNodeId);
@@ -355,17 +471,35 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
       }
     }
 
-    if (newItems.length > 0) {
-      setOutputItems((prev) => [...prev, ...newItems]);
-    }
+    if (newCost > 0) setCostSaved((prev) => prev + newCost);
+    if (newItems.length > 0) setOutputItems((prev) => [...prev, ...newItems]);
   }, [prompt, getActiveNodeIndex]);
+
+  // Auto-scroll: track user scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      userScrolledRef.current = true;
+      clearTimeout(scrollTimeoutRef.current);
+      scrollTimeoutRef.current = setTimeout(() => {
+        userScrolledRef.current = false;
+      }, 2000);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(scrollTimeoutRef.current);
+    };
+  }, []);
 
   // Animation loop
   useEffect(() => {
     startRef.current = performance.now();
     outputTracker.current.clear();
+    costTracker.current.clear();
     setOutputItems([]);
     setIsComplete(false);
+    setCostSaved(0);
+    setProgress(0);
     completeRef.current = false;
 
     const totalDuration = getTotalDuration();
@@ -375,8 +509,13 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
       setElapsed(ms);
       checkOutputUpdates(ms);
 
+      // Progress bar
+      const completed = getCompletedNodeCount(ms);
+      setProgress(totalNodes > 0 ? completed / totalNodes : 0);
+
       if (ms >= totalDuration + 2000 && !completeRef.current) {
         completeRef.current = true;
+        setProgress(1);
         setIsComplete(true);
         onComplete();
         return;
@@ -387,7 +526,7 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
 
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [prompt, getTotalDuration, checkOutputUpdates, onComplete]);
+  }, [prompt, getTotalDuration, checkOutputUpdates, getCompletedNodeCount, totalNodes, onComplete]);
 
   // Timeline output items
   useEffect(() => {
@@ -397,7 +536,6 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
     for (const part of parts) {
       newItems.push({ icon: "chart", text: part });
     }
-    // Add timeline items progressively
     const timers: ReturnType<typeof setTimeout>[] = [];
     newItems.forEach((item, i) => {
       timers.push(
@@ -412,19 +550,35 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
     return () => timers.forEach(clearTimeout);
   }, [prompt]);
 
+  // Timeline cost tracking
+  useEffect(() => {
+    if (prompt.type !== "timeline" || !prompt.timeline) return;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    prompt.timeline.forEach((entry, i) => {
+      timers.push(
+        setTimeout(() => {
+          setCostSaved((prev) => prev + 150);
+        }, entry.delay + 500)
+      );
+    });
+    return () => timers.forEach(clearTimeout);
+  }, [prompt]);
+
   return (
-    <div className="animate-fade-up">
+    <div ref={containerRef} className="animate-fade-up">
+      {/* Progress Bar */}
+      <ProgressBar progress={progress} complete={isComplete} />
+
       <div className="flex flex-col lg:flex-row gap-5">
         {/* Left: Workflow Graph */}
         <div className="flex-1 lg:w-[70%]">
           {prompt.type === "branch" && prompt.branches && (
-            <div className="grid gap-6 sm:grid-cols-2">
+            <div className={`grid gap-6 sm:grid-cols-2 ${isComplete ? "workflow-complete-flash" : ""}`}>
               {prompt.branches.map((branch) => (
                 <AgentBranchView
                   key={branch.agent}
                   branch={branch}
                   activeNodeIndex={getActiveNodeIndex(branch, elapsed)}
-                  startTime={startRef.current}
                   elapsed={elapsed}
                 />
               ))}
@@ -448,12 +602,18 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
 
         {/* Right: Output Panel */}
         <div className="lg:w-[30%] lg:sticky lg:top-20 lg:self-start">
-          <OutputPanel items={outputItems} summary={prompt.summary} complete={isComplete} />
+          <OutputPanel
+            items={outputItems}
+            summary={prompt.summary}
+            complete={isComplete}
+            costSaved={costSaved}
+            elapsed={elapsed}
+          />
         </div>
       </div>
 
       {/* Summary Card */}
-      {isComplete && <SummaryCard prompt={prompt} />}
+      {isComplete && <SummaryCard prompt={prompt} elapsed={elapsed} costSaved={costSaved} />}
     </div>
   );
 }

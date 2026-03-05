@@ -199,3 +199,30 @@ input[type="range"]:focus { outline: none; }
   100% { transform: scale(1); }
 }
 .count-pulse { animation: countPulse 0.3s ease-out; }
+
+/* Agent avatar glow while active */
+@keyframes avatarGlow {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(218,78,36,0)); }
+  50% { filter: drop-shadow(0 0 4px rgba(218,78,36,0.6)); }
+}
+.agent-avatar-glow { animation: avatarGlow 2s ease-in-out infinite; }
+
+/* Workflow complete flash: all connection lines pulse orange */
+@keyframes completeFlash {
+  0% { box-shadow: none; }
+  50% { box-shadow: inset 0 0 0 1px rgba(218,78,36,0.3); }
+  100% { box-shadow: none; }
+}
+.workflow-complete-flash > * { animation: completeFlash 0.8s ease-out; }
+
+/* Summary card entrance */
+@keyframes summaryEntrance {
+  0% { opacity: 0; transform: scale(1.02) translateY(12px); }
+  60% { transform: scale(1.02) translateY(0); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.summary-complete-anim { animation: summaryEntrance 0.6s ease-out both; }
+
+/* Hide scrollbar for category tabs */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
