@@ -207,18 +207,6 @@ function Timer({ elapsed, complete }: { elapsed: number; complete: boolean }) {
   );
 }
 
-/* ─── Progress Bar ─── */
-function ProgressBar({ progress, complete }: { progress: number; complete: boolean }) {
-  return (
-    <div className={`fixed top-0 left-0 right-0 z-50 h-0.5 transition-opacity duration-500 ${complete ? "opacity-0" : "opacity-100"}`}>
-      <div
-        className="h-full bg-[#DA4E24] transition-all duration-300 ease-out"
-        style={{ width: `${Math.min(progress * 100, 100)}%`, boxShadow: "0 0 8px rgba(218,78,36,0.5)" }}
-      />
-    </div>
-  );
-}
-
 /* ─── Output Panel ─── */
 function OutputPanel({
   items,
@@ -299,17 +287,6 @@ function OutputPanel({
 
 /* ─── Summary Card ─── */
 function SummaryCard({ prompt, elapsed, costSaved }: { prompt: PromptData; elapsed: number; costSaved: number }) {
-  const [copied, setCopied] = useState(false);
-  const shareUrl = `https://work.51ultron.com/demo?prompt=${prompt.slug}`;
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {}
-  };
-
   return (
     <div className="mt-8 summary-complete-anim">
       <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-2xl p-6 sm:p-8 text-center">
@@ -320,27 +297,15 @@ function SummaryCard({ prompt, elapsed, costSaved }: { prompt: PromptData; elaps
           A human team would take {prompt.summary.humanTime} and cost {prompt.summary.humanCost}.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <a
-            href="https://app.51ultron.com/signup"
-            className="btn-gradient glow-accent text-white font-semibold px-8 py-3.5 rounded-xl text-sm transition-all inline-flex items-center gap-2"
-          >
-            Deploy this for your business
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </a>
-          <button
-            onClick={handleCopy}
-            className="inline-flex items-center gap-2 px-5 py-3 text-sm bg-[#111] hover:bg-[#1a1a1a] border border-[#1a1a1a] hover:border-[#333] rounded-xl text-white transition-colors"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-            </svg>
-            {copied ? "Link copied!" : "Share this demo"}
-          </button>
-        </div>
+        <a
+          href="https://app.51ultron.com/signup"
+          className="btn-gradient glow-accent text-white font-semibold px-8 py-3.5 rounded-xl text-sm transition-all inline-flex items-center gap-2"
+        >
+          Deploy this for your business
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
 
         <p className="text-xs text-[#555] mt-4">Free plan. No credit card required.</p>
       </div>
@@ -374,7 +339,6 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
   const [outputItems, setOutputItems] = useState<{ icon: NodeIcon; text: string; count?: number }[]>([]);
   const [isComplete, setIsComplete] = useState(false);
   const [costSaved, setCostSaved] = useState(0);
-  const [progress, setProgress] = useState(0);
   const startRef = useRef(0);
   const rafRef = useRef<number>(0);
   const outputTracker = useRef<Set<string>>(new Set());
@@ -404,11 +368,6 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
     return 10000;
   }, [prompt]);
 
-  // Count total nodes for progress
-  const totalNodes = prompt.branches
-    ? prompt.branches.reduce((sum, b) => sum + b.nodes.length, 0)
-    : prompt.timeline?.length || 0;
-
   // Get active node index for a branch
   const getActiveNodeIndex = useCallback((branch: AgentBranch, currentElapsed: number) => {
     if (currentElapsed < branch.startDelay) return -1;
@@ -425,21 +384,6 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
     }
     return activeIndex;
   }, []);
-
-  // Count completed nodes for progress bar
-  const getCompletedNodeCount = useCallback((currentElapsed: number) => {
-    if (!prompt.branches) {
-      // Timeline mode
-      if (!prompt.timeline) return 0;
-      return prompt.timeline.filter((e) => currentElapsed >= e.delay + 800).length;
-    }
-    let count = 0;
-    for (const branch of prompt.branches) {
-      const idx = getActiveNodeIndex(branch, currentElapsed);
-      count += Math.max(0, idx);
-    }
-    return count;
-  }, [prompt, getActiveNodeIndex]);
 
   // Check for new output updates + cost tracking
   const checkOutputUpdates = useCallback((currentElapsed: number) => {
@@ -499,7 +443,6 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
     setOutputItems([]);
     setIsComplete(false);
     setCostSaved(0);
-    setProgress(0);
     completeRef.current = false;
 
     const totalDuration = getTotalDuration();
@@ -509,13 +452,8 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
       setElapsed(ms);
       checkOutputUpdates(ms);
 
-      // Progress bar
-      const completed = getCompletedNodeCount(ms);
-      setProgress(totalNodes > 0 ? completed / totalNodes : 0);
-
       if (ms >= totalDuration + 2000 && !completeRef.current) {
         completeRef.current = true;
-        setProgress(1);
         setIsComplete(true);
         onComplete();
         return;
@@ -526,7 +464,7 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
 
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [prompt, getTotalDuration, checkOutputUpdates, getCompletedNodeCount, totalNodes, onComplete]);
+  }, [prompt, getTotalDuration, checkOutputUpdates, onComplete]);
 
   // Timeline output items
   useEffect(() => {
@@ -566,9 +504,6 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
 
   return (
     <div ref={containerRef} className="animate-fade-up">
-      {/* Progress Bar */}
-      <ProgressBar progress={progress} complete={isComplete} />
-
       <div className="flex flex-col lg:flex-row gap-5">
         {/* Left: Workflow Graph */}
         <div className="flex-1 lg:w-[70%]">

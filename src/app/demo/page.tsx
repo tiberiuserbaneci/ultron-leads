@@ -268,6 +268,7 @@ function DemoContent() {
   const [activeCategory, setActiveCategory] = useState<Category>("all");
   const [showShareModal, setShowShareModal] = useState(false);
   const workflowRef = useRef<HTMLDivElement>(null);
+  const chatRef = useRef<HTMLDivElement>(null);
 
   const filteredPrompts = activeCategory === "all"
     ? prompts
@@ -340,6 +341,10 @@ function DemoContent() {
     setWorkflowStarted(false);
     setWorkflowComplete(false);
     haptic();
+    // Scroll to chat bar so user sees the typewriter animation
+    setTimeout(() => {
+      chatRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 50);
   }, []);
 
   const handleTypingComplete = useCallback(() => {
@@ -400,6 +405,7 @@ function DemoContent() {
 
       {/* Chat Input */}
       <div
+        ref={chatRef}
         className={`mb-10 transition-all duration-500 delay-100 ${
           visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
