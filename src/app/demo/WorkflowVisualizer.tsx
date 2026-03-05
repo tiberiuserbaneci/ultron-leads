@@ -488,17 +488,26 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
     return () => timers.forEach(clearTimeout);
   }, [prompt]);
 
-  // Auto-scroll as workflow generates (especially for mobile)
+  // Auto-scroll on mobile only — follows workflow one step at a time
   useEffect(() => {
+    if (outputItems.length === 0) return;
+    // Skip on desktop (lg+ has side-by-side layout, no scroll needed)
+    if (typeof window === "undefined" || window.innerWidth >= 1024) return;
     if (userScrolledRef.current || !containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    if (rect.bottom > window.innerHeight) {
-      window.scrollTo({
-        top: window.scrollY + rect.bottom - window.innerHeight + 60,
-        behavior: "smooth",
-      });
-    }
-  }, [outputItems, costSaved]);
+
+    // Wait for layout to settle, then scroll incrementally
+    requestAnimationFrame(() => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      if (rect.bottom > window.innerHeight) {
+        // Scroll by at most ~one card height so it follows node-by-node
+        window.scrollBy({
+          top: Math.min(rect.bottom - window.innerHeight + 40, 140),
+          behavior: "smooth",
+        });
+      }
+    });
+  }, [outputItems.length]);
 
   // Timeline cost tracking
   useEffect(() => {
