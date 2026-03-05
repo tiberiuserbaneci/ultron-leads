@@ -6,6 +6,11 @@ import FounderTerminal from "@/components/FounderTerminal";
 
 const diagnosticOptions = [
   {
+    pain: "I want to see Ultron work before I commit",
+    sub: "Watch agents execute real business tasks in real time",
+    route: "/demo",
+  },
+  {
     pain: "I'm doing everything myself and there aren't enough hours",
     sub: "See the 5-agent architecture that replaces a full team",
     route: "/blueprint",
@@ -43,6 +48,7 @@ const diagnosticOptions = [
 ];
 
 const allResources = [
+  { route: "/demo", title: "Interactive Demo", tag: "Live Demo", desc: "Pick a command. Watch 5 AI agents execute in real time." },
   { route: "/blueprint", title: "The 5-Agent Blueprint", tag: "Architecture", desc: "Interactive diagram. 5 agents. $20K team for $19/month." },
   { route: "/72hours", title: "72 Hours of Ultron", tag: "Real Logs", desc: "50+ timestamped entries. Zero human input." },
   { route: "/calculator", title: "AI Team ROI Calculator", tag: "Interactive", desc: "Calculate the real cost of doing everything manually." },
