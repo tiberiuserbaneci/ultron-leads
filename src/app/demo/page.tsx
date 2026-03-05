@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { prompts, getPromptBySlug, categories, type PromptData, type Category } from "./workflowData";
+import FounderTerminal from "@/components/FounderTerminal";
 
 const WorkflowVisualizer = dynamic(() => import("./WorkflowVisualizer"), { ssr: false });
 
@@ -555,6 +556,11 @@ function DemoContent() {
           </button>
         </div>
       )}
+
+      {/* Founder Terminal */}
+      <div className="mt-12">
+        <FounderTerminal />
+      </div>
 
       {/* Footer */}
       <footer className="mt-16 mb-8 text-center">
