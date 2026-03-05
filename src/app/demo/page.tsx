@@ -558,6 +558,11 @@ function DemoContent() {
         <FounderTerminal />
       </div>
 
+      {/* Footer */}
+      <footer className="mt-16 mb-8 text-center">
+        <p className="text-[#555] text-xs">&copy; 2026 Powered by NXT Enterprises</p>
+      </footer>
+
       {/* Share Modal */}
       {showShareModal && selectedPrompt && (
         <ShareModal prompt={selectedPrompt} onClose={() => setShowShareModal(false)} />
