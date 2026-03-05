@@ -482,7 +482,7 @@ function DemoContent() {
       {workflowStarted && selectedPrompt && (
         <div ref={workflowRef} className="scroll-mt-20">
           <WorkflowVisualizer
-            key={selectedPrompt.id + (workflowComplete ? "" : "-running")}
+            key={selectedPrompt.id}
             prompt={selectedPrompt}
             onComplete={handleWorkflowComplete}
           />
