@@ -488,6 +488,18 @@ export default function WorkflowVisualizer({ prompt, onComplete }: { prompt: Pro
     return () => timers.forEach(clearTimeout);
   }, [prompt]);
 
+  // Auto-scroll as workflow generates (especially for mobile)
+  useEffect(() => {
+    if (userScrolledRef.current || !containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    if (rect.bottom > window.innerHeight) {
+      window.scrollTo({
+        top: window.scrollY + rect.bottom - window.innerHeight + 60,
+        behavior: "smooth",
+      });
+    }
+  }, [outputItems, costSaved]);
+
   // Timeline cost tracking
   useEffect(() => {
     if (prompt.type !== "timeline" || !prompt.timeline) return;

@@ -544,10 +544,9 @@ function DemoContent() {
         </div>
       )}
 
-      {/* Try Another Prompt */}
+      {/* Try Another Prompt — right under live output */}
       {workflowComplete && (
-        <div className="mt-16 text-center animate-fade-up">
-          <p className="text-sm text-[#555] mb-3">Want to see more?</p>
+        <div className="mt-6 text-center animate-fade-up">
           <button
             onClick={handleReset}
             className="text-[#DA4E24] hover:text-[#e8633f] text-sm font-medium transition-colors"
