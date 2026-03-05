@@ -4,8 +4,6 @@ import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { prompts, getPromptBySlug, categories, type PromptData, type Category } from "./workflowData";
-import ShareButtons from "@/components/ShareButtons";
-import FounderTerminal from "@/components/FounderTerminal";
 
 const WorkflowVisualizer = dynamic(() => import("./WorkflowVisualizer"), { ssr: false });
 
@@ -545,18 +543,18 @@ function DemoContent() {
         </div>
       )}
 
-      {/* Share Section */}
+      {/* Try Another Prompt */}
       {workflowComplete && (
-        <div className="mt-12 text-center animate-fade-up">
-          <p className="text-sm text-[#666] mb-4">Know a founder who needs to see this?</p>
-          <ShareButtons page="demo" />
+        <div className="mt-16 text-center animate-fade-up">
+          <p className="text-sm text-[#555] mb-3">Want to see more?</p>
+          <button
+            onClick={handleReset}
+            className="text-[#DA4E24] hover:text-[#e8633f] text-sm font-medium transition-colors"
+          >
+            Try another prompt &rarr;
+          </button>
         </div>
       )}
-
-      {/* Founder Terminal */}
-      <div className="mt-12">
-        <FounderTerminal />
-      </div>
 
       {/* Footer */}
       <footer className="mt-16 mb-8 text-center">
