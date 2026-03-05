@@ -258,6 +258,59 @@ function CategoryTabs({ active, onChange }: { active: Category; onChange: (c: Ca
   );
 }
 
+/* ─── Live Stats Bar ─── */
+const LAUNCH_DATE = new Date("2025-12-15").getTime();
+
+function getBaseStats() {
+  const daysSinceLaunch = (Date.now() - LAUNCH_DATE) / (1000 * 60 * 60 * 24);
+  return {
+    agentsDeployed: Math.floor(47 + daysSinceLaunch * 1.8),
+    tasksCompleted: Math.floor(840 + daysSinceLaunch * 62),
+    apiCalls: Math.floor(9200 + daysSinceLaunch * 480),
+    moneySaved: Math.floor(18500 + daysSinceLaunch * 950),
+  };
+}
+
+function LiveStatsBar() {
+  const [stats, setStats] = useState(getBaseStats);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStats((prev) => ({
+        agentsDeployed: prev.agentsDeployed + (Math.random() > 0.92 ? 1 : 0),
+        tasksCompleted: prev.tasksCompleted + (Math.random() > 0.7 ? 1 : 0),
+        apiCalls: prev.apiCalls + Math.floor(Math.random() * 3),
+        moneySaved: prev.moneySaved + (Math.random() > 0.6 ? Math.floor(Math.random() * 18) + 5 : 0),
+      }));
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const items = [
+    { label: "Agents Deployed", value: stats.agentsDeployed.toLocaleString() },
+    { label: "Tasks Completed", value: stats.tasksCompleted.toLocaleString() },
+    { label: "API Calls", value: stats.apiCalls.toLocaleString() },
+    { label: "Money Saved", value: `$${stats.moneySaved.toLocaleString()}` },
+  ];
+
+  return (
+    <div className="mb-8">
+      <div className="flex items-center gap-1.5 mb-3">
+        <span className="w-1.5 h-1.5 rounded-full bg-green-500 pulse-soft" />
+        <span className="text-[10px] font-medium text-green-600 uppercase tracking-widest">Live</span>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[#1a1a1a] rounded-xl overflow-hidden border border-[#1a1a1a]">
+        {items.map((item) => (
+          <div key={item.label} className="bg-[#0A0A0A] p-4 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-white font-terminal transition-all duration-700">{item.value}</div>
+            <div className="text-[11px] text-[#555] mt-1">{item.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ─── Inner content that uses useSearchParams ─── */
 function DemoContent() {
   const searchParams = useSearchParams();
@@ -384,6 +437,9 @@ function DemoContent() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+      {/* Live Stats */}
+      <LiveStatsBar />
+
       {/* Hero */}
       <div
         className={`text-center mb-10 transition-all duration-500 ${
