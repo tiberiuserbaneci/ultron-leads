@@ -45,6 +45,11 @@ const diagnosticOptions = [
     sub: "See the 4 levels of AI automation and where you stand",
     route: "/levels",
   },
+  {
+    pain: "I want to see every agent a business needs",
+    sub: "The complete map of 32 agents across 7 departments",
+    route: "/agents-map",
+  },
 ];
 
 const allResources = [
@@ -56,6 +61,7 @@ const allResources = [
   { route: "/competitor", title: "Your Competitor's AI Stack in 2026", tag: "Reality Check", desc: "Monday morning to end of quarter. Them vs you." },
   { route: "/assess", title: "Business Automation Assessment", tag: "Quiz", desc: "10 questions. Find out what's missing in your stack." },
   { route: "/levels", title: "The 4 Levels of AI Automation", tag: "Framework", desc: "Self-assess your level. Understand the gap. See the bridge." },
+  { route: "/agents-map", title: "The Complete AI Agent Map", tag: "Agent Map", desc: "32 agents across 7 departments. Click any to see what it replaces." },
 ];
 
 export default function HomePage() {
