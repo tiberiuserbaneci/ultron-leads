@@ -308,7 +308,7 @@ function AgentStatusCard({ agent, active }: { agent: typeof agents[0]; active: b
   useEffect(() => {
     const i = setInterval(() => {
       setTaskIdx((prev) => (prev + 1) % agent.tasks.length);
-    }, 5000 + Math.random() * 3000);
+    }, 3000 + Math.random() * 2000);
     return () => clearInterval(i);
   }, [agent.tasks.length]);
 
@@ -698,65 +698,171 @@ function MoneySavedBar() {
    SECTION 3G: ACTIVITY HEATMAP
    ═══════════════════════════════════════════════ */
 
-function ActivityHeatmap() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref);
-  const [cells, setCells] = useState(() => getHeatmapData());
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+function NeuralNetwork() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Continuously pulse random cells brighter
   useEffect(() => {
-    const i = setInterval(() => {
-      setCells((prev) => {
-        const next = [...prev];
-        // Brighten 2-4 random cells
-        const count = 2 + Math.floor(Math.random() * 3);
-        for (let c = 0; c < count; c++) {
-          const idx = Math.floor(Math.random() * next.length);
-          next[idx] = Math.min(1, next[idx] + 0.1 + Math.random() * 0.2);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const W = canvas.offsetWidth;
+    const H = canvas.offsetHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.scale(dpr, dpr);
+
+    // Create nodes in 6 layers
+    const layers = 6;
+    const nodesPerLayer = [3, 5, 7, 7, 5, 3];
+    interface Node { x: number; y: number; r: number; energy: number; targetEnergy: number }
+    const nodes: Node[][] = [];
+
+    for (let l = 0; l < layers; l++) {
+      const col: Node[] = [];
+      const count = nodesPerLayer[l];
+      const x = (W / (layers + 1)) * (l + 1);
+      for (let n = 0; n < count; n++) {
+        const y = (H / (count + 1)) * (n + 1);
+        col.push({ x, y, r: 3, energy: Math.random() * 0.3, targetEnergy: 0 });
+      }
+      nodes.push(col);
+    }
+
+    // Connections between adjacent layers
+    interface Conn { from: Node; to: Node; signal: number; speed: number; active: boolean }
+    const conns: Conn[] = [];
+    for (let l = 0; l < layers - 1; l++) {
+      for (const from of nodes[l]) {
+        for (const to of nodes[l + 1]) {
+          // Connect ~60% of possible connections
+          if (Math.random() < 0.6) {
+            conns.push({ from, to, signal: -1, speed: 0.008 + Math.random() * 0.012, active: false });
+          }
         }
-        return next;
-      });
-    }, 1500);
-    return () => clearInterval(i);
+      }
+    }
+
+    // Fire signals constantly
+    let lastFire = 0;
+    const fireInterval = 120; // ms between fires
+
+    let raf: number;
+    let prevTime = performance.now();
+
+    const draw = (now: number) => {
+      const dt = now - prevTime;
+      prevTime = now;
+
+      // Fire new signals
+      if (now - lastFire > fireInterval) {
+        lastFire = now;
+        // Pick 2-4 random connections to fire
+        const count = 2 + Math.floor(Math.random() * 3);
+        for (let i = 0; i < count; i++) {
+          const c = conns[Math.floor(Math.random() * conns.length)];
+          if (!c.active) {
+            c.active = true;
+            c.signal = 0;
+            c.from.targetEnergy = 1;
+          }
+        }
+      }
+
+      ctx.clearRect(0, 0, W, H);
+
+      // Draw connections
+      for (const c of conns) {
+        ctx.beginPath();
+        ctx.moveTo(c.from.x, c.from.y);
+        ctx.lineTo(c.to.x, c.to.y);
+        ctx.strokeStyle = c.active ? `rgba(218,78,36,${0.15 + c.signal * 0.3})` : "rgba(26,26,26,0.5)";
+        ctx.lineWidth = c.active ? 1.5 : 0.5;
+        ctx.stroke();
+
+        // Draw traveling signal
+        if (c.active) {
+          c.signal += c.speed * dt * 0.06;
+          if (c.signal >= 1) {
+            c.active = false;
+            c.signal = -1;
+            c.to.targetEnergy = 1;
+          } else {
+            const sx = c.from.x + (c.to.x - c.from.x) * c.signal;
+            const sy = c.from.y + (c.to.y - c.from.y) * c.signal;
+            ctx.beginPath();
+            ctx.arc(sx, sy, 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = "#DA4E24";
+            ctx.shadowColor = "#DA4E24";
+            ctx.shadowBlur = 8;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          }
+        }
+      }
+
+      // Draw nodes
+      for (const layer of nodes) {
+        for (const node of layer) {
+          node.energy += (node.targetEnergy - node.energy) * 0.08;
+          node.targetEnergy *= 0.97;
+
+          const glow = node.energy;
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.r + glow * 3, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(218,78,36,${0.2 + glow * 0.8})`;
+          if (glow > 0.3) {
+            ctx.shadowColor = "#DA4E24";
+            ctx.shadowBlur = 12 * glow;
+          }
+          ctx.fill();
+          ctx.shadowBlur = 0;
+
+          // Inner bright core
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.r * 0.6, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${glow * 0.6})`;
+          ctx.fill();
+        }
+      }
+
+      raf = requestAnimationFrame(draw);
+    };
+
+    raf = requestAnimationFrame(draw);
+
+    const handleResize = () => {
+      const newW = canvas.offsetWidth;
+      const newH = canvas.offsetHeight;
+      canvas.width = newW * dpr;
+      canvas.height = newH * dpr;
+      ctx.scale(dpr, dpr);
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return (
     <HudCard fullWidth>
-      <div ref={ref}>
-        <h3 className="text-xs font-bold text-[#999] uppercase tracking-widest mb-4">Agent Activity (90 Days)</h3>
-        <div className="overflow-x-auto">
-          <div className="inline-flex gap-0.5">
-            <div className="flex flex-col gap-0.5 mr-1">
-              {days.map((d) => (
-                <div key={d} className="h-3 flex items-center text-[8px] font-terminal text-[#444]">{d}</div>
-              ))}
-            </div>
-            {Array.from({ length: 13 }, (_, w) => (
-              <div key={w} className="flex flex-col gap-0.5">
-                {Array.from({ length: 7 }, (_, d) => {
-                  const idx = w * 7 + d;
-                  const val = cells[idx] || 0;
-                  const delay = (w * 7 + d) * 8;
-                  return (
-                    <div
-                      key={d}
-                      className="w-3 h-3 rounded-[2px] transition-all"
-                      style={{
-                        background: val < 0.15 ? "#0A0A0A" : `rgba(218,78,36,${val * 0.9})`,
-                        opacity: inView ? 1 : 0,
-                        transitionDelay: `${delay}ms`,
-                        transitionDuration: "500ms",
-                      }}
-                    />
-                  );
-                })}
-              </div>
-            ))}
-          </div>
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-xs font-bold text-[#999] uppercase tracking-widest">Agent Neural Network</h3>
+        <div className="flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#DA4E24] pulse-soft" />
+          <span className="font-terminal text-[9px] text-[#DA4E24]">LIVE</span>
         </div>
-        <p className="text-[10px] text-[#444] mt-3">Agents active 7 days a week. Including the days you take off.</p>
       </div>
+      <canvas
+        ref={canvasRef}
+        className="w-full rounded-lg"
+        style={{ height: 200, background: "#050505" }}
+      />
+      <p className="text-[10px] text-[#444] mt-3">5 agents processing data across 30 neural pathways. Running 24/7.</p>
     </HudCard>
   );
 }
@@ -774,13 +880,13 @@ function SystemHealthCard() {
   useEffect(() => {
     const i = setInterval(() => {
       setResponseTime(120 + Math.floor(Math.random() * 80));
-      setDbSize((prev) => prev + (Math.random() > 0.7 ? 1 : 0));
+      setDbSize((prev) => prev + (Math.random() > 0.5 ? 1 : 0));
       scanTimesRef.current += 1;
-      if (scanTimesRef.current % 4 === 0) {
-        const mins = Math.floor(scanTimesRef.current / 4);
+      if (scanTimesRef.current % 3 === 0) {
+        const mins = Math.floor(scanTimesRef.current / 3);
         setLastScan(mins < 1 ? "just now" : `${mins}m ago`);
       }
-    }, 2500);
+    }, 1500);
     return () => clearInterval(i);
   }, []);
 
@@ -832,8 +938,8 @@ function LiveFeed({ activeAgents }: { activeAgents: Set<AgentId> }) {
     const i = setInterval(() => {
       feedIdxRef.current = (feedIdxRef.current + 1) % feedEntries.length;
       const next = feedEntries[feedIdxRef.current];
-      setEntries((prev) => [next, ...prev.slice(0, 24)]);
-    }, 2000);
+      setEntries((prev) => [next, ...prev.slice(0, 30)]);
+    }, 1200);
     return () => clearInterval(i);
   }, []);
 
@@ -890,11 +996,11 @@ function OutreachCard() {
 
   useEffect(() => {
     const i = setInterval(() => {
-      setEmails((prev) => prev + (Math.random() > 0.4 ? 1 : 0));
-      setOpenRate((prev) => Math.min(65, +(prev + (Math.random() - 0.4) * 0.3).toFixed(1)));
-      setReplyRate((prev) => Math.min(25, +(prev + (Math.random() - 0.45) * 0.15).toFixed(1)));
-      setMeetings((prev) => prev + (Math.random() > 0.85 ? 1 : 0));
-    }, 3000);
+      setEmails((prev) => prev + (Math.random() > 0.3 ? 1 : 0));
+      setOpenRate((prev) => Math.min(65, +(prev + (Math.random() - 0.4) * 0.4).toFixed(1)));
+      setReplyRate((prev) => Math.min(25, +(prev + (Math.random() - 0.45) * 0.2).toFixed(1)));
+      setMeetings((prev) => prev + (Math.random() > 0.75 ? 1 : 0));
+    }, 1500);
     return () => clearInterval(i);
   }, []);
 
@@ -902,7 +1008,7 @@ function OutreachCard() {
     const i = setInterval(() => {
       subjectIdxRef.current = (subjectIdxRef.current + 1) % bestSubjects.length;
       setBestSubject(bestSubjects[subjectIdxRef.current]);
-    }, 8000);
+    }, 4000);
     return () => clearInterval(i);
   }, []);
 
@@ -978,7 +1084,7 @@ function CompetitorCard() {
         next[idx].status = Math.random() > 0.6 ? "alert" : "monitoring";
         return next;
       });
-    }, 5000);
+    }, 2500);
     return () => clearInterval(i);
   }, []);
 
@@ -1108,7 +1214,7 @@ export default function LivePage() {
               <MoneySavedBar />
 
               {/* 3G: Heatmap */}
-              <ActivityHeatmap />
+              <NeuralNetwork />
 
               {/* 3H: System health */}
               <SystemHealthCard />
