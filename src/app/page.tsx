@@ -62,6 +62,7 @@ const allResources = [
   { route: "/assess", title: "Business Automation Assessment", tag: "Quiz", desc: "10 questions. Find out what's missing in your stack." },
   { route: "/levels", title: "The 4 Levels of AI Automation", tag: "Framework", desc: "Self-assess your level. Understand the gap. See the bridge." },
   { route: "/agents-map", title: "The Complete AI Agent Map", tag: "Agent Map", desc: "32 agents across 7 departments. Click any to see what it replaces." },
+  { route: "/live", title: "Ultron Command Center", tag: "Dashboard", desc: "Real-time dashboard. Every agent, every metric, every insight. The CEO view." },
 ];
 
 export default function HomePage() {

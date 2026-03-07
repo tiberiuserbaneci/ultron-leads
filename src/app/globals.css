@@ -226,3 +226,32 @@ input[type="range"]:focus { outline: none; }
 /* Hide scrollbar for category tabs */
 .scrollbar-none::-webkit-scrollbar { display: none; }
 .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── /live Command Center ── */
+.live-grid-bg {
+  background-image:
+    linear-gradient(rgba(26,26,26,0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26,26,26,0.3) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+.live-scanline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  pointer-events: none;
+  z-index: 90;
+  background: linear-gradient(
+    transparent 0%,
+    rgba(218,78,36,0.015) 50%,
+    transparent 100%
+  );
+  background-size: 100% 4px;
+  animation: scanline 10s linear infinite;
+}

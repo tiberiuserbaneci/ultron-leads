@@ -297,6 +297,7 @@ function LiveStatsBar() {
       <div className="flex items-center gap-1.5 mb-3">
         <span className="w-1.5 h-1.5 rounded-full bg-green-500 pulse-soft" />
         <span className="text-[10px] font-medium text-green-600 uppercase tracking-widest">Live</span>
+        <a href="/live" className="ml-2 text-[10px] text-[#555] hover:text-[#DA4E24] transition-colors">View full dashboard &rarr;</a>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[#1a1a1a] rounded-xl overflow-hidden border border-[#1a1a1a]">
         {items.map((item) => (
