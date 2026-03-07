@@ -158,11 +158,13 @@ function TopStatusBar({
   onRangeChange,
   activeAgents,
   onToggleAgent,
+  onRun,
 }: {
   range: TimeRange;
   onRangeChange: (r: TimeRange) => void;
   activeAgents: Set<AgentId>;
   onToggleAgent: (id: AgentId) => void;
+  onRun: () => void;
 }) {
   const [time, setTime] = useState("");
   const [metrics, setMetrics] = useState(getBaseMetrics);
@@ -230,6 +232,14 @@ function TopStatusBar({
 
         {/* Right */}
         <div className="flex items-center gap-3 lg:w-[20%] lg:justify-end">
+          {/* Run button */}
+          <button
+            onClick={onRun}
+            className="flex items-center gap-1.5 text-[10px] font-terminal text-green-500 border border-green-500/30 px-2.5 py-1 rounded hover:bg-green-500/10 transition-colors"
+          >
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+            RUN
+          </button>
           {/* Time range */}
           <div className="flex items-center gap-1">
             {ranges.map((r) => (
@@ -691,8 +701,25 @@ function MoneySavedBar() {
 function ActivityHeatmap() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref);
-  const cells = useMemo(() => getHeatmapData(), []);
+  const [cells, setCells] = useState(() => getHeatmapData());
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+  // Continuously pulse random cells brighter
+  useEffect(() => {
+    const i = setInterval(() => {
+      setCells((prev) => {
+        const next = [...prev];
+        // Brighten 2-4 random cells
+        const count = 2 + Math.floor(Math.random() * 3);
+        for (let c = 0; c < count; c++) {
+          const idx = Math.floor(Math.random() * next.length);
+          next[idx] = Math.min(1, next[idx] + 0.1 + Math.random() * 0.2);
+        }
+        return next;
+      });
+    }, 1500);
+    return () => clearInterval(i);
+  }, []);
 
   return (
     <HudCard fullWidth>
@@ -700,13 +727,11 @@ function ActivityHeatmap() {
         <h3 className="text-xs font-bold text-[#999] uppercase tracking-widest mb-4">Agent Activity (90 Days)</h3>
         <div className="overflow-x-auto">
           <div className="inline-flex gap-0.5">
-            {/* Day labels */}
             <div className="flex flex-col gap-0.5 mr-1">
               {days.map((d) => (
                 <div key={d} className="h-3 flex items-center text-[8px] font-terminal text-[#444]">{d}</div>
               ))}
             </div>
-            {/* Cells */}
             {Array.from({ length: 13 }, (_, w) => (
               <div key={w} className="flex flex-col gap-0.5">
                 {Array.from({ length: 7 }, (_, d) => {
@@ -721,7 +746,7 @@ function ActivityHeatmap() {
                         background: val < 0.15 ? "#0A0A0A" : `rgba(218,78,36,${val * 0.9})`,
                         opacity: inView ? 1 : 0,
                         transitionDelay: `${delay}ms`,
-                        transitionDuration: "300ms",
+                        transitionDuration: "500ms",
                       }}
                     />
                   );
@@ -741,19 +766,47 @@ function ActivityHeatmap() {
    ═══════════════════════════════════════════════ */
 
 function SystemHealthCard() {
+  const [responseTime, setResponseTime] = useState(142);
+  const [dbSize, setDbSize] = useState(847);
+  const [lastScan, setLastScan] = useState("2h ago");
+  const scanTimesRef = useRef(0);
+
+  useEffect(() => {
+    const i = setInterval(() => {
+      setResponseTime(120 + Math.floor(Math.random() * 80));
+      setDbSize((prev) => prev + (Math.random() > 0.7 ? 1 : 0));
+      scanTimesRef.current += 1;
+      if (scanTimesRef.current % 4 === 0) {
+        const mins = Math.floor(scanTimesRef.current / 4);
+        setLastScan(mins < 1 ? "just now" : `${mins}m ago`);
+      }
+    }, 2500);
+    return () => clearInterval(i);
+  }, []);
+
+  const rows = [
+    { label: "Website Uptime", value: "99.97%", detail: undefined, status: "green" as const },
+    { label: "Avg Response Time", value: `${responseTime}ms`, detail: undefined, status: responseTime > 180 ? ("amber" as const) : ("green" as const) },
+    { label: "SSL Certificate", value: "Valid", detail: "74 days remaining", status: "green" as const },
+    { label: "API Health", value: "Operational", detail: "All 12 endpoints", status: "green" as const },
+    { label: "Security Audit", value: "Clear", detail: `Last run: ${lastScan}`, status: "green" as const },
+    { label: "Competitor Monitor", value: "Active", detail: "4 competitors tracked", status: "green" as const },
+    { label: "Database", value: "Healthy", detail: `${dbSize} MB / 5 GB`, status: "green" as const },
+    { label: "Cron Jobs", value: "Running", detail: "5/5 agents scheduled", status: "green" as const },
+  ];
+
   return (
     <HudCard>
       <h3 className="text-xs font-bold text-[#999] uppercase tracking-widest mb-4">System Health</h3>
       <div className="space-y-2">
-        {systemHealth.map((h) => (
+        {rows.map((h) => (
           <div key={h.label} className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+            <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${h.status === "amber" ? "bg-amber-500" : "bg-green-500"}`} />
             <span className="text-[10px] text-[#666] flex-1 truncate">{h.label}</span>
-            <span className="font-terminal text-[10px] text-white font-bold">{h.value}</span>
+            <span className="font-terminal text-[10px] text-white font-bold transition-all duration-300">{h.value}</span>
             {h.detail && <span className="font-terminal text-[9px] text-[#444] hidden sm:inline">{h.detail}</span>}
           </div>
         ))}
-        {/* Alert */}
         <div className="flex items-start gap-2 pt-2 mt-2 border-t border-[#111]">
           <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0 mt-1" />
           <div>
@@ -772,18 +825,15 @@ function SystemHealthCard() {
 
 function LiveFeed({ activeAgents }: { activeAgents: Set<AgentId> }) {
   const [entries, setEntries] = useState(() => feedEntries.slice(0, 12));
-  const [feedIdx, setFeedIdx] = useState(12);
+  const feedIdxRef = useRef(12);
   const feedRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const i = setInterval(() => {
-      setFeedIdx((prev) => {
-        const nextIdx = (prev + 1) % feedEntries.length;
-        const next = feedEntries[nextIdx];
-        setEntries((prev) => [next, ...prev.slice(0, 19)]);
-        return nextIdx;
-      });
-    }, 4500);
+      feedIdxRef.current = (feedIdxRef.current + 1) % feedEntries.length;
+      const next = feedEntries[feedIdxRef.current];
+      setEntries((prev) => [next, ...prev.slice(0, 24)]);
+    }, 2000);
     return () => clearInterval(i);
   }, []);
 
@@ -822,22 +872,57 @@ function LiveFeed({ activeAgents }: { activeAgents: Set<AgentId> }) {
    SECTION 3J: OUTREACH PERFORMANCE
    ═══════════════════════════════════════════════ */
 
+const bestSubjects = [
+  "Your automation stack is missing one layer",
+  "Saw your post about scaling bottlenecks",
+  "The real cost of doing everything manually",
+  "Quick question about your ops team",
+  "3 things your competitors automated this month",
+];
+
 function OutreachCard() {
+  const [emails, setEmails] = useState(outreachStats.emailsSent);
+  const [openRate, setOpenRate] = useState(outreachStats.openRate.value);
+  const [replyRate, setReplyRate] = useState(outreachStats.replyRate.value);
+  const [meetings, setMeetings] = useState(outreachStats.meetingsBooked);
+  const [bestSubject, setBestSubject] = useState(bestSubjects[0]);
+  const subjectIdxRef = useRef(0);
+
+  useEffect(() => {
+    const i = setInterval(() => {
+      setEmails((prev) => prev + (Math.random() > 0.4 ? 1 : 0));
+      setOpenRate((prev) => Math.min(65, +(prev + (Math.random() - 0.4) * 0.3).toFixed(1)));
+      setReplyRate((prev) => Math.min(25, +(prev + (Math.random() - 0.45) * 0.15).toFixed(1)));
+      setMeetings((prev) => prev + (Math.random() > 0.85 ? 1 : 0));
+    }, 3000);
+    return () => clearInterval(i);
+  }, []);
+
+  useEffect(() => {
+    const i = setInterval(() => {
+      subjectIdxRef.current = (subjectIdxRef.current + 1) % bestSubjects.length;
+      setBestSubject(bestSubjects[subjectIdxRef.current]);
+    }, 8000);
+    return () => clearInterval(i);
+  }, []);
+
+  const rows = [
+    { label: "Emails Sent This Month", value: emails.toString(), change: null },
+    { label: "Open Rate", value: `${openRate}%`, change: { change: 3.1, up: true } },
+    { label: "Reply Rate", value: `${replyRate}%`, change: { change: 1.4, up: true } },
+    { label: "Meetings Booked", value: meetings.toString(), change: null },
+    { label: "Avg Response Time", value: outreachStats.avgResponseTime, change: null },
+  ];
+
   return (
     <HudCard>
       <h3 className="text-xs font-bold text-[#999] uppercase tracking-widest mb-4">Outreach Performance</h3>
       <div className="space-y-3">
-        {[
-          { label: "Emails Sent This Month", value: outreachStats.emailsSent.toString(), change: null },
-          { label: "Open Rate", value: `${outreachStats.openRate.value}%`, change: outreachStats.openRate },
-          { label: "Reply Rate", value: `${outreachStats.replyRate.value}%`, change: outreachStats.replyRate },
-          { label: "Meetings Booked", value: outreachStats.meetingsBooked.toString(), change: null },
-          { label: "Avg Response Time", value: outreachStats.avgResponseTime, change: null },
-        ].map((s) => (
+        {rows.map((s) => (
           <div key={s.label} className="flex items-center justify-between">
             <span className="text-[10px] text-[#666]">{s.label}</span>
             <span className="flex items-center gap-1.5">
-              <span className="font-terminal text-xs text-white font-bold">{s.value}</span>
+              <span className="font-terminal text-xs text-white font-bold transition-all duration-300">{s.value}</span>
               {s.change && (
                 <span className={`flex items-center gap-0.5 text-[9px] font-terminal ${s.change.up ? "text-green-500" : "text-red-500"}`}>
                   <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
@@ -851,7 +936,7 @@ function OutreachCard() {
         ))}
         <div className="pt-2 mt-1 border-t border-[#111]">
           <div className="text-[9px] text-[#555] mb-1">Best Performing Subject</div>
-          <p className="font-terminal text-[10px] text-[#DA4E24]">&ldquo;{outreachStats.bestSubject}&rdquo;</p>
+          <p className="font-terminal text-[10px] text-[#DA4E24] transition-opacity duration-300">&ldquo;{bestSubject}&rdquo;</p>
         </div>
       </div>
     </HudCard>
@@ -862,19 +947,53 @@ function OutreachCard() {
    SECTION 3K: COMPETITOR TRACKING
    ═══════════════════════════════════════════════ */
 
+const competitorEvents = [
+  "Pricing update detected",
+  "New feature page added",
+  "Job posting spike",
+  "Enterprise tier added",
+  "Blog post published",
+  "Homepage redesigned",
+  "New integration launched",
+  "Pricing page changed",
+  "Team page updated: +3 hires",
+  "New case study published",
+  "API docs updated",
+  "Changelog: 4 new features",
+];
+
 function CompetitorCard() {
+  const [compState, setCompState] = useState(competitors.map((c) => ({ ...c })));
+  const eventIdxRef = useRef(0);
+
+  useEffect(() => {
+    const i = setInterval(() => {
+      setCompState((prev) => {
+        const next = prev.map((c) => ({ ...c }));
+        // Update a random competitor
+        const idx = Math.floor(Math.random() * next.length);
+        eventIdxRef.current = (eventIdxRef.current + 1) % competitorEvents.length;
+        const event = competitorEvents[eventIdxRef.current];
+        next[idx].change = event;
+        next[idx].status = Math.random() > 0.6 ? "alert" : "monitoring";
+        return next;
+      });
+    }, 5000);
+    return () => clearInterval(i);
+  }, []);
+
   return (
     <HudCard>
       <h3 className="text-xs font-bold text-[#999] uppercase tracking-widest mb-4">Competitor Tracking</h3>
       <div className="space-y-3">
-        {competitors.map((c) => (
+        {compState.map((c) => (
           <div key={c.name} className="flex items-center gap-2">
-            <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${c.status === "monitoring" ? "bg-green-500" : "bg-amber-500"}`} />
+            <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 transition-colors duration-300 ${c.status === "monitoring" ? "bg-green-500" : "bg-amber-500"}`} />
             <div className="flex-1 min-w-0">
               <div className="text-xs text-white font-medium truncate">{c.name}</div>
-              <div className="text-[9px] text-[#555]">{c.change}</div>
+              <div className="text-[9px] text-[#555] transition-all duration-300">{c.change}</div>
             </div>
-            <span className={`text-[9px] font-terminal ${c.status === "monitoring" ? "text-green-600" : "text-amber-500"}`}>
+            <span className={`text-[9px] font-terminal transition-colors duration-300 ${c.status === "monitoring" ? "text-green-600" : "text-amber-500"}`}>
               {c.status === "monitoring" ? "Monitoring" : "Alert"}
             </span>
           </div>
@@ -952,40 +1071,11 @@ export default function LivePage() {
       {/* Boot sequence */}
       {showBoot && <BootSequence onComplete={handleBootComplete} />}
 
-      {/* Top bar: logo + try ultron */}
-      {booted && (
-        <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm border-b border-[#0A0A0A]">
-          <Link href="/" className="flex items-center gap-2 text-[#555] hover:text-[#DA4E24] transition-colors">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>
-            <span className="font-terminal text-[10px] tracking-wider hidden sm:inline">ULTRON</span>
-          </Link>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleRun}
-              className="flex items-center gap-1.5 text-[10px] font-terminal text-green-500 border border-green-500/30 px-3 py-1.5 rounded hover:bg-green-500/10 transition-colors"
-            >
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                <polygon points="5 3 19 12 5 21 5 3" />
-              </svg>
-              RUN
-            </button>
-            <a
-              href="https://app.51ultron.com/signup"
-              className="text-[10px] font-terminal text-[#DA4E24] border border-[#DA4E24]/30 px-3 py-1.5 rounded hover:bg-[#DA4E24]/10 transition-colors"
-            >
-              Try Ultron
-            </a>
-          </div>
-        </div>
-      )}
-
       {/* Main content */}
       {booted && (
-        <div key={runKey} className={`pt-12 transition-opacity duration-500 ${dashVisible ? "opacity-100" : "opacity-0"}`}>
+        <div key={runKey} className={`transition-opacity duration-500 ${dashVisible ? "opacity-100" : "opacity-0"}`}>
           {/* Status Bar */}
-          <TopStatusBar range={range} onRangeChange={handleRangeChange} activeAgents={activeAgents} onToggleAgent={toggleAgent} />
+          <TopStatusBar range={range} onRangeChange={handleRangeChange} activeAgents={activeAgents} onToggleAgent={toggleAgent} onRun={handleRun} />
 
           {/* Agent Cards */}
           <div className="max-w-[1600px] mx-auto px-4 py-4">
