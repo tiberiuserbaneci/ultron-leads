@@ -895,6 +895,7 @@ export default function LivePage() {
   const [range, setRange] = useState<TimeRange>("30D");
   const [activeAgents, setActiveAgents] = useState<Set<AgentId>>(() => new Set<AgentId>(["CORTEX", "SPECTER", "STRIKER", "PULSE", "SENTINEL"]));
   const [dashVisible, setDashVisible] = useState(false);
+  const [runKey, setRunKey] = useState(0);
 
   // Check session storage for boot animation
   useEffect(() => {
@@ -915,6 +916,16 @@ export default function LivePage() {
       setShowBoot(false);
       setDashVisible(true);
     }, 200);
+  }, []);
+
+  const handleRun = useCallback(() => {
+    window.scrollTo({ top: 0 });
+    setDashVisible(false);
+    setBooted(false);
+    setShowBoot(true);
+    sessionStorage.removeItem("ultron-booted");
+    // bump key so all chart components re-mount and replay animations
+    setRunKey((k) => k + 1);
   }, []);
 
   const toggleAgent = useCallback((id: AgentId) => {
@@ -950,18 +961,29 @@ export default function LivePage() {
             </svg>
             <span className="font-terminal text-[10px] tracking-wider hidden sm:inline">ULTRON</span>
           </Link>
-          <a
-            href="https://app.51ultron.com/signup"
-            className="text-[10px] font-terminal text-[#DA4E24] border border-[#DA4E24]/30 px-3 py-1.5 rounded hover:bg-[#DA4E24]/10 transition-colors"
-          >
-            Try Ultron
-          </a>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleRun}
+              className="flex items-center gap-1.5 text-[10px] font-terminal text-green-500 border border-green-500/30 px-3 py-1.5 rounded hover:bg-green-500/10 transition-colors"
+            >
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <polygon points="5 3 19 12 5 21 5 3" />
+              </svg>
+              RUN
+            </button>
+            <a
+              href="https://app.51ultron.com/signup"
+              className="text-[10px] font-terminal text-[#DA4E24] border border-[#DA4E24]/30 px-3 py-1.5 rounded hover:bg-[#DA4E24]/10 transition-colors"
+            >
+              Try Ultron
+            </a>
+          </div>
         </div>
       )}
 
       {/* Main content */}
       {booted && (
-        <div className={`pt-12 transition-opacity duration-500 ${dashVisible ? "opacity-100" : "opacity-0"}`}>
+        <div key={runKey} className={`pt-12 transition-opacity duration-500 ${dashVisible ? "opacity-100" : "opacity-0"}`}>
           {/* Status Bar */}
           <TopStatusBar range={range} onRangeChange={handleRangeChange} activeAgents={activeAgents} onToggleAgent={toggleAgent} />
 
