@@ -851,7 +851,7 @@ function NeuralNetwork() {
   return (
     <HudCard fullWidth>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-xs font-bold text-[#999] uppercase tracking-widest">Agent Neural Network</h3>
+        <h3 className="text-xs font-bold text-[#999] uppercase tracking-widest">Agent Activity</h3>
         <div className="flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-[#DA4E24] pulse-soft" />
           <span className="font-terminal text-[9px] text-[#DA4E24]">LIVE</span>
@@ -862,7 +862,7 @@ function NeuralNetwork() {
         className="w-full rounded-lg"
         style={{ height: 200, background: "#050505" }}
       />
-      <p className="text-[10px] text-[#444] mt-3">5 agents processing data across 30 neural pathways. Running 24/7.</p>
+      <p className="text-[10px] text-[#444] mt-3">5 agents processing data across 30 pathways. Running 24/7.</p>
     </HudCard>
   );
 }
@@ -871,55 +871,68 @@ function NeuralNetwork() {
    SECTION 3H: SYSTEM HEALTH
    ═══════════════════════════════════════════════ */
 
+const healthEvents = [
+  { status: "green" as const, text: "Website ping: 200 OK (138ms)" },
+  { status: "green" as const, text: "API /api/leads: 200 OK (92ms)" },
+  { status: "green" as const, text: "API /api/agents: 200 OK (67ms)" },
+  { status: "green" as const, text: "SSL cert check: Valid, 74 days left" },
+  { status: "green" as const, text: "Database backup: Complete (847 MB)" },
+  { status: "green" as const, text: "Cron check: 5/5 agents running" },
+  { status: "green" as const, text: "Security scan: No vulnerabilities" },
+  { status: "green" as const, text: "CDN edge nodes: All 12 healthy" },
+  { status: "amber" as const, text: "Response time spike: 312ms on /pricing" },
+  { status: "green" as const, text: "Response time normalized: 141ms" },
+  { status: "green" as const, text: "Memory usage: 62% (3.1 GB / 5 GB)" },
+  { status: "green" as const, text: "Disk I/O: Normal (45 MB/s read)" },
+  { status: "green" as const, text: "DNS resolution: 12ms (healthy)" },
+  { status: "green" as const, text: "WebSocket connections: 847 active" },
+  { status: "green" as const, text: "Error rate: 0.02% (last 1h)" },
+  { status: "green" as const, text: "API /api/metrics: 200 OK (54ms)" },
+  { status: "amber" as const, text: "Slow query detected: 890ms (auto-optimized)" },
+  { status: "green" as const, text: "Queue depth: 12 jobs (processing)" },
+  { status: "green" as const, text: "Rate limiter: 0 blocked requests" },
+  { status: "green" as const, text: "Competitor monitor: 4 sites checked" },
+];
+
 function SystemHealthCard() {
-  const [responseTime, setResponseTime] = useState(142);
-  const [dbSize, setDbSize] = useState(847);
-  const [lastScan, setLastScan] = useState("2h ago");
-  const scanTimesRef = useRef(0);
+  const [logs, setLogs] = useState(() =>
+    healthEvents.slice(0, 8).map((e, i) => ({ ...e, id: i }))
+  );
+  const idRef = useRef(8);
+  const eventIdxRef = useRef(8);
 
   useEffect(() => {
     const i = setInterval(() => {
-      setResponseTime(120 + Math.floor(Math.random() * 80));
-      setDbSize((prev) => prev + (Math.random() > 0.5 ? 1 : 0));
-      scanTimesRef.current += 1;
-      if (scanTimesRef.current % 3 === 0) {
-        const mins = Math.floor(scanTimesRef.current / 3);
-        setLastScan(mins < 1 ? "just now" : `${mins}m ago`);
-      }
-    }, 1500);
+      eventIdxRef.current = (eventIdxRef.current + 1) % healthEvents.length;
+      const event = healthEvents[eventIdxRef.current];
+      idRef.current += 1;
+      setLogs((prev) => [{ ...event, id: idRef.current }, ...prev.slice(0, 11)]);
+    }, 1200);
     return () => clearInterval(i);
   }, []);
 
-  const rows = [
-    { label: "Website Uptime", value: "99.97%", detail: undefined, status: "green" as const },
-    { label: "Avg Response Time", value: `${responseTime}ms`, detail: undefined, status: responseTime > 180 ? ("amber" as const) : ("green" as const) },
-    { label: "SSL Certificate", value: "Valid", detail: "74 days remaining", status: "green" as const },
-    { label: "API Health", value: "Operational", detail: "All 12 endpoints", status: "green" as const },
-    { label: "Security Audit", value: "Clear", detail: `Last run: ${lastScan}`, status: "green" as const },
-    { label: "Competitor Monitor", value: "Active", detail: "4 competitors tracked", status: "green" as const },
-    { label: "Database", value: "Healthy", detail: `${dbSize} MB / 5 GB`, status: "green" as const },
-    { label: "Cron Jobs", value: "Running", detail: "5/5 agents scheduled", status: "green" as const },
-  ];
+  const getTime = (offset: number) => {
+    const d = new Date(Date.now() - offset * 1200);
+    return d.toTimeString().slice(0, 8);
+  };
 
   return (
     <HudCard>
-      <h3 className="text-xs font-bold text-[#999] uppercase tracking-widest mb-4">System Health</h3>
-      <div className="space-y-2">
-        {rows.map((h) => (
-          <div key={h.label} className="flex items-center gap-2">
-            <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${h.status === "amber" ? "bg-amber-500" : "bg-green-500"}`} />
-            <span className="text-[10px] text-[#666] flex-1 truncate">{h.label}</span>
-            <span className="font-terminal text-[10px] text-white font-bold transition-all duration-300">{h.value}</span>
-            {h.detail && <span className="font-terminal text-[9px] text-[#444] hidden sm:inline">{h.detail}</span>}
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-xs font-bold text-[#999] uppercase tracking-widest">System Health</h3>
+        <span className="font-terminal text-[9px] text-green-500">99.97% uptime</span>
+      </div>
+      <div className="h-[320px] overflow-hidden space-y-0">
+        {logs.map((log, i) => (
+          <div
+            key={log.id}
+            className={`flex items-center gap-2 py-1.5 border-b border-[#0A0A0A] ${i === 0 ? "animate-fade-in" : ""}`}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${log.status === "amber" ? "bg-amber-500" : "bg-green-500"}`} />
+            <span className="font-terminal text-[9px] text-[#333] flex-shrink-0 w-14">{getTime(i)}</span>
+            <span className={`text-[10px] leading-snug truncate ${log.status === "amber" ? "text-amber-400" : "text-[#ccc]"}`}>{log.text}</span>
           </div>
         ))}
-        <div className="flex items-start gap-2 pt-2 mt-2 border-t border-[#111]">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0 mt-1" />
-          <div>
-            <span className="text-[10px] text-amber-500 font-terminal">Alerts This Week: 1</span>
-            <p className="text-[9px] text-[#444]">Pricing page mobile CTA overlap. Detected and fixed.</p>
-          </div>
-        </div>
       </div>
     </HudCard>
   );
@@ -978,72 +991,78 @@ function LiveFeed({ activeAgents }: { activeAgents: Set<AgentId> }) {
    SECTION 3J: OUTREACH PERFORMANCE
    ═══════════════════════════════════════════════ */
 
-const bestSubjects = [
-  "Your automation stack is missing one layer",
-  "Saw your post about scaling bottlenecks",
-  "The real cost of doing everything manually",
-  "Quick question about your ops team",
-  "3 things your competitors automated this month",
+const outreachEvents = [
+  { type: "send" as const, text: "Email sent to sarah.chen@scaleflow.io" },
+  { type: "open" as const, text: "Email opened: marcus@automatede.com (2nd time)" },
+  { type: "reply" as const, text: "Reply received: jonas@ki-fabrik.de (interested)" },
+  { type: "send" as const, text: "Follow-up #2 sent to tom.liu@databridge.io" },
+  { type: "open" as const, text: "Email opened: lisa@novacorp.com" },
+  { type: "meeting" as const, text: "Meeting booked: Sarah Chen, Thursday 2 PM" },
+  { type: "send" as const, text: "Cold email sent to new lead: CloudBase CEO" },
+  { type: "reply" as const, text: "Objection reply: 'Not the right time' from DataBridge" },
+  { type: "open" as const, text: "Email opened: marcus@automatede.com (3rd time)" },
+  { type: "send" as const, text: "Sequence touch #3: LinkedIn DM to Sarah Chen" },
+  { type: "send" as const, text: "Email sent to alex@buildstack.io (new lead)" },
+  { type: "open" as const, text: "Email opened: jonas@ki-fabrik.de" },
+  { type: "meeting" as const, text: "Discovery call confirmed: NovaTech, Friday 11 AM" },
+  { type: "reply" as const, text: "Positive reply: 'Send me the case study' from CloudBase" },
+  { type: "send" as const, text: "Case study auto-sent to CloudBase CEO" },
+  { type: "open" as const, text: "Link clicked: /pricing by tom.liu@databridge.io" },
+  { type: "send" as const, text: "Follow-up email drafted for stale deal: BuildStack" },
+  { type: "reply" as const, text: "Reply: 'Let's loop in my CTO' from Meridian Labs" },
+  { type: "open" as const, text: "Email opened: new-lead@enterprise.co" },
+  { type: "send" as const, text: "Outreach sequence started: 8 new prospects" },
 ];
 
+const outreachTypeColor = { send: "text-[#ccc]", open: "text-[#1F77F6]", reply: "text-green-400", meeting: "text-[#DA4E24]" };
+const outreachTypeLabel = { send: "SENT", open: "OPEN", reply: "REPLY", meeting: "BOOKED" };
+
 function OutreachCard() {
+  const [logs, setLogs] = useState(() =>
+    outreachEvents.slice(0, 8).map((e, i) => ({ ...e, id: i }))
+  );
+  const idRef = useRef(8);
+  const eventIdxRef = useRef(8);
   const [emails, setEmails] = useState(outreachStats.emailsSent);
-  const [openRate, setOpenRate] = useState(outreachStats.openRate.value);
-  const [replyRate, setReplyRate] = useState(outreachStats.replyRate.value);
   const [meetings, setMeetings] = useState(outreachStats.meetingsBooked);
-  const [bestSubject, setBestSubject] = useState(bestSubjects[0]);
-  const subjectIdxRef = useRef(0);
 
   useEffect(() => {
     const i = setInterval(() => {
-      setEmails((prev) => prev + (Math.random() > 0.3 ? 1 : 0));
-      setOpenRate((prev) => Math.min(65, +(prev + (Math.random() - 0.4) * 0.4).toFixed(1)));
-      setReplyRate((prev) => Math.min(25, +(prev + (Math.random() - 0.45) * 0.2).toFixed(1)));
-      setMeetings((prev) => prev + (Math.random() > 0.75 ? 1 : 0));
-    }, 1500);
+      eventIdxRef.current = (eventIdxRef.current + 1) % outreachEvents.length;
+      const event = outreachEvents[eventIdxRef.current];
+      idRef.current += 1;
+      setLogs((prev) => [{ ...event, id: idRef.current }, ...prev.slice(0, 11)]);
+      if (event.type === "send") setEmails((p) => p + 1);
+      if (event.type === "meeting") setMeetings((p) => p + 1);
+    }, 1400);
     return () => clearInterval(i);
   }, []);
 
-  useEffect(() => {
-    const i = setInterval(() => {
-      subjectIdxRef.current = (subjectIdxRef.current + 1) % bestSubjects.length;
-      setBestSubject(bestSubjects[subjectIdxRef.current]);
-    }, 4000);
-    return () => clearInterval(i);
-  }, []);
-
-  const rows = [
-    { label: "Emails Sent This Month", value: emails.toString(), change: null },
-    { label: "Open Rate", value: `${openRate}%`, change: { change: 3.1, up: true } },
-    { label: "Reply Rate", value: `${replyRate}%`, change: { change: 1.4, up: true } },
-    { label: "Meetings Booked", value: meetings.toString(), change: null },
-    { label: "Avg Response Time", value: outreachStats.avgResponseTime, change: null },
-  ];
+  const getTime = (offset: number) => {
+    const d = new Date(Date.now() - offset * 1400);
+    return d.toTimeString().slice(0, 8);
+  };
 
   return (
     <HudCard>
-      <h3 className="text-xs font-bold text-[#999] uppercase tracking-widest mb-4">Outreach Performance</h3>
-      <div className="space-y-3">
-        {rows.map((s) => (
-          <div key={s.label} className="flex items-center justify-between">
-            <span className="text-[10px] text-[#666]">{s.label}</span>
-            <span className="flex items-center gap-1.5">
-              <span className="font-terminal text-xs text-white font-bold transition-all duration-300">{s.value}</span>
-              {s.change && (
-                <span className={`flex items-center gap-0.5 text-[9px] font-terminal ${s.change.up ? "text-green-500" : "text-red-500"}`}>
-                  <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                    <polyline points={s.change.up ? "18 15 12 9 6 15" : "6 9 12 15 18 9"} />
-                  </svg>
-                  {s.change.change}%
-                </span>
-              )}
-            </span>
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-xs font-bold text-[#999] uppercase tracking-widest">Outreach Performance</h3>
+        <div className="flex gap-3">
+          <span className="font-terminal text-[9px] text-white"><span className="text-[#DA4E24]">{emails}</span> sent</span>
+          <span className="font-terminal text-[9px] text-white"><span className="text-green-500">{meetings}</span> booked</span>
+        </div>
+      </div>
+      <div className="h-[280px] overflow-hidden space-y-0">
+        {logs.map((log, i) => (
+          <div
+            key={log.id}
+            className={`flex items-center gap-2 py-1.5 border-b border-[#0A0A0A] ${i === 0 ? "animate-fade-in" : ""}`}
+          >
+            <span className="font-terminal text-[9px] text-[#333] flex-shrink-0 w-14">{getTime(i)}</span>
+            <span className={`font-terminal text-[9px] font-bold flex-shrink-0 w-12 ${outreachTypeColor[log.type]}`}>{outreachTypeLabel[log.type]}</span>
+            <span className="text-[10px] text-[#ccc] leading-snug truncate">{log.text}</span>
           </div>
         ))}
-        <div className="pt-2 mt-1 border-t border-[#111]">
-          <div className="text-[9px] text-[#555] mb-1">Best Performing Subject</div>
-          <p className="font-terminal text-[10px] text-[#DA4E24] transition-opacity duration-300">&ldquo;{bestSubject}&rdquo;</p>
-        </div>
       </div>
     </HudCard>
   );
@@ -1053,59 +1072,68 @@ function OutreachCard() {
    SECTION 3K: COMPETITOR TRACKING
    ═══════════════════════════════════════════════ */
 
-const competitorEvents = [
-  "Pricing update detected",
-  "New feature page added",
-  "Job posting spike",
-  "Enterprise tier added",
-  "Blog post published",
-  "Homepage redesigned",
-  "New integration launched",
-  "Pricing page changed",
-  "Team page updated: +3 hires",
-  "New case study published",
-  "API docs updated",
-  "Changelog: 4 new features",
+const compIntelEvents = [
+  { comp: "Clay.com", type: "alert" as const, text: "Pricing page updated: Enterprise tier now $499/mo" },
+  { comp: "Instantly.ai", type: "monitor" as const, text: "New blog post: 'AI-powered sequences'" },
+  { comp: "GoHighLevel", type: "alert" as const, text: "3 new job postings: AI Engineer, ML Ops, Data Lead" },
+  { comp: "Nexus AI", type: "alert" as const, text: "New feature detected: Agent marketplace" },
+  { comp: "Clay.com", type: "monitor" as const, text: "Homepage A/B test detected (variant B live)" },
+  { comp: "Instantly.ai", type: "alert" as const, text: "Pricing increased: Growth plan +$50/mo" },
+  { comp: "GoHighLevel", type: "monitor" as const, text: "New integration: Zapier connector launched" },
+  { comp: "Nexus AI", type: "monitor" as const, text: "Team page: +2 engineers hired this week" },
+  { comp: "Clay.com", type: "monitor" as const, text: "New case study published: 'Enterprise Scaling'" },
+  { comp: "Instantly.ai", type: "alert" as const, text: "Product Hunt launch detected: v3.0" },
+  { comp: "GoHighLevel", type: "monitor" as const, text: "Changelog updated: 6 new features" },
+  { comp: "Nexus AI", type: "alert" as const, text: "LinkedIn ad campaign detected: targeting SaaS founders" },
+  { comp: "Clay.com", type: "monitor" as const, text: "API docs updated: new webhook endpoints" },
+  { comp: "Instantly.ai", type: "monitor" as const, text: "G2 review: 4.2 stars (down from 4.4)" },
+  { comp: "GoHighLevel", type: "alert" as const, text: "Competitor acquisition rumor: TechCrunch mention" },
+  { comp: "Nexus AI", type: "monitor" as const, text: "SSL certificate renewed (auto-detected)" },
 ];
 
 function CompetitorCard() {
-  const [compState, setCompState] = useState(competitors.map((c) => ({ ...c })));
-  const eventIdxRef = useRef(0);
+  const [logs, setLogs] = useState(() =>
+    compIntelEvents.slice(0, 6).map((e, i) => ({ ...e, id: i }))
+  );
+  const idRef = useRef(6);
+  const eventIdxRef = useRef(6);
 
   useEffect(() => {
     const i = setInterval(() => {
-      setCompState((prev) => {
-        const next = prev.map((c) => ({ ...c }));
-        // Update a random competitor
-        const idx = Math.floor(Math.random() * next.length);
-        eventIdxRef.current = (eventIdxRef.current + 1) % competitorEvents.length;
-        const event = competitorEvents[eventIdxRef.current];
-        next[idx].change = event;
-        next[idx].status = Math.random() > 0.6 ? "alert" : "monitoring";
-        return next;
-      });
-    }, 2500);
+      eventIdxRef.current = (eventIdxRef.current + 1) % compIntelEvents.length;
+      const event = compIntelEvents[eventIdxRef.current];
+      idRef.current += 1;
+      setLogs((prev) => [{ ...event, id: idRef.current }, ...prev.slice(0, 9)]);
+    }, 1800);
     return () => clearInterval(i);
   }, []);
 
+  const getTime = (offset: number) => {
+    const d = new Date(Date.now() - offset * 1800);
+    return d.toTimeString().slice(0, 8);
+  };
+
   return (
     <HudCard>
-      <h3 className="text-xs font-bold text-[#999] uppercase tracking-widest mb-4">Competitor Tracking</h3>
-      <div className="space-y-3">
-        {compState.map((c) => (
-          <div key={c.name} className="flex items-center gap-2">
-            <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 transition-colors duration-300 ${c.status === "monitoring" ? "bg-green-500" : "bg-amber-500"}`} />
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-xs font-bold text-[#999] uppercase tracking-widest">Competitor Intelligence</h3>
+        <span className="font-terminal text-[9px] text-[#555]">4 tracked</span>
+      </div>
+      <div className="h-[280px] overflow-hidden space-y-0">
+        {logs.map((log, i) => (
+          <div
+            key={log.id}
+            className={`flex items-start gap-2 py-1.5 border-b border-[#0A0A0A] ${i === 0 ? "animate-fade-in" : ""}`}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1 ${log.type === "alert" ? "bg-amber-500" : "bg-green-500"}`} />
+            <span className="font-terminal text-[9px] text-[#333] flex-shrink-0 w-14 mt-0.5">{getTime(i)}</span>
             <div className="flex-1 min-w-0">
-              <div className="text-xs text-white font-medium truncate">{c.name}</div>
-              <div className="text-[9px] text-[#555] transition-all duration-300">{c.change}</div>
+              <span className="text-[10px] text-white font-medium">{log.comp}</span>
+              <span className="text-[10px] text-[#666] ml-1.5">{log.text}</span>
             </div>
-            <span className={`text-[9px] font-terminal transition-colors duration-300 ${c.status === "monitoring" ? "text-green-600" : "text-amber-500"}`}>
-              {c.status === "monitoring" ? "Monitoring" : "Alert"}
-            </span>
           </div>
         ))}
       </div>
-      <p className="text-[9px] text-[#444] mt-3 pt-2 border-t border-[#111]">CORTEX scans all competitors daily at 6:00 AM UTC.</p>
     </HudCard>
   );
 }
@@ -1179,7 +1207,7 @@ export default function LivePage() {
 
       {/* Main content */}
       {booted && (
-        <div key={runKey} className={`transition-opacity duration-500 ${dashVisible ? "opacity-100" : "opacity-0"}`}>
+        <div key={runKey} className={`pt-4 sm:pt-6 transition-opacity duration-500 ${dashVisible ? "opacity-100" : "opacity-0"}`}>
           {/* Status Bar */}
           <TopStatusBar range={range} onRangeChange={handleRangeChange} activeAgents={activeAgents} onToggleAgent={toggleAgent} onRun={handleRun} />
 
