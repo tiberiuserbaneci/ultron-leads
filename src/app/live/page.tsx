@@ -708,25 +708,20 @@ function NeuralNetwork() {
     if (!ctx) return;
 
     const dpr = window.devicePixelRatio || 1;
-    const W = canvas.offsetWidth;
-    const H = canvas.offsetHeight;
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
-    ctx.scale(dpr, dpr);
 
-    // Create nodes in 6 layers
+    // Store node positions as ratios (0-1) so they scale with resize
     const layers = 6;
     const nodesPerLayer = [3, 5, 7, 7, 5, 3];
-    interface Node { x: number; y: number; r: number; energy: number; targetEnergy: number }
+    interface Node { rx: number; ry: number; r: number; energy: number; targetEnergy: number }
     const nodes: Node[][] = [];
 
     for (let l = 0; l < layers; l++) {
       const col: Node[] = [];
       const count = nodesPerLayer[l];
-      const x = (W / (layers + 1)) * (l + 1);
+      const rx = (l + 1) / (layers + 1);
       for (let n = 0; n < count; n++) {
-        const y = (H / (count + 1)) * (n + 1);
-        col.push({ x, y, r: 3, energy: Math.random() * 0.3, targetEnergy: 0 });
+        const ry = (n + 1) / (count + 1);
+        col.push({ rx, ry, r: 3, energy: Math.random() * 0.3, targetEnergy: 0 });
       }
       nodes.push(col);
     }
@@ -737,7 +732,6 @@ function NeuralNetwork() {
     for (let l = 0; l < layers - 1; l++) {
       for (const from of nodes[l]) {
         for (const to of nodes[l + 1]) {
-          // Connect ~60% of possible connections
           if (Math.random() < 0.6) {
             conns.push({ from, to, signal: -1, speed: 0.008 + Math.random() * 0.012, active: false });
           }
@@ -745,9 +739,19 @@ function NeuralNetwork() {
       }
     }
 
+    let W = 0, H = 0;
+    const syncSize = () => {
+      W = canvas.offsetWidth;
+      H = canvas.offsetHeight;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      ctx.scale(dpr, dpr);
+    };
+    syncSize();
+
     // Fire signals constantly
     let lastFire = 0;
-    const fireInterval = 120; // ms between fires
+    const fireInterval = 120;
 
     let raf: number;
     let prevTime = performance.now();
@@ -759,7 +763,6 @@ function NeuralNetwork() {
       // Fire new signals
       if (now - lastFire > fireInterval) {
         lastFire = now;
-        // Pick 2-4 random connections to fire
         const count = 2 + Math.floor(Math.random() * 3);
         for (let i = 0; i < count; i++) {
           const c = conns[Math.floor(Math.random() * conns.length)];
@@ -773,16 +776,17 @@ function NeuralNetwork() {
 
       ctx.clearRect(0, 0, W, H);
 
-      // Draw connections
+      // Draw connections using ratio-based positions
       for (const c of conns) {
+        const fx = c.from.rx * W, fy = c.from.ry * H;
+        const tx = c.to.rx * W, ty = c.to.ry * H;
         ctx.beginPath();
-        ctx.moveTo(c.from.x, c.from.y);
-        ctx.lineTo(c.to.x, c.to.y);
+        ctx.moveTo(fx, fy);
+        ctx.lineTo(tx, ty);
         ctx.strokeStyle = c.active ? `rgba(218,78,36,${0.15 + c.signal * 0.3})` : "rgba(26,26,26,0.5)";
         ctx.lineWidth = c.active ? 1.5 : 0.5;
         ctx.stroke();
 
-        // Draw traveling signal
         if (c.active) {
           c.signal += c.speed * dt * 0.06;
           if (c.signal >= 1) {
@@ -790,8 +794,8 @@ function NeuralNetwork() {
             c.signal = -1;
             c.to.targetEnergy = 1;
           } else {
-            const sx = c.from.x + (c.to.x - c.from.x) * c.signal;
-            const sy = c.from.y + (c.to.y - c.from.y) * c.signal;
+            const sx = fx + (tx - fx) * c.signal;
+            const sy = fy + (ty - fy) * c.signal;
             ctx.beginPath();
             ctx.arc(sx, sy, 2.5, 0, Math.PI * 2);
             ctx.fillStyle = "#DA4E24";
@@ -809,9 +813,10 @@ function NeuralNetwork() {
           node.energy += (node.targetEnergy - node.energy) * 0.08;
           node.targetEnergy *= 0.97;
 
+          const nx = node.rx * W, ny = node.ry * H;
           const glow = node.energy;
           ctx.beginPath();
-          ctx.arc(node.x, node.y, node.r + glow * 3, 0, Math.PI * 2);
+          ctx.arc(nx, ny, node.r + glow * 3, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(218,78,36,${0.2 + glow * 0.8})`;
           if (glow > 0.3) {
             ctx.shadowColor = "#DA4E24";
@@ -820,9 +825,8 @@ function NeuralNetwork() {
           ctx.fill();
           ctx.shadowBlur = 0;
 
-          // Inner bright core
           ctx.beginPath();
-          ctx.arc(node.x, node.y, node.r * 0.6, 0, Math.PI * 2);
+          ctx.arc(nx, ny, node.r * 0.6, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(255,255,255,${glow * 0.6})`;
           ctx.fill();
         }
@@ -833,13 +837,7 @@ function NeuralNetwork() {
 
     raf = requestAnimationFrame(draw);
 
-    const handleResize = () => {
-      const newW = canvas.offsetWidth;
-      const newH = canvas.offsetHeight;
-      canvas.width = newW * dpr;
-      canvas.height = newH * dpr;
-      ctx.scale(dpr, dpr);
-    };
+    const handleResize = () => syncSize();
     window.addEventListener("resize", handleResize);
 
     return () => {
@@ -860,7 +858,7 @@ function NeuralNetwork() {
       <canvas
         ref={canvasRef}
         className="w-full rounded-lg"
-        style={{ height: 200, background: "#050505" }}
+        style={{ height: "clamp(140px, 25vw, 200px)", background: "#050505" }}
       />
       <p className="text-[10px] text-[#444] mt-3">5 agents processing data across 30 pathways. Running 24/7.</p>
     </HudCard>
