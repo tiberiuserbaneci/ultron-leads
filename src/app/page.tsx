@@ -50,6 +50,11 @@ const diagnosticOptions = [
     sub: "The complete map of 32 agents across 7 departments",
     route: "/agents-map",
   },
+  {
+    pain: "I want to build the exact growth engine my business needs",
+    sub: "6 prebuilt engines. See what activates, what gets replaced, how it compounds.",
+    route: "/client-engine",
+  },
 ];
 
 const allResources = [
@@ -63,6 +68,7 @@ const allResources = [
   { route: "/levels", title: "The 4 Levels of AI Automation", tag: "Framework", desc: "Self-assess your level. Understand the gap. See the bridge." },
   { route: "/agents-map", title: "The Complete AI Agent Map", tag: "Agent Map", desc: "32 agents across 7 departments. Click any to see what it replaces." },
   { route: "/live", title: "Ultron Command Center", tag: "Dashboard", desc: "Real-time dashboard. Every agent, every metric, every insight. The CEO view." },
+  { route: "/client-engine", title: "Client Engine", tag: "Strategy", desc: "6 growth engines. Pick one, see what activates, what gets replaced, and how it compounds." },
 ];
 
 export default function HomePage() {
