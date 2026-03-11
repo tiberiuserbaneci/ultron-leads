@@ -331,26 +331,6 @@ export default function BrainPage() {
             </div>
           </div>
 
-          {/* Hero CTAs */}
-          {!recordMode && (
-            <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 transition-all duration-500 delay-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-              <Link
-                href="https://app.51ultron.com/signup"
-                className="inline-flex items-center gap-2 btn-gradient glow-accent text-white font-semibold px-8 py-3.5 rounded-xl transition-all duration-200"
-              >
-                Try Ultron
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </Link>
-              <Link
-                href="/demo"
-                className="text-sm text-[#555] hover:text-[#DA4E24] transition-colors"
-              >
-                See Ultron execute in real time →
-              </Link>
-            </div>
-          )}
         </div>
       </section>
 
