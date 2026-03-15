@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { Resend } from "resend";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -38,7 +38,7 @@ function isValidEmail(email: string): boolean {
 
 const submissions = new Map<string, number[]>();
 const RATE_LIMIT = 5;
-const RATE_WINDOW = 60 * 60 * 1000; // 1 hour
+const RATE_WINDOW = 60 * 60 * 1000;
 
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
@@ -155,19 +155,33 @@ function buildConfirmationHtml(data: any): string {
 </body></html>`;
 }
 
-/* ── POST handler ─────────────────────────────────── */
+/* ── Handler ──────────────────────────────────────── */
 
-export async function POST(request: Request) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // CORS
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const body = req.body;
+
   // Honeypot check
-  const body = await request.json();
   if (body._hp) {
-    return NextResponse.json({ success: true }); // silent success for bots
+    return res.status(200).json({ success: true });
   }
 
   // Rate limiting
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || "unknown";
   if (isRateLimited(ip)) {
-    return NextResponse.json({ error: "Too many submissions. Please try again later." }, { status: 429 });
+    return res.status(429).json({ error: "Too many submissions. Please try again later." });
   }
 
   // Validate required fields
@@ -179,20 +193,20 @@ export async function POST(request: Request) {
     }
   }
   if (missing.length > 0) {
-    return NextResponse.json({ error: "Missing required fields", fields: missing }, { status: 400 });
+    return res.status(400).json({ error: "Missing required fields", fields: missing });
   }
 
   // Validate emails
   if (!isValidEmail(body.recipientEmail)) {
-    return NextResponse.json({ error: "Invalid recipient email" }, { status: 400 });
+    return res.status(400).json({ error: "Invalid recipient email" });
   }
   if (!isValidEmail(body.clientEmail)) {
-    return NextResponse.json({ error: "Invalid client email" }, { status: 400 });
+    return res.status(400).json({ error: "Invalid client email" });
   }
 
   // Check for Resend API key
   if (!RESEND_API_KEY) {
-    return NextResponse.json({ error: "Email service not configured" }, { status: 500 });
+    return res.status(500).json({ error: "Email service not configured" });
   }
 
   const resend = new Resend(RESEND_API_KEY);
@@ -217,9 +231,9 @@ export async function POST(request: Request) {
       html: buildConfirmationHtml(body),
     });
 
-    return NextResponse.json({ success: true });
+    return res.status(200).json({ success: true });
   } catch (err) {
     console.error("Email send error:", err);
-    return NextResponse.json({ error: "Failed to send brief. Please try again." }, { status: 500 });
+    return res.status(500).json({ error: "Failed to send brief. Please try again." });
   }
 }
