@@ -69,6 +69,7 @@ const allResources = [
   { route: "/agents-map", title: "The Complete AI Agent Map", tag: "Agent Map", desc: "32 agents across 7 departments. Click any to see what it replaces." },
   { route: "/live", title: "Ultron Command Center", tag: "Dashboard", desc: "Real-time dashboard. Every agent, every metric, every insight. The CEO view." },
   { route: "/client-engine", title: "Client Engine", tag: "Strategy", desc: "6 growth engines. Pick one, see what activates, what gets replaced, and how it compounds." },
+  { route: "/claude-skills", title: "Claude Skills Library", tag: "Free Resource", desc: "12 production-ready skills for Claude Code. Browse, inspect, and download the full pack." },
 ];
 
 export default function HomePage() {
