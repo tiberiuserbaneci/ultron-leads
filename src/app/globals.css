@@ -324,6 +324,93 @@ input[type="range"]:focus { outline: none; }
   animation: micPulse 1.5s ease-in-out infinite;
 }
 
+/* ── Client Kit: Editable fields ── */
+.editable-field:empty::before,
+.editable-field.empty-field:empty::before {
+  content: attr(data-placeholder);
+  color: #ccc;
+  pointer-events: none;
+}
+[data-theme="dark"] .editable-field:empty::before,
+[data-theme="dark"] .editable-field.empty-field:empty::before {
+  color: #333;
+}
+
+/* ── Client Kit: Print styles ── */
+@media print {
+  /* Hide non-essential UI */
+  nav, footer, .print\\:hidden {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Document container */
+  [data-theme] {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Typography */
+  h1, h2, h3, h4 {
+    color: black !important;
+  }
+
+  /* Section headers */
+  .font-terminal {
+    color: #DA4E24 !important;
+  }
+
+  /* Fields */
+  .editable-field,
+  input[type="text"] {
+    color: black !important;
+    border-color: transparent !important;
+  }
+  .editable-field:empty::before {
+    color: #ccc !important;
+  }
+
+  /* Tables */
+  table {
+    border-collapse: collapse;
+  }
+  th {
+    color: #666 !important;
+    border-bottom: 1px solid #ddd !important;
+  }
+  td {
+    border-bottom: 1px solid #eee !important;
+    color: black !important;
+  }
+
+  /* Labels */
+  label {
+    color: #999 !important;
+  }
+
+  /* Page breaks */
+  .page-break-before {
+    page-break-before: always;
+  }
+
+  /* Clean margins */
+  @page {
+    margin: 0.75in;
+    size: letter;
+  }
+
+  /* Remove shadows, borders, rounded corners */
+  * {
+    box-shadow: none !important;
+  }
+}
+
 /* Brain results entrance */
 .brain-results > section {
   animation: fadeUp 0.5s ease-out both;
