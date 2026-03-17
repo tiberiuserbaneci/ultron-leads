@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import { skillFileContents } from "./skillContents";
 import {
   categories,
   totalSkills,
@@ -39,21 +40,141 @@ function CopyButton({ text, label }: { text: string; label: string }) {
   );
 }
 
-/* ─── File badge ─── */
-function FileBadge({ name, description }: { name: string; description: string }) {
+/* ─── File badge (clickable) ─── */
+function FileBadge({
+  name,
+  description,
+  skillId,
+  onOpen,
+}: {
+  name: string;
+  description: string;
+  skillId: string;
+  onOpen: (skillId: string, fileName: string) => void;
+}) {
   const ext = name.split(".").pop() || "";
   const color = ext === "md" ? "#DA4E24" : ext === "docx" ? "#4285F4" : "#666";
+  const hasContent = !!skillFileContents[`${skillId}/${name}`];
   return (
-    <div className="flex items-start gap-2 py-1.5">
+    <button
+      onClick={() => hasContent && onOpen(skillId, name)}
+      disabled={!hasContent}
+      className={`w-full flex items-start gap-2 py-2 px-2 rounded-lg text-left transition-all ${
+        hasContent
+          ? "hover:bg-[#111] cursor-pointer group"
+          : "opacity-50 cursor-default"
+      }`}
+    >
       <span
         className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-terminal border flex-shrink-0 mt-px"
         style={{ borderColor: color + "40", color }}
       >
         .{ext}
       </span>
-      <div className="min-w-0">
-        <span className="text-[12px] text-[#ccc] font-medium">{name}</span>
+      <div className="min-w-0 flex-1">
+        <span className="text-[12px] text-[#ccc] font-medium group-hover:text-white transition-colors">{name}</span>
         <p className="text-[11px] text-[#666] mt-0.5">{description}</p>
+      </div>
+      {hasContent && (
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#333"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="flex-shrink-0 mt-1 group-hover:stroke-[#DA4E24] transition-colors"
+        >
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      )}
+    </button>
+  );
+}
+
+/* ─── File Viewer Overlay ─── */
+function FileViewer({
+  skillId,
+  fileName,
+  onClose,
+}: {
+  skillId: string;
+  fileName: string;
+  onClose: () => void;
+}) {
+  const content = skillFileContents[`${skillId}/${fileName}`] || "";
+  const [copied, setCopied] = useState(false);
+  const viewerRef = useRef<HTMLDivElement>(null);
+
+  const copyAll = () => {
+    navigator.clipboard.writeText(content);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  // Close on escape
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-10 sm:pt-16 px-4">
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
+
+      {/* Viewer panel */}
+      <div
+        ref={viewerRef}
+        className="relative w-full max-w-3xl max-h-[80vh] bg-[#0a0a0a] border border-[#1a1a1a] rounded-2xl overflow-hidden flex flex-col animate-fade-in"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-3 border-b border-[#1a1a1a] flex-shrink-0">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-[10px] font-terminal text-[#DA4E24] bg-[#DA4E24]/10 border border-[#DA4E24]/20 px-2 py-0.5 rounded flex-shrink-0">
+              .{fileName.split(".").pop()}
+            </span>
+            <span className="text-sm font-terminal text-white truncate">{skillId}/{fileName}</span>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={copyAll}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#111] border border-[#1a1a1a] text-[11px] text-[#999] hover:text-white hover:border-[#333] transition-all"
+            >
+              {copied ? (
+                <>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#DA4E24" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
+                  Copied
+                </>
+              ) : (
+                <>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>
+                  Copy all
+                </>
+              )}
+            </button>
+            <button
+              onClick={onClose}
+              className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#111] border border-[#222] text-[#555] hover:text-white transition-colors"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="overflow-y-auto flex-1 p-5">
+          <pre className="text-xs sm:text-[13px] font-terminal text-[#ccc] whitespace-pre-wrap leading-relaxed break-words">
+            {content}
+          </pre>
+        </div>
       </div>
     </div>
   );
@@ -69,7 +190,15 @@ function KeywordBadge({ keyword }: { keyword: string }) {
 }
 
 /* ─── Skill Detail Panel ─── */
-function SkillDetail({ skill, onClose }: { skill: Skill; onClose: () => void }) {
+function SkillDetail({
+  skill,
+  onClose,
+  onOpenFile,
+}: {
+  skill: Skill;
+  onClose: () => void;
+  onOpenFile: (skillId: string, fileName: string) => void;
+}) {
   return (
     <div className="animate-fade-in">
       {/* Mobile close */}
@@ -154,12 +283,28 @@ function SkillDetail({ skill, onClose }: { skill: Skill; onClose: () => void }) 
 
         {/* Files included */}
         <div className="mb-5">
-          <h4 className="text-[10px] font-bold text-[#555] uppercase tracking-widest mb-2">Files included ({skill.files.length})</h4>
-          <div className="space-y-0.5">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-[10px] font-bold text-[#555] uppercase tracking-widest">Files included ({skill.files.length})</h4>
+            <CopyButton
+              text={skill.files
+                .map((f) => skillFileContents[`${skill.id}/${f.name}`] || "")
+                .filter(Boolean)
+                .join("\n\n---\n\n")}
+              label="Copy all files"
+            />
+          </div>
+          <div className="space-y-0.5 -mx-2">
             {skill.files.map((f) => (
-              <FileBadge key={f.name} name={f.name} description={f.description} />
+              <FileBadge
+                key={f.name}
+                name={f.name}
+                description={f.description}
+                skillId={skill.id}
+                onOpen={onOpenFile}
+              />
             ))}
           </div>
+          <p className="text-[10px] text-[#444] mt-2">Click any .md file to view and copy its full contents</p>
         </div>
 
         {/* Keywords */}
@@ -407,12 +552,44 @@ function HowToUse() {
   );
 }
 
+/* ─── Copy All Skills Button ─── */
+function CopyAllSkillsButton() {
+  const [copied, setCopied] = useState(false);
+  const copyAll = () => {
+    const allContent = Object.entries(skillFileContents)
+      .map(([path, content]) => `// === ${path} ===\n\n${content}`)
+      .join("\n\n" + "=".repeat(60) + "\n\n");
+    navigator.clipboard.writeText(allContent);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 3000);
+  };
+  return (
+    <button
+      onClick={copyAll}
+      className="btn-gradient glow-accent text-white font-semibold px-6 py-3 rounded-xl text-sm transition-all inline-flex items-center gap-2"
+    >
+      {copied ? (
+        <>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
+          Copied entire library
+        </>
+      ) : (
+        <>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>
+          Copy entire skill library
+        </>
+      )}
+    </button>
+  );
+}
+
 /* ─── MAIN PAGE ─── */
 export default function ClaudeSkillsPage() {
   const [expandedCats, setExpandedCats] = useState<Set<string>>(new Set());
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [visible, setVisible] = useState(false);
+  const [openFile, setOpenFile] = useState<{ skillId: string; fileName: string } | null>(null);
   const detailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -446,6 +623,10 @@ export default function ClaudeSkillsPage() {
     }
   };
 
+  const handleOpenFile = useCallback((skillId: string, fileName: string) => {
+    setOpenFile({ skillId, fileName });
+  }, []);
+
   const handleExpandAll = () => {
     if (expandedCats.size === categories.length) {
       setExpandedCats(new Set());
@@ -474,28 +655,31 @@ export default function ClaudeSkillsPage() {
         </p>
         <p className="text-xs text-[#444] mt-3">{totalCategories} categories / {totalSkills} skills / {totalFiles} files</p>
 
-        {/* Download CTA */}
-        <div className="mt-6">
-          <a
-            href="https://github.com/NexityNetwork/ultron-leads/tree/claude/build-ultron-demo-page-MnqwP/Claude%20Skills"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-gradient glow-accent text-white font-semibold px-6 py-3 rounded-xl text-sm transition-all inline-flex items-center gap-2"
+        {/* CTA */}
+        <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <CopyAllSkillsButton />
+          <button
+            onClick={() => {
+              setExpandedCats(new Set(categories.map((c) => c.id)));
+              setTimeout(() => {
+                document.getElementById("skill-explorer")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }, 100);
+            }}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium text-[#999] border border-[#1a1a1a] hover:border-[#333] hover:text-white transition-all"
           >
+            Browse all skills
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
+              <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
-            Download full skill pack
-          </a>
-          <p className="text-[11px] text-[#555] mt-2">All {totalSkills} skills. Ready to drop into any Claude Code project.</p>
+          </button>
         </div>
+        <p className="text-[11px] text-[#555] mt-3">Open any file directly. Copy individual skills or the entire library.</p>
       </div>
 
       {/* File Tree + Detail Panel */}
       <div
-        className={`transition-all duration-500 delay-100 ${
+        id="skill-explorer"
+        className={`scroll-mt-20 transition-all duration-500 delay-100 ${
           visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
       >
@@ -576,7 +760,7 @@ export default function ClaudeSkillsPage() {
           {/* Right: Detail Panel */}
           <div ref={detailRef} className="lg:w-[55%] lg:sticky lg:top-20 lg:self-start scroll-mt-20">
             {selectedSkill ? (
-              <SkillDetail skill={selectedSkill} onClose={() => setSelectedSkill(null)} />
+              <SkillDetail skill={selectedSkill} onClose={() => setSelectedSkill(null)} onOpenFile={handleOpenFile} />
             ) : (
               <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-2xl p-8 text-center">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-3">
@@ -616,6 +800,15 @@ export default function ClaudeSkillsPage() {
           </Link>
         ))}
       </div>
+
+      {/* File Viewer Overlay */}
+      {openFile && (
+        <FileViewer
+          skillId={openFile.skillId}
+          fileName={openFile.fileName}
+          onClose={() => setOpenFile(null)}
+        />
+      )}
     </div>
   );
 }
