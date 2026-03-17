@@ -219,7 +219,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       to: body.recipientEmail,
       replyTo: body.clientEmail,
       bcc,
-      subject: `New AI workflow brief from ${body.clientName} - ${body.company}`,
+      subject: `New RFP from ${body.clientName} — ${body.company}`,
       html: buildBriefHtml(body),
     });
 
@@ -234,6 +234,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({ success: true });
   } catch (err) {
     console.error("Email send error:", err);
-    return res.status(500).json({ error: "Failed to send brief. Please try again." });
+    const message = err instanceof Error ? err.message : String(err);
+    return res.status(500).json({ error: `Failed to send brief: ${message}` });
   }
 }
