@@ -534,15 +534,24 @@ export default function RfpPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, _hp: "" }),
       });
-      const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Submission failed. Please try again.");
+        let msg = `Server error (${res.status})`;
+        try {
+          const data = await res.json();
+          msg = data.error || msg;
+        } catch { /* response wasn't JSON */ }
+        setError(msg);
         setSubmitting(false);
         return;
       }
-      setSubmitted(true);
-    } catch {
-      setError("Network error. Please try again.");
+      const data = await res.json();
+      if (data.success) {
+        setSubmitted(true);
+      } else {
+        setError(data.error || "Submission failed. Please try again.");
+      }
+    } catch (err) {
+      setError(`Network error: ${err instanceof Error ? err.message : "Request failed"}. Check your connection and try again.`);
     }
     setSubmitting(false);
   }, [form]);
