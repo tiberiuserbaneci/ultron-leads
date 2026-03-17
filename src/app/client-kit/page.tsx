@@ -4,57 +4,53 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { templates } from "./templateData";
 
-/* ─── Badge color mapping ─── */
-const badgeColors: Record<string, string> = {
-  Legal: "#DA4E24",
-  Finance: "#DA4E24",
-  Planning: "#DA4E24",
-  Sales: "#DA4E24",
-  Onboarding: "#DA4E24",
-  Operations: "#DA4E24",
-  Reporting: "#DA4E24",
-  Relationship: "#DA4E24",
-  Creative: "#DA4E24",
+/* ─── SVG icon paths (Lucide-style, matching /rfp) ─── */
+const iconPaths: Record<string, string> = {
+  "client-agreement": "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8",
+  "invoice": "M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z",
+  "project-brief": "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M12 12h4M12 16h4M8 12h.01M8 16h.01",
+  "discovery-call": "M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z",
+  "welcome-doc": "M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6",
+  "package-menu": "M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16zM3.27 6.96L12 12.01l8.73-5.05M12 22.08V12",
+  "delivery-guide": "M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5V4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5z",
+  "task-list": "M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11",
+  "monthly-report": "M18 20V10M12 20V4M6 20v-6",
+  "feedback-request": "M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z",
+  "thank-you": "M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z",
+  "broll-checklist": "M23 7l-7 5 7 5zM1 5h15v14H1z",
+  "creative-brief": "M12 19l7-7 3 3-7 7-3-3zM18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5zM2 2l7.586 7.586M11 13a2 2 0 11-4 0 2 2 0 014 0z",
+  "handoff-notes": "M17 1l4 4-4 4M3 11V9a4 4 0 014-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 01-4 4H3",
 };
 
-/* ─── Feature badges ─── */
-const features = [
-  { label: "Print ready", icon: "M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z" },
-  { label: "Inline editable", icon: "M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" },
-  { label: "Dark and light mode", icon: "M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" },
-  { label: "PDF friendly", icon: "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z M14 2v6h6" },
-];
-
 /* ─── Template Card ─── */
-function TemplateCard({ slug, name, shortDescription, badge, icon }: {
+function TemplateCard({ slug, name, shortDescription, badge }: {
   slug: string;
   name: string;
   shortDescription: string;
   badge: string;
-  icon: string;
 }) {
-  const color = badgeColors[badge] || "#DA4E24";
   return (
     <Link
       href={`/client-kit/${slug}`}
       className="group block bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-5 hover:border-[#333] hover:bg-[#111] transition-all card-lift"
     >
       <div className="flex items-start justify-between gap-3 mb-3">
-        <span className="text-2xl">{icon}</span>
-        <span
-          className="text-[10px] font-terminal px-2 py-0.5 rounded border"
-          style={{ borderColor: color + "30", color }}
-        >
+        <div className="w-8 h-8 rounded-lg bg-[#111] border border-[#1a1a1a] flex items-center justify-center group-hover:border-[#DA4E24]/30 transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DA4E24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d={iconPaths[slug] || iconPaths["client-agreement"]} />
+          </svg>
+        </div>
+        <span className="text-[10px] font-terminal px-2 py-0.5 rounded border border-[#1a1a1a] text-[#555]">
           {badge}
         </span>
       </div>
-      <h3 className="text-[15px] font-semibold text-white mb-1 group-hover:text-[#DA4E24] transition-colors">
+      <h3 className="text-[14px] font-semibold text-white mb-1.5 group-hover:text-[#DA4E24] transition-colors">
         {name}
       </h3>
-      <p className="text-[12px] text-[#666] leading-relaxed">
+      <p className="text-[12px] text-[#777] leading-relaxed">
         {shortDescription}
       </p>
-      <div className="mt-4 flex items-center gap-1 text-[11px] text-[#444] group-hover:text-[#DA4E24] transition-colors">
+      <div className="mt-4 flex items-center gap-1.5 text-[11px] text-[#444] group-hover:text-[#DA4E24] transition-colors">
         Open template
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M5 12h14M12 5l7 7-7 7" />
@@ -72,10 +68,22 @@ function Step({ number, title, description }: { number: number; title: string; d
         {number}
       </span>
       <div>
-        <h4 className="text-[14px] font-medium text-white mb-0.5">{title}</h4>
-        <p className="text-[12px] text-[#666] leading-relaxed">{description}</p>
+        <h4 className="text-[13px] font-medium text-white mb-0.5">{title}</h4>
+        <p className="text-[12px] text-[#777] leading-relaxed">{description}</p>
       </div>
     </div>
+  );
+}
+
+/* ─── Feature pill ─── */
+function FeaturePill({ label, iconPath }: { label: string; iconPath: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[#1a1a1a] text-[11px] text-[#777] font-terminal">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#DA4E24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d={iconPath} />
+      </svg>
+      {label}
+    </span>
   );
 }
 
@@ -100,7 +108,7 @@ export default function ClientKitPage() {
           {/* Breadcrumb */}
           <div className="flex items-center justify-center gap-2 text-[11px] text-[#555] mb-6 font-terminal">
             <Link href="/" className="hover:text-[#999] transition-colors">ultron</Link>
-            <span>/</span>
+            <span className="text-[#333]">/</span>
             <span className="text-[#DA4E24]">client-kit</span>
           </div>
 
@@ -109,25 +117,18 @@ export default function ClientKitPage() {
           </h1>
           <p className="text-[15px] text-[#999] max-w-xl mx-auto leading-relaxed mb-2">
             Free, editable templates for every stage of client work.
-            Open any document, edit directly on the page, print or save as PDF.
+            Open any document, edit inline, send or save as PDF.
           </p>
           <p className="text-[13px] text-[#555] max-w-lg mx-auto">
             {templates.length} templates. No signup. No paywall.
           </p>
 
-          {/* Feature badges */}
+          {/* Feature pills */}
           <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
-            {features.map((f) => (
-              <span
-                key={f.label}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[#1a1a1a] text-[11px] text-[#666] font-terminal"
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#DA4E24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d={f.icon} />
-                </svg>
-                {f.label}
-              </span>
-            ))}
+            <FeaturePill label="Print ready" iconPath="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z" />
+            <FeaturePill label="Inline editable" iconPath="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+            <FeaturePill label="Send via email" iconPath="M22 2L11 13M22 2l-7 20-4-9-9-4z" />
+            <FeaturePill label="PDF friendly" iconPath="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6" />
           </div>
         </div>
 
@@ -145,7 +146,6 @@ export default function ClientKitPage() {
                 name={t.name}
                 shortDescription={t.shortDescription}
                 badge={t.badge}
-                icon={t.icon}
               />
             ))}
           </div>
@@ -173,13 +173,8 @@ export default function ClientKitPage() {
             />
             <Step
               number={3}
-              title="Print or save as PDF"
-              description="Use your browser print function. The document formats cleanly for paper or PDF."
-            />
-            <Step
-              number={4}
-              title="Save your work"
-              description="Click Save to store your edits locally. Come back and pick up where you left off."
+              title="Send, print, or save"
+              description="Email the document directly, print to PDF, or save your edits locally."
             />
           </div>
         </div>
@@ -191,10 +186,10 @@ export default function ClientKitPage() {
           }`}
         >
           <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-6 sm:p-8 text-center">
-            <p className="text-[13px] text-[#666] mb-3">
+            <p className="text-[13px] text-[#777] mb-3">
               Need the project scoped before creating documents?
             </p>
-            <h3 className="text-[16px] font-semibold text-white mb-4">
+            <h3 className="text-[15px] font-semibold text-white mb-4">
               Start with the AI Workflow Intake
             </h3>
             <Link
@@ -206,7 +201,7 @@ export default function ClientKitPage() {
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </Link>
-            <p className="text-[11px] text-[#444] mt-3">
+            <p className="text-[11px] text-[#555] mt-3">
               Define the scope first. Then use these templates to deliver the work.
             </p>
           </div>

@@ -22,7 +22,6 @@ export interface TemplateConfig {
   name: string;
   shortDescription: string;
   badge: string;
-  icon: string;
   sections: TemplateSection[];
 }
 
@@ -34,7 +33,6 @@ const clientAgreement: TemplateConfig = {
   name: "Client Agreement",
   shortDescription: "Simple service agreement covering scope, payment, IP, and cancellation",
   badge: "Legal",
-  icon: "📄",
   sections: [
     {
       id: "parties",
@@ -109,7 +107,6 @@ const invoice: TemplateConfig = {
   name: "Invoice",
   shortDescription: "Clean invoice with line items, totals, and payment instructions",
   badge: "Finance",
-  icon: "💰",
   sections: [
     {
       id: "header",
@@ -174,7 +171,6 @@ const projectBrief: TemplateConfig = {
   name: "Project Brief",
   shortDescription: "Proposal covering business context, deliverables, timeline, and success metrics",
   badge: "Planning",
-  icon: "📋",
   sections: [
     {
       id: "overview",
@@ -237,7 +233,6 @@ const discoveryCall: TemplateConfig = {
   name: "Discovery Call Notes",
   shortDescription: "Structured notes from client discovery calls with goals and next steps",
   badge: "Sales",
-  icon: "📞",
   sections: [
     {
       id: "meta",
@@ -287,7 +282,6 @@ const welcomeDoc: TemplateConfig = {
   name: "Welcome Doc",
   shortDescription: "Onboarding document with engagement details, timeline, and communication guide",
   badge: "Onboarding",
-  icon: "👋",
   sections: [
     {
       id: "welcome",
@@ -351,7 +345,6 @@ const packageMenu: TemplateConfig = {
   name: "Package Menu",
   shortDescription: "Service packages with clear outcomes, scope, and pricing for each tier",
   badge: "Sales",
-  icon: "📦",
   sections: [
     {
       id: "header",
@@ -413,7 +406,6 @@ const deliveryGuide: TemplateConfig = {
   name: "Delivery Guide",
   shortDescription: "Statement of work with phases, dependencies, review windows, and handoff details",
   badge: "Operations",
-  icon: "🗂️",
   sections: [
     {
       id: "overview",
@@ -476,7 +468,6 @@ const taskList: TemplateConfig = {
   name: "Delivery Checklist",
   shortDescription: "Phased task list tracking internal and client tasks with status and due dates",
   badge: "Operations",
-  icon: "✅",
   sections: [
     {
       id: "meta",
@@ -547,7 +538,6 @@ const monthlyReport: TemplateConfig = {
   name: "Monthly Report",
   shortDescription: "Recurring report covering work completed, outcomes, blockers, and next priorities",
   badge: "Reporting",
-  icon: "📊",
   sections: [
     {
       id: "header",
@@ -613,7 +603,6 @@ const feedbackRequest: TemplateConfig = {
   name: "Feedback Request",
   shortDescription: "Post-project feedback form with guided questions and testimonial prompt",
   badge: "Relationship",
-  icon: "💬",
   sections: [
     {
       id: "intro",
@@ -654,7 +643,6 @@ const thankYouDoc: TemplateConfig = {
   name: "Thank You Doc",
   shortDescription: "Project wrap-up document with delivery summary and next steps",
   badge: "Relationship",
-  icon: "🙏",
   sections: [
     {
       id: "message",
@@ -697,7 +685,6 @@ const brollChecklist: TemplateConfig = {
   name: "B-Roll Checklist",
   shortDescription: "Shot list for video and content production with asset requirements",
   badge: "Creative",
-  icon: "🎬",
   sections: [
     {
       id: "meta",
@@ -764,7 +751,6 @@ const creativeBrief: TemplateConfig = {
   name: "Creative Brief",
   shortDescription: "Brief for creative projects covering audience, tone, deliverables, and references",
   badge: "Creative",
-  icon: "🎨",
   sections: [
     {
       id: "overview",
@@ -826,7 +812,6 @@ const handoffNotes: TemplateConfig = {
   name: "Handoff Notes",
   shortDescription: "Technical and operational handoff document for project transitions",
   badge: "Operations",
-  icon: "🔄",
   sections: [
     {
       id: "overview",
