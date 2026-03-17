@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { skillFileContents } from "./skillContents";
 import {
   categories,
@@ -53,7 +55,7 @@ function FileBadge({
   onOpen: (skillId: string, fileName: string) => void;
 }) {
   const ext = name.split(".").pop() || "";
-  const color = ext === "md" ? "#DA4E24" : ext === "docx" ? "#4285F4" : "#666";
+  const color = ext === "md" ? "#DA4E24" : "#666";
   const hasContent = !!skillFileContents[`${skillId}/${name}`];
   return (
     <button
@@ -170,10 +172,45 @@ function FileViewer({
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto flex-1 p-5">
-          <pre className="text-xs sm:text-[13px] font-terminal text-[#ccc] whitespace-pre-wrap leading-relaxed break-words">
+        <div className="overflow-y-auto flex-1 p-5 md-viewer">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              h1: ({ children }) => <h1 className="text-xl font-bold text-white mb-4 mt-6 first:mt-0 pb-2 border-b border-[#1a1a1a]">{children}</h1>,
+              h2: ({ children }) => <h2 className="text-lg font-bold text-white mb-3 mt-5">{children}</h2>,
+              h3: ({ children }) => <h3 className="text-base font-semibold text-[#ddd] mb-2 mt-4">{children}</h3>,
+              h4: ({ children }) => <h4 className="text-sm font-semibold text-[#ccc] mb-2 mt-3">{children}</h4>,
+              p: ({ children }) => <p className="text-[13px] text-[#aaa] leading-relaxed mb-3">{children}</p>,
+              ul: ({ children }) => <ul className="text-[13px] text-[#aaa] mb-3 ml-4 space-y-1 list-disc">{children}</ul>,
+              ol: ({ children }) => <ol className="text-[13px] text-[#aaa] mb-3 ml-4 space-y-1 list-decimal">{children}</ol>,
+              li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+              a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-[#DA4E24] hover:underline">{children}</a>,
+              strong: ({ children }) => <strong className="text-white font-semibold">{children}</strong>,
+              em: ({ children }) => <em className="text-[#bbb] italic">{children}</em>,
+              hr: () => <hr className="border-[#1a1a1a] my-4" />,
+              blockquote: ({ children }) => <blockquote className="border-l-2 border-[#DA4E24]/40 pl-4 my-3 text-[13px] text-[#888] italic">{children}</blockquote>,
+              table: ({ children }) => <div className="overflow-x-auto mb-3"><table className="w-full text-[12px] text-[#aaa] border-collapse">{children}</table></div>,
+              thead: ({ children }) => <thead className="border-b border-[#222]">{children}</thead>,
+              th: ({ children }) => <th className="text-left px-3 py-2 text-[11px] font-semibold text-[#888] uppercase tracking-wider">{children}</th>,
+              td: ({ children }) => <td className="px-3 py-2 border-b border-[#111]">{children}</td>,
+              code: ({ className, children }) => {
+                const isInline = !className;
+                if (isInline) {
+                  return <code className="bg-[#111] border border-[#1a1a1a] rounded px-1.5 py-0.5 text-[12px] text-[#DA4E24] font-terminal">{children}</code>;
+                }
+                return (
+                  <div className="relative group/code mb-3">
+                    <pre className="bg-[#080808] border border-[#1a1a1a] rounded-lg p-4 overflow-x-auto">
+                      <code className="text-[12px] font-terminal text-[#ccc] leading-relaxed">{children}</code>
+                    </pre>
+                  </div>
+                );
+              },
+              pre: ({ children }) => <>{children}</>,
+            }}
+          >
             {content}
-          </pre>
+          </ReactMarkdown>
         </div>
       </div>
     </div>
