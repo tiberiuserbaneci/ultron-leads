@@ -1,4 +1,3 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { Resend } from "resend";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -28,19 +27,19 @@ const REQUIRED = [
   "successMetric",
   "urgency",
   "successDefinition",
-] as const;
+];
 
-function isValidEmail(email: string): boolean {
+function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 /* ── Rate limiting (in-memory, per-instance) ──────── */
 
-const submissions = new Map<string, number[]>();
+const submissions = new Map();
 const RATE_LIMIT = 5;
 const RATE_WINDOW = 60 * 60 * 1000;
 
-function isRateLimited(ip: string): boolean {
+function isRateLimited(ip) {
   const now = Date.now();
   const times = (submissions.get(ip) || []).filter((t) => now - t < RATE_WINDOW);
   submissions.set(ip, times);
@@ -51,18 +50,17 @@ function isRateLimited(ip: string): boolean {
 
 /* ── Email HTML builders ──────────────────────────── */
 
-function row(label: string, value: string | string[]): string {
+function row(label, value) {
   const display = Array.isArray(value) ? value.join(", ") : value;
   if (!display) return "";
   return `<tr><td style="padding:6px 12px 6px 0;color:#999;font-size:13px;vertical-align:top;white-space:nowrap">${label}</td><td style="padding:6px 0;color:#fff;font-size:13px">${display}</td></tr>`;
 }
 
-function sectionHeader(title: string): string {
+function sectionHeader(title) {
   return `<tr><td colspan="2" style="padding:20px 0 8px;border-bottom:1px solid #1a1a1a"><span style="color:#DA4E24;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">${title}</span></td></tr>`;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function buildBriefHtml(data: any): string {
+function buildBriefHtml(data) {
   return `
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"></head>
@@ -128,8 +126,7 @@ function buildBriefHtml(data: any): string {
 </body></html>`;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function buildConfirmationHtml(data: any): string {
+function buildConfirmationHtml(data) {
   return `
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"></head>
@@ -157,7 +154,7 @@ function buildConfirmationHtml(data: any): string {
 
 /* ── Handler ──────────────────────────────────────── */
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req, res) {
   // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -179,13 +176,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Rate limiting
-  const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || "unknown";
+  const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "unknown";
   if (isRateLimited(ip)) {
     return res.status(429).json({ error: "Too many submissions. Please try again later." });
   }
 
   // Validate required fields
-  const missing: string[] = [];
+  const missing = [];
   for (const field of REQUIRED) {
     const val = body[field];
     if (Array.isArray(val) ? val.length === 0 : !val || !String(val).trim()) {
