@@ -32,7 +32,7 @@ import {
 
 function FieldLabel({ label, required }: { label: string; required?: boolean }) {
   return (
-    <label className="block text-[13px] font-medium text-[#888] mb-1.5">
+    <label className="block text-[13px] font-medium text-[#ccc] mb-1.5">
       {label}
       {required && <span className="text-[#DA4E24] ml-0.5">*</span>}
     </label>
@@ -40,7 +40,7 @@ function FieldLabel({ label, required }: { label: string; required?: boolean }) 
 }
 
 function FieldHint({ text }: { text: string }) {
-  return <p className="text-[11px] text-[#444] mt-1 leading-relaxed">{text}</p>;
+  return <p className="text-[11px] text-[#888] mt-1 leading-relaxed">{text}</p>;
 }
 
 function ExampleToggle({ fieldKey }: { fieldKey: keyof RfpForm }) {
@@ -52,12 +52,12 @@ function ExampleToggle({ fieldKey }: { fieldKey: keyof RfpForm }) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="text-[11px] text-[#555] hover:text-[#DA4E24] transition-colors"
+        className="text-[11px] text-[#999] hover:text-[#DA4E24] transition-colors"
       >
         {open ? "Hide example" : "Show example answer"}
       </button>
       {open && (
-        <p className="text-[11px] text-[#666] mt-1 leading-relaxed pl-3 border-l border-[#1a1a1a]">
+        <p className="text-[11px] text-[#aaa] mt-1 leading-relaxed pl-3 border-l border-[#333]">
           {example}
         </p>
       )}
@@ -78,7 +78,7 @@ function TextInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-transparent border-b border-[#222] px-0 py-2 text-sm text-white placeholder-[#333] focus:outline-none focus:border-[#DA4E24]/50 transition-colors"
+        className="w-full bg-transparent border-b border-[#222] px-0 py-2 text-sm text-white placeholder-[#666] focus:outline-none focus:border-[#DA4E24]/50 transition-colors"
       />
       {hint && <FieldHint text={hint} />}
     </div>
@@ -98,7 +98,7 @@ function TextArea({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         rows={rows}
-        className="w-full bg-transparent border border-[#1a1a1a] rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#333] focus:outline-none focus:border-[#DA4E24]/40 transition-colors resize-y"
+        className="w-full bg-transparent border border-[#1a1a1a] rounded-lg px-3 py-2.5 text-sm text-white placeholder-[#666] focus:outline-none focus:border-[#DA4E24]/40 transition-colors resize-y"
       />
       {hint && <FieldHint text={hint} />}
       {fieldKey && <ExampleToggle fieldKey={fieldKey} />}
@@ -153,7 +153,7 @@ function ChipSelect({
             className={`text-[11px] px-2.5 py-1.5 rounded-md transition-all duration-150 ${
               selected.includes(o)
                 ? "bg-[#DA4E24]/8 text-[#DA4E24] border border-[#DA4E24]/25"
-                : "text-[#555] border border-transparent hover:text-[#888] hover:border-[#222]"
+                : "text-[#999] border border-transparent hover:text-[#ccc] hover:border-[#333]"
             }`}
           >
             {o}
@@ -196,7 +196,7 @@ function StepRail({
                   ? "bg-[#DA4E24]/10 text-[#DA4E24]"
                   : isActive
                   ? "bg-[#1a1a1a] text-white"
-                  : "bg-transparent text-[#444]"
+                  : "bg-transparent text-[#777]"
               }`}>
                 {isDone ? (
                   <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
@@ -205,7 +205,7 @@ function StepRail({
                 )}
               </span>
               <span className={`text-[12px] transition-colors ${
-                isActive ? "text-white font-medium" : "text-[#555] group-hover:text-[#888]"
+                isActive ? "text-white font-medium" : "text-[#999] group-hover:text-[#ccc]"
               }`}>
                 {section.shortTitle}
               </span>
@@ -229,7 +229,7 @@ function StepRail({
                   ? "bg-[#111] text-white"
                   : isDone
                   ? "text-[#DA4E24]"
-                  : "text-[#444] hover:text-[#888]"
+                  : "text-[#888] hover:text-[#ccc]"
               }`}
             >
               {isDone && <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>}
@@ -269,7 +269,7 @@ function GuidePanel({
             className={`pb-2 text-[11px] font-terminal uppercase tracking-widest transition-colors border-b-2 ${
               guideTab === tab
                 ? "text-[#DA4E24] border-[#DA4E24]"
-                : "text-[#444] border-transparent hover:text-[#666]"
+                : "text-[#888] border-transparent hover:text-[#bbb]"
             }`}
           >
             {tab}
@@ -279,11 +279,11 @@ function GuidePanel({
 
       {guideTab === "guide" ? (
         <div className="space-y-5">
-          <p className="text-[13px] text-[#777] leading-relaxed">{guide.purpose}</p>
+          <p className="text-[13px] text-[#bbb] leading-relaxed">{guide.purpose}</p>
 
           <div className="space-y-2">
             {guide.tips.map((tip, i) => (
-              <div key={i} className="flex items-start gap-2 text-[12px] text-[#666]">
+              <div key={i} className="flex items-start gap-2 text-[12px] text-[#aaa]">
                 <span className="text-[#DA4E24] mt-px flex-shrink-0">+</span>
                 {tip}
               </div>
@@ -291,13 +291,13 @@ function GuidePanel({
           </div>
 
           <div className="pt-3 border-t border-[#111]">
-            <span className="text-[10px] font-terminal text-[#444] uppercase tracking-widest">Good example</span>
-            <p className="text-[12px] text-[#666] mt-1.5 leading-relaxed">{guide.example}</p>
+            <span className="text-[10px] font-terminal text-[#888] uppercase tracking-widest">Good example</span>
+            <p className="text-[12px] text-[#aaa] mt-1.5 leading-relaxed">{guide.example}</p>
           </div>
 
           <div>
-            <span className="text-[10px] font-terminal text-[#444] uppercase tracking-widest">Common mistake</span>
-            <p className="text-[12px] text-[#555] mt-1.5 leading-relaxed">{guide.avoid}</p>
+            <span className="text-[10px] font-terminal text-[#888] uppercase tracking-widest">Common mistake</span>
+            <p className="text-[12px] text-[#999] mt-1.5 leading-relaxed">{guide.avoid}</p>
           </div>
         </div>
       ) : (
@@ -379,11 +379,11 @@ function EmailPreview({ form }: { form: RfpForm }) {
   return (
     <div>
       <div className="mb-3 pb-2 border-b border-[#111]">
-        <p className="text-[10px] text-[#444] font-terminal uppercase tracking-widest">Subject</p>
+        <p className="text-[10px] text-[#888] font-terminal uppercase tracking-widest">Subject</p>
         <p className="text-[13px] text-white mt-0.5">
           {hasContent
-            ? `New AI workflow brief from ${form.clientName || "..."} — ${form.company || "..."}`
-            : "New AI workflow brief from ... — ..."
+            ? `New RFP from ${form.clientName || "..."} — ${form.company || "..."}`
+            : "New RFP from ... — ..."
           }
         </p>
       </div>
@@ -397,8 +397,8 @@ function EmailPreview({ form }: { form: RfpForm }) {
               <div className="mt-1.5 space-y-1">
                 {section.rows.map((row, i) => (
                   <div key={i} className="flex gap-2">
-                    <span className="text-[11px] text-[#444] flex-shrink-0 w-20">{row.label}</span>
-                    <span className={`text-[11px] break-words ${row.empty ? "text-[#333]" : "text-[#888]"}`}>
+                    <span className="text-[11px] text-[#888] flex-shrink-0 w-20">{row.label}</span>
+                    <span className={`text-[11px] break-words ${row.empty ? "text-[#555]" : "text-[#ccc]"}`}>
                       {row.value.length > 120 ? row.value.slice(0, 120) + "..." : row.value}
                     </span>
                   </div>
@@ -429,7 +429,7 @@ function ReviewSection({ form, onNavigate }: { form: RfpForm; onNavigate: (idx: 
                 {section.title}
               </button>
               {total > 0 && (
-                <span className={`text-[10px] font-terminal ${complete ? "text-[#DA4E24]" : "text-[#444]"}`}>
+                <span className={`text-[10px] font-terminal ${complete ? "text-[#DA4E24]" : "text-[#888]"}`}>
                   {complete ? "Done" : `${filled}/${total}`}
                 </span>
               )}
@@ -444,9 +444,9 @@ function ReviewSection({ form, onNavigate }: { form: RfpForm; onNavigate: (idx: 
                 if (!isRequired && !isFilled) return null;
                 return (
                   <div key={field} className="flex gap-2 py-0.5">
-                    <span className="text-[11px] text-[#444] flex-shrink-0 w-36 truncate">{label}</span>
+                    <span className="text-[11px] text-[#888] flex-shrink-0 w-36 truncate">{label}</span>
                     <span className={`text-[11px] break-words min-w-0 ${
-                      isFilled ? "text-[#888]" : "text-[#DA4E24]/60"
+                      isFilled ? "text-[#ccc]" : "text-[#DA4E24]/60"
                     }`}>
                       {isFilled
                         ? (display.length > 80 ? display.slice(0, 80) + "..." : display)
@@ -556,20 +556,20 @@ export default function RfpPage() {
             <svg className="w-6 h-6 text-[#DA4E24]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">Brief delivered</h1>
-          <p className="text-[#777] text-sm mb-1">
+          <p className="text-[#bbb] text-sm mb-1">
             Sent to <span className="text-white">{form.recipientEmail}</span>
           </p>
-          <p className="text-[#555] text-sm mb-8">
+          <p className="text-[#999] text-sm mb-8">
             Confirmation copy sent to {form.clientEmail}
           </p>
           <div className="text-left mb-8 space-y-2">
             {["Review typically begins directly from this brief", "Share additional details by replying to the confirmation email", "Watch your inbox for follow-up"].map((t, i) => (
-              <p key={i} className="flex items-start gap-2 text-[13px] text-[#666]">
+              <p key={i} className="flex items-start gap-2 text-[13px] text-[#aaa]">
                 <span className="text-[#DA4E24] mt-px">+</span> {t}
               </p>
             ))}
           </div>
-          <Link href="/" className="text-sm text-[#555] hover:text-[#DA4E24] transition-colors">Back to home</Link>
+          <Link href="/" className="text-sm text-[#999] hover:text-[#DA4E24] transition-colors">Back to home</Link>
         </div>
       </div>
     );
@@ -581,8 +581,8 @@ export default function RfpPage() {
       <div className={`max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-4 transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-5">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">AI workflow brief</h1>
-            <p className="text-[13px] text-[#555] mt-0.5">Structured intake for any AI build</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Request For Proposal</h1>
+            <p className="text-[13px] text-[#999] mt-0.5">Structured intake for any AI build</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="w-28 h-1 bg-[#111] rounded-full overflow-hidden">
@@ -591,18 +591,18 @@ export default function RfpPage() {
                 style={{ width: `${completion.percent}%`, opacity: completion.percent === 0 ? 0.3 : 1 }}
               />
             </div>
-            <span className="text-[11px] font-terminal text-[#555]">{completion.filled}/{completion.total}</span>
+            <span className="text-[11px] font-terminal text-[#999]">{completion.filled}/{completion.total}</span>
           </div>
         </div>
 
         {/* Templates */}
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-[10px] font-terminal text-[#444] uppercase tracking-widest">Templates</span>
+          <span className="text-[10px] font-terminal text-[#888] uppercase tracking-widest">Templates</span>
           {TEMPLATES.map((tpl) => (
             <button
               key={tpl.label}
               onClick={() => applyTemplate(tpl)}
-              className="text-[11px] text-[#555] hover:text-[#DA4E24] transition-colors px-2 py-1"
+              className="text-[11px] text-[#999] hover:text-[#DA4E24] transition-colors px-2 py-1"
               title={tpl.description}
             >
               {tpl.label}
@@ -622,7 +622,7 @@ export default function RfpPage() {
             {/* Section header */}
             <div className="mb-6 pt-1">
               <h2 className="text-base font-semibold text-white">{currentSection.title}</h2>
-              <p className="text-[13px] text-[#555] mt-0.5">{currentSection.description}</p>
+              <p className="text-[13px] text-[#999] mt-0.5">{currentSection.description}</p>
             </div>
 
             {/* Form content */}
@@ -662,7 +662,7 @@ export default function RfpPage() {
               {currentSection.id === "build" && (
                 <>
                   <div>
-                    <span className="text-[10px] font-terminal text-[#444] uppercase tracking-widest">Quick start</span>
+                    <span className="text-[10px] font-terminal text-[#888] uppercase tracking-widest">Quick start</span>
                     <div className="flex flex-wrap gap-1 mt-2">
                       {AUTOMATION_CHIPS.map((chip) => (
                         <button
@@ -673,7 +673,7 @@ export default function RfpPage() {
                               set("automationRequest", (form.automationRequest ? `${form.automationRequest}. ${chip}` : chip) as RfpForm["automationRequest"]);
                             }
                           }}
-                          className="text-[11px] text-[#555] hover:text-[#DA4E24] transition-colors px-2 py-1"
+                          className="text-[11px] text-[#999] hover:text-[#DA4E24] transition-colors px-2 py-1"
                         >
                           {chip}
                         </button>
@@ -756,7 +756,7 @@ export default function RfpPage() {
                       )}
                     </button>
                     {completion.percent < 100 && (
-                      <span className="text-[11px] text-[#444]">
+                      <span className="text-[11px] text-[#888]">
                         {completion.total - completion.filled} required fields remaining
                       </span>
                     )}
@@ -770,14 +770,14 @@ export default function RfpPage() {
               <button
                 onClick={() => goTo(activeSection - 1)}
                 disabled={activeSection === 0}
-                className="text-[13px] text-[#444] hover:text-[#DA4E24] transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
+                className="text-[13px] text-[#888] hover:text-[#DA4E24] transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
               >
                 Previous
               </button>
               <button
                 onClick={() => goTo(activeSection + 1)}
                 disabled={activeSection === SECTIONS.length - 1}
-                className="text-[13px] text-[#555] hover:text-[#DA4E24] transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
+                className="text-[13px] text-[#999] hover:text-[#DA4E24] transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
               >
                 Next section
               </button>
@@ -801,7 +801,7 @@ export default function RfpPage() {
       {/* Mobile guide panel */}
       <div className="lg:hidden max-w-6xl mx-auto px-4 sm:px-6 pb-8">
         <details className="group">
-          <summary className="text-[11px] font-terminal text-[#444] uppercase tracking-widest cursor-pointer hover:text-[#888] transition-colors py-2">
+          <summary className="text-[11px] font-terminal text-[#888] uppercase tracking-widest cursor-pointer hover:text-[#ccc] transition-colors py-2">
             Section guide and preview
           </summary>
           <div className="pt-2">
