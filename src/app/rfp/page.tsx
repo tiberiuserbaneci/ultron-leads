@@ -585,7 +585,7 @@ export default function RfpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black overflow-x-hidden">
       {/* Header */}
       <div className={`max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-4 transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-5">
@@ -622,12 +622,12 @@ export default function RfpPage() {
 
       {/* Main layout */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <div className="flex gap-8">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
           {/* Step rail */}
           <StepRail activeSection={activeSection} form={form} onNavigate={goTo} />
 
           {/* Form workspace */}
-          <div className="flex-1 min-w-0 lg:max-w-[55%]" ref={sectionRef}>
+          <div className="flex-1 min-w-0 w-full lg:max-w-[55%]" ref={sectionRef}>
             {/* Section header */}
             <div className="mb-6 pt-1">
               <h2 className="text-base font-semibold text-white">{currentSection.title}</h2>
