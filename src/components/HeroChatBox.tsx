@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 
 const PROMPTS = [
   "Generate weekly sales summary report for Q1",
@@ -13,67 +14,18 @@ const PROMPTS = [
   "Design a referral program with tiered rewards",
 ];
 
+const MODELS = [
+  { label: "Claude Sonnet 4", logo: "/logo claude.png" },
+  { label: "Claude Code", logo: "/logo claude code.png" },
+  { label: "OpenClaw", logo: "/logo openclaw.png" },
+];
+
 const TOOLS_MENU = [
-  {
-    label: "Command Center",
-    href: "https://work.51ultron.com/live/",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="3" width="7" height="7" rx="1" />
-        <rect x="14" y="3" width="7" height="7" rx="1" />
-        <rect x="3" y="14" width="7" height="7" rx="1" />
-        <rect x="14" y="14" width="7" height="7" rx="1" />
-      </svg>
-    ),
-  },
-  {
-    label: "Client Engine",
-    href: "https://work.51ultron.com/client-engine/",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      </svg>
-    ),
-  },
-  {
-    label: "Agents Map",
-    href: "https://work.51ultron.com/agents-map/",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="3" />
-        <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
-      </svg>
-    ),
-  },
-  {
-    label: "ROI Calculator",
-    href: "https://work.51ultron.com/calculator/",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="4" y="2" width="16" height="20" rx="2" />
-        <line x1="8" y1="6" x2="16" y2="6" />
-        <line x1="8" y1="10" x2="10" y2="10" />
-        <line x1="14" y1="10" x2="16" y2="10" />
-        <line x1="8" y1="14" x2="10" y2="14" />
-        <line x1="14" y1="14" x2="16" y2="14" />
-        <line x1="8" y1="18" x2="16" y2="18" />
-      </svg>
-    ),
-  },
-  {
-    label: "Resources",
-    href: "https://catalinfetean.substack.com/",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <line x1="2" y1="12" x2="22" y2="12" />
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z" />
-      </svg>
-    ),
-  },
+  { label: "Command Center", href: "https://work.51ultron.com/live/" },
+  { label: "Client Engine", href: "https://work.51ultron.com/client-engine/" },
+  { label: "Agents Map", href: "https://work.51ultron.com/agents-map/" },
+  { label: "ROI Calculator", href: "https://work.51ultron.com/calculator/" },
+  { label: "Resources", href: "https://catalinfetean.substack.com/" },
 ];
 
 function SparkleIcon({ className = "w-4 h-4" }: { className?: string }) {
@@ -98,10 +50,13 @@ export default function HeroChatBox({
   const [userText, setUserText] = useState("");
   const [isUserTyping, setIsUserTyping] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [modelOpen, setModelOpen] = useState(false);
+  const [selectedModel, setSelectedModel] = useState(0);
   const promptIndex = useRef(0);
   const charIndex = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const modelRef = useRef<HTMLDivElement>(null);
 
   const typeNext = useCallback(() => {
     const currentPrompt = PROMPTS[promptIndex.current];
@@ -128,17 +83,20 @@ export default function HeroChatBox({
     };
   }, [isUserTyping, typeNext]);
 
-  // Close menu on outside click
+  // Close menus on outside click
   useEffect(() => {
-    if (!menuOpen) return;
+    if (!menuOpen && !modelOpen) return;
     const handleClick = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+      if (menuOpen && menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMenuOpen(false);
+      }
+      if (modelOpen && modelRef.current && !modelRef.current.contains(e.target as Node)) {
+        setModelOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
-  }, [menuOpen]);
+  }, [menuOpen, modelOpen]);
 
   const handleFocus = () => {
     setIsUserTyping(true);
@@ -161,12 +119,48 @@ export default function HeroChatBox({
         <div className="bg-[#0c0c0c] rounded-2xl p-5">
           {/* Top row: model selector + globe */}
           <div className="flex items-center gap-3 mb-4">
-            <div className="flex items-center gap-2 border border-[#333] rounded-full px-3 py-1.5">
-              <SparkleIcon className="w-3.5 h-3.5" />
-              <span className="text-sm font-medium text-white">Sonnet 4</span>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-[#666]">
-                <path d="M3 5L6 8L9 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+            <div className="relative" ref={modelRef}>
+              <button
+                onClick={() => setModelOpen(!modelOpen)}
+                className="flex items-center gap-2 border border-[#333] rounded-full px-3 py-1.5 hover:border-[#555] transition-colors"
+              >
+                <Image
+                  src={MODELS[selectedModel].logo}
+                  alt=""
+                  width={16}
+                  height={16}
+                  className="rounded-sm"
+                />
+                <span className="text-sm font-medium text-white">{MODELS[selectedModel].label}</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className={`text-[#666] transition-transform ${modelOpen ? "rotate-180" : ""}`}>
+                  <path d="M3 5L6 8L9 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+
+              {/* Model dropdown */}
+              {modelOpen && (
+                <div className="absolute top-full left-0 mt-2 w-52 bg-[#0a0a0a] border border-[#222] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] overflow-hidden animate-fade-up z-50">
+                  {MODELS.map((model, i) => (
+                    <button
+                      key={model.label}
+                      onClick={() => { setSelectedModel(i); setModelOpen(false); }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${
+                        i === selectedModel
+                          ? "text-white bg-[#1a1a1a]"
+                          : "text-[#ccc] hover:bg-[#1a1a1a] hover:text-white"
+                      } ${i < MODELS.length - 1 ? "border-b border-[#1a1a1a]" : ""}`}
+                    >
+                      <Image src={model.logo} alt="" width={18} height={18} className="rounded-sm flex-shrink-0" />
+                      {model.label}
+                      {i === selectedModel && (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DA4E24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-auto">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             {/* Globe icon */}
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-[#555]">
@@ -247,8 +241,7 @@ export default function HeroChatBox({
                         i < TOOLS_MENU.length - 1 ? "border-b border-[#1a1a1a]" : ""
                       }`}
                     >
-                      <span className="text-[#888] flex-shrink-0">{item.icon}</span>
-                      {item.label}
+                        {item.label}
                     </a>
                   ))}
                 </div>
