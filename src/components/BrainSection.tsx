@@ -42,7 +42,7 @@ function getSpeechRecognition(): SpeechRecognitionInstance | null {
 
 type MicState = "idle" | "listening" | "transcribing" | "unavailable";
 
-/* ─── Utility: count-up animation ────────────────────────── */
+/* ─── Count-up animation ─────────────────────────────────── */
 function useCountUp(target: number, active: boolean, duration = 1200) {
   const [value, setValue] = useState(0);
   useEffect(() => {
@@ -61,24 +61,49 @@ function useCountUp(target: number, active: boolean, duration = 1200) {
   return value;
 }
 
+/* ─── Glow Card (matches FeatureCard from /landing) ──────── */
+function GlowCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`group relative rounded-2xl overflow-hidden ${className}`}>
+      <div className="absolute -inset-[1px] rounded-2xl z-0 overflow-hidden">
+        <div
+          className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
+          style={{
+            background:
+              "conic-gradient(from 0deg, transparent 0%, transparent 70%, rgba(218,78,36,0.5) 80%, rgba(218,78,36,0.8) 85%, rgba(218,78,36,0.5) 90%, transparent 100%)",
+          }}
+        />
+      </div>
+      <div className="relative z-10 rounded-2xl border border-[#1a1a1a] bg-[#0a0a0a] overflow-hidden h-full">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Metric card ────────────────────────────────────────── */
 function MetricCard({ label, value, suffix, active }: { label: string; value: number; suffix?: string; active: boolean }) {
   const display = useCountUp(value, active);
   return (
-    <div className="p-4 bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl text-center">
-      <div className="text-2xl font-bold text-[#DA4E24] font-terminal">
+    <div className="text-center">
+      <div className="text-3xl sm:text-4xl font-bold text-white">
         {display % 1 === 0 ? Math.round(display) : display.toFixed(1)}
-        {suffix}
+        <span className="text-[#DA4E24]">{suffix}</span>
       </div>
-      <div className="text-[11px] text-[#666] mt-1">{label}</div>
+      <div className="text-xs text-[#666] mt-1.5 uppercase tracking-wide">{label}</div>
     </div>
   );
 }
 
 /* ─── Urgency badge ──────────────────────────────────────── */
 function UrgencyBadge({ score }: { score: number }) {
-  const color = score >= 8 ? "text-red-400 border-red-400/20 bg-red-400/5" : score >= 6 ? "text-amber-400 border-amber-400/20 bg-amber-400/5" : "text-[#999] border-[#1a1a1a] bg-[#111]";
+  const color = score >= 8
+    ? "text-red-400 border-red-400/20 bg-red-400/5"
+    : score >= 6
+    ? "text-amber-400 border-amber-400/20 bg-amber-400/5"
+    : "text-[#999] border-[#333] bg-[#111]";
   return (
-    <span className={`text-[9px] font-terminal font-bold px-2 py-0.5 rounded border ${color}`}>
+    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${color}`}>
       {score}/10
     </span>
   );
@@ -97,7 +122,7 @@ function StateBadge({ state }: { state: AttentionCard["state"] }) {
     escalate: "ESCALATE",
   };
   return (
-    <span className={`text-[9px] font-terminal font-bold px-2 py-0.5 rounded border ${styles[state]}`}>
+    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${styles[state]}`}>
       {labels[state]}
     </span>
   );
@@ -107,30 +132,32 @@ function StateBadge({ state }: { state: AttentionCard["state"] }) {
 
 function AttentionCardComponent({ card, index }: { card: AttentionCard; index: number }) {
   return (
-    <div
-      className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-4 hover:border-[#DA4E24]/20 transition-all duration-300 animate-fade-up"
-      style={{ animationDelay: `${index * 0.08}s` }}
-    >
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-[10px] font-terminal font-bold text-[#DA4E24] uppercase tracking-widest">{card.signal}</span>
-        <div className="flex items-center gap-2">
-          <UrgencyBadge score={card.urgency} />
-          <StateBadge state={card.state} />
+    <GlowCard>
+      <div
+        className="p-5 sm:p-6 animate-fade-up"
+        style={{ animationDelay: `${index * 0.08}s` }}
+      >
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-semibold tracking-[0.12em] uppercase text-[#DA4E24]">{card.signal}</span>
+          <div className="flex items-center gap-2">
+            <UrgencyBadge score={card.urgency} />
+            <StateBadge state={card.state} />
+          </div>
         </div>
+        <p className="text-sm text-[#ccc] leading-relaxed mb-2">{card.observation}</p>
+        <span className="text-[11px] text-[#555]">{card.source}</span>
       </div>
-      <p className="text-sm text-[#ccc] mb-2">{card.observation}</p>
-      <span className="text-[10px] text-[#444] font-terminal">{card.source}</span>
-    </div>
+    </GlowCard>
   );
 }
 
 function AgentCard({ agent, index }: { agent: AgentActivation; index: number }) {
   return (
     <div
-      className={`rounded-xl border p-4 text-center transition-all duration-500 animate-fade-up ${
+      className={`rounded-2xl border p-5 text-center transition-all duration-500 animate-fade-up ${
         agent.active
-          ? "bg-[#0a0a0a] border-[#DA4E24]/30 shadow-[0_0_12px_rgba(218,78,36,0.1)]"
-          : "bg-[#0a0a0a] border-[#1a1a1a] opacity-40"
+          ? "border-[#DA4E24]/30 bg-[#0a0a0a] shadow-[0_0_20px_rgba(218,78,36,0.08)]"
+          : "border-[#1a1a1a] bg-[#0a0a0a] opacity-40"
       }`}
       style={{ animationDelay: `${index * 0.08}s` }}
     >
@@ -139,7 +166,7 @@ function AgentCard({ agent, index }: { agent: AgentActivation; index: number }) 
         <span className={`text-xs font-bold ${agent.active ? "text-white" : "text-[#555]"}`}>{agent.label}</span>
       </div>
       {agent.active && agent.role && (
-        <p className="text-[10px] text-[#888] leading-relaxed">{agent.role}</p>
+        <p className="text-[11px] text-[#888] leading-relaxed">{agent.role}</p>
       )}
     </div>
   );
@@ -147,35 +174,77 @@ function AgentCard({ agent, index }: { agent: AgentActivation; index: number }) 
 
 function DecisionCardComponent({ decision, index }: { decision: DecisionCard; index: number }) {
   return (
-    <div
-      className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-2xl p-5 sm:p-6 hover:border-[#DA4E24]/20 transition-all duration-300 animate-fade-up"
-      style={{ animationDelay: `${index * 0.12}s` }}
-    >
-      <div className="flex items-start gap-3">
-        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-[#DA4E24]/10 border border-[#DA4E24]/20 flex items-center justify-center mt-0.5">
-          <svg className="w-4 h-4 text-[#DA4E24]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-          </svg>
-        </div>
-        <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-bold text-white mb-2">{decision.title}</h4>
-          <div className="space-y-2 text-sm">
-            <div>
-              <span className="text-[10px] font-terminal text-[#555] uppercase tracking-widest">Why it matters</span>
-              <p className="text-[#999] mt-0.5">{decision.why}</p>
-            </div>
-            <div>
-              <span className="text-[10px] font-terminal text-[#DA4E24] uppercase tracking-widest">Ultron recommends</span>
-              <p className="text-[#ccc] mt-0.5">{decision.recommendation}</p>
-            </div>
-            <div>
-              <span className="text-[10px] font-terminal text-green-500 uppercase tracking-widest">If approved</span>
-              <p className="text-[#888] mt-0.5">{decision.ifApproved}</p>
+    <GlowCard>
+      <div
+        className="p-6 sm:p-8 animate-fade-up"
+        style={{ animationDelay: `${index * 0.12}s` }}
+      >
+        <div className="flex items-start gap-4">
+          <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-[#DA4E24]/10 border border-[#DA4E24]/20 flex items-center justify-center mt-0.5">
+            <svg className="w-5 h-5 text-[#DA4E24]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            </svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <h4 className="text-base font-bold text-white mb-3">{decision.title}</h4>
+            <div className="space-y-3 text-sm">
+              <div>
+                <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#555]">Why it matters</span>
+                <p className="text-[#999] mt-1 leading-relaxed">{decision.why}</p>
+              </div>
+              <div>
+                <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#DA4E24]">Ultron recommends</span>
+                <p className="text-[#ccc] mt-1 leading-relaxed">{decision.recommendation}</p>
+              </div>
+              <div>
+                <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-green-500">If approved</span>
+                <p className="text-[#888] mt-1 leading-relaxed">{decision.ifApproved}</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </GlowCard>
+  );
+}
+
+/* ─── Routing column card ────────────────────────────────── */
+function RoutingColumn({
+  dotColor,
+  titleColor,
+  title,
+  icon,
+  items,
+  delayOffset = 0,
+}: {
+  dotColor: string;
+  titleColor: string;
+  title: string;
+  icon: React.ReactNode;
+  items: (string | { title: string })[];
+  delayOffset?: number;
+}) {
+  return (
+    <GlowCard>
+      <div className="p-6 animate-fade-up">
+        <div className="flex items-center gap-2.5 mb-5">
+          <span className={`w-2.5 h-2.5 rounded-full ${dotColor}`} />
+          <h3 className={`text-xs font-bold uppercase tracking-[0.12em] ${titleColor}`}>{title}</h3>
+        </div>
+        <ul className="space-y-3.5">
+          {items.map((item, i) => (
+            <li
+              key={i}
+              className="flex items-start gap-2.5 text-sm text-[#999] leading-relaxed animate-fade-up"
+              style={{ animationDelay: `${(i + delayOffset) * 0.08}s` }}
+            >
+              <span className="flex-shrink-0 mt-0.5">{icon}</span>
+              {typeof item === "string" ? item : item.title}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </GlowCard>
   );
 }
 
@@ -189,13 +258,11 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
   const [micState, setMicState] = useState<MicState>("idle");
   const [activeCommand, setActiveCommand] = useState<CommandData | null>(null);
   const [showResults, setShowResults] = useState(false);
-  const [visible, setVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setVisible(true);
     const sr = getSpeechRecognition();
     if (sr) {
       recognitionRef.current = sr;
@@ -294,261 +361,247 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
     [runCommand]
   );
 
-  // When embedded in /landing, use /landing's design system (Badge style, larger headings)
-  const compact = embedded;
-
   return (
-    <div>
-      {/* ─── BRAIN STAGE ─────────────────────────────── */}
-      <div className="relative overflow-hidden">
-        {/* Hero glow */}
-        <div className="hero-glow absolute inset-0 pointer-events-none" />
-
-        <div className={`${embedded ? "max-w-[1200px]" : "max-w-5xl"} mx-auto px-4 sm:px-6 lg:px-8 text-center`}>
-          {/* Badge */}
-          {embedded ? (
-            <span className="inline-block text-xs font-semibold tracking-[0.12em] uppercase text-[#ccc] border border-[#333] rounded-full px-4 py-1.5 mb-6">
-              BUSINESS BRAIN
-            </span>
-          ) : (
-            <div className={`inline-flex items-center gap-2 bg-[#0a0a0a] border border-[#1a1a1a] rounded-full px-4 py-1.5 mb-6 transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#DA4E24] pulse-soft" />
-              <span className="text-xs font-medium text-[#999]">Business Brain</span>
-            </div>
-          )}
-
-          {/* Headline */}
-          {embedded ? (
-            <h2 className="mt-5 text-4xl sm:text-5xl lg:text-[56px] font-bold leading-[1.1]">
-              Attach a brain to{" "}
-              <span className="gradient-text">your business.</span>
-            </h2>
-          ) : (
-            <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-4 transition-all duration-500 delay-100 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-              Attach a brain to{" "}
-              <span className="gradient-text">your business.</span>
-            </h1>
-          )}
-
-          {/* Subtitle */}
-          <p className={`${embedded ? "mt-5 text-[#999] text-lg max-w-[560px]" : "text-base sm:text-lg text-[#999] max-w-2xl"} mx-auto mb-8 leading-relaxed ${!embedded ? `transition-all duration-500 delay-200 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}` : ""}`}>
-            Ask Ultron what matters. It routes attention, handles the repeatable
-            work, and escalates only what needs your judgment.
-          </p>
-
-          {/* Brain orb */}
-          <div className={`flex justify-center mb-8 ${!embedded ? `transition-all duration-700 delay-300 ${visible ? "opacity-100 scale-100" : "opacity-0 scale-95"}` : ""}`}>
-            <BrainOrb state={brainState} compact={compact} />
-          </div>
-
-          {/* ─── COMMAND INTERFACE ─────────────────────────────── */}
-          <div className={`max-w-2xl mx-auto ${!embedded ? `transition-all duration-500 delay-[400ms] ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}` : ""}`}>
-            <form onSubmit={handleSubmit} className="relative flex items-center gap-2 mb-4">
-              {/* Mic button */}
-              <button
-                type="button"
-                onClick={handleMicToggle}
-                disabled={micState === "unavailable"}
-                className={`flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center border transition-all duration-300 ${
-                  micState === "listening"
-                    ? "bg-[#DA4E24]/15 border-[#DA4E24]/40 text-[#DA4E24] brain-mic-pulse"
-                    : micState === "unavailable"
-                    ? "bg-[#0a0a0a] border-[#1a1a1a] text-[#333] cursor-not-allowed"
-                    : "bg-[#0a0a0a] border-[#1a1a1a] text-[#666] hover:text-[#DA4E24] hover:border-[#DA4E24]/30"
-                }`}
-                title={micState === "unavailable" ? "Voice input not supported in this browser" : micState === "listening" ? "Stop listening" : "Start voice input"}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                  <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                  <line x1="12" y1="19" x2="12" y2="23" />
-                  <line x1="8" y1="23" x2="16" y2="23" />
-                </svg>
-              </button>
-
-              {/* Input */}
-              <div className="flex-1 relative">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask Ultron what matters..."
-                  className="w-full bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl px-4 py-3 text-sm text-white placeholder-[#444] focus:outline-none focus:border-[#DA4E24]/40 transition-colors"
-                />
-              </div>
-
-              {/* Submit */}
-              <button
-                type="submit"
-                disabled={!input.trim() || brainState === "thinking" || brainState === "dispatching"}
-                className="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center btn-gradient glow-accent text-white transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </button>
-            </form>
-
-            {/* Command chips */}
-            <div className="flex flex-wrap justify-center gap-2">
-              {PREBUILT_COMMANDS.map((cmd) => (
-                <button
-                  key={cmd}
-                  onClick={() => handleChipClick(cmd)}
-                  disabled={brainState === "thinking" || brainState === "dispatching"}
-                  className="text-[11px] text-[#666] bg-[#0a0a0a] border border-[#1a1a1a] rounded-full px-3 py-1.5 hover:text-[#DA4E24] hover:border-[#DA4E24]/30 transition-all duration-200 disabled:opacity-30"
-                >
-                  {cmd}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+    <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+      {/* ─── HEADER: Badge + Headline + Subtitle ─────────── */}
+      <div className="text-center mb-16">
+        <span className="inline-block text-xs font-semibold tracking-[0.12em] uppercase text-[#ccc] border border-[#333] rounded-full px-4 py-1.5">
+          BUSINESS BRAIN
+        </span>
+        <h2 className="mt-5 text-4xl sm:text-5xl lg:text-[56px] font-bold leading-[1.1]">
+          Attach a brain to{" "}
+          <br className="sm:hidden" />
+          <span className="gradient-text">your business.</span>
+        </h2>
+        <p className="mt-5 text-[#999] text-lg max-w-[560px] mx-auto leading-relaxed">
+          Ask Ultron what matters. It routes attention, handles the repeatable
+          work, and escalates only what needs your judgment.
+        </p>
       </div>
 
-      {/* ─── RESULTS ─────────────────────────────────────────── */}
-      {activeCommand && showResults && (
-        <div ref={resultsRef} className="brain-results">
-          {/* ─── INTERPRETATION STRIP ────────────────────────── */}
-          <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-2xl p-6 sm:p-8 animate-fade-up">
-              <div className="mb-4">
-                <span className="text-[10px] font-terminal text-[#555] uppercase tracking-widest">You asked</span>
-                <p className="text-white font-semibold mt-1">&ldquo;{activeCommand.input}&rdquo;</p>
-              </div>
-              <div className="border-t border-[#1a1a1a] pt-4">
-                <span className="text-[10px] font-terminal text-[#DA4E24] uppercase tracking-widest">Ultron interprets</span>
-                <ul className="mt-2 space-y-1.5">
-                  {activeCommand.interpretation.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-[#999] animate-fade-up" style={{ animationDelay: `${i * 0.08}s` }}>
-                      <span className="text-[#DA4E24] mt-0.5">→</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </section>
+      {/* ─── BRAIN ORB ───────────────────────────────────── */}
+      <div className="flex justify-center mb-10">
+        <BrainOrb state={brainState} compact={embedded} />
+      </div>
 
-          {/* ─── ATTENTION SURFACE ───────────────────────────── */}
-          <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="text-center mb-8">
-              <h2 className="text-sm font-bold text-[#999] uppercase tracking-widest mb-2">Attention Surface</h2>
-              <p className="text-[#555] text-sm">What the brain is pulling into focus.</p>
+      {/* ─── CHAT BAR (matches HeroChatBox mobile pill) ──── */}
+      <div className="max-w-[800px] mx-auto mb-8">
+        <form onSubmit={handleSubmit} className="relative w-full">
+          {/* Animated glow border */}
+          <div className="absolute -inset-[1px] rounded-full overflow-hidden z-0">
+            <div
+              className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
+              style={{
+                background:
+                  micState === "listening"
+                    ? "conic-gradient(from 0deg, transparent 0%, transparent 50%, rgba(218,78,36,0.5) 65%, rgba(218,78,36,0.8) 75%, rgba(218,78,36,0.5) 85%, transparent 100%)"
+                    : "conic-gradient(from 0deg, transparent 0%, transparent 60%, rgba(218,78,36,0.3) 72%, rgba(218,78,36,0.5) 78%, rgba(218,78,36,0.3) 84%, transparent 100%)",
+              }}
+            />
+          </div>
+
+          <div className="relative z-10 bg-[#0c0c0c] rounded-full border border-[#1a1a1a] px-3 py-2.5 sm:px-4 sm:py-3 flex items-center gap-3">
+            {/* Mic button */}
+            <button
+              type="button"
+              onClick={handleMicToggle}
+              disabled={micState === "unavailable"}
+              className={`w-7 h-7 rounded-full flex items-center justify-center transition-all flex-shrink-0 ${
+                micState === "listening"
+                  ? "bg-[#DA4E24] text-white"
+                  : micState === "unavailable"
+                  ? "bg-transparent text-[#333] cursor-not-allowed"
+                  : "bg-transparent text-[#555] hover:text-[#DA4E24] transition-colors"
+              }`}
+              title={micState === "unavailable" ? "Voice input not supported" : micState === "listening" ? "Stop listening" : "Start voice input"}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                <line x1="12" y1="19" x2="12" y2="23" />
+                <line x1="8" y1="23" x2="16" y2="23" />
+              </svg>
+            </button>
+
+            {/* Input */}
+            <input
+              ref={inputRef}
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask Ultron what matters..."
+              className="flex-1 min-w-0 bg-transparent text-white text-[14px] sm:text-[15px] outline-none placeholder:text-[#555]"
+            />
+
+            {/* Send button */}
+            <button
+              type="submit"
+              disabled={!input.trim() || brainState === "thinking" || brainState === "dispatching"}
+              className="w-7 h-7 rounded-full bg-[#DA4E24] flex items-center justify-center hover:bg-[#e8633f] transition-colors flex-shrink-0 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="19" x2="12" y2="5" />
+                <polyline points="5 12 12 5 19 12" />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* ─── COMMAND CHIPS (Try Ultron style) ────────────── */}
+      <div className="flex flex-wrap justify-center gap-2.5 max-w-[800px] mx-auto">
+        {PREBUILT_COMMANDS.map((cmd) => (
+          <button
+            key={cmd}
+            onClick={() => handleChipClick(cmd)}
+            disabled={brainState === "thinking" || brainState === "dispatching"}
+            className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-5 py-1.5 hover:bg-[#DA4E24]/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            {cmd}
+          </button>
+        ))}
+      </div>
+
+      {/* ─── RESULTS ─────────────────────────────────────── */}
+      {activeCommand && showResults && (
+        <div ref={resultsRef} className="mt-20">
+          {/* ─── INTERPRETATION ────────────────────────────── */}
+          <div className="max-w-[900px] mx-auto mb-16">
+            <GlowCard>
+              <div className="p-6 sm:p-8 animate-fade-up">
+                <div className="mb-5">
+                  <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#555]">You asked</span>
+                  <p className="text-white font-bold text-lg mt-1">&ldquo;{activeCommand.input}&rdquo;</p>
+                </div>
+                <div className="border-t border-[#1a1a1a] pt-5">
+                  <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#DA4E24]">Ultron interprets</span>
+                  <ul className="mt-3 space-y-2">
+                    {activeCommand.interpretation.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2.5 text-sm text-[#999] leading-relaxed animate-fade-up" style={{ animationDelay: `${i * 0.08}s` }}>
+                        <span className="text-[#DA4E24] mt-0.5 flex-shrink-0">&rarr;</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </GlowCard>
+          </div>
+
+          {/* ─── ATTENTION SURFACE ─────────────────────────── */}
+          <div className="mb-16">
+            <div className="text-center mb-10">
+              <span className="inline-block text-xs font-semibold tracking-[0.12em] uppercase text-[#ccc] border border-[#333] rounded-full px-4 py-1.5">
+                ATTENTION SURFACE
+              </span>
+              <p className="mt-4 text-[#999] text-lg leading-relaxed">What the brain is pulling into focus.</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {activeCommand.attentionCards.map((card, i) => (
                 <AttentionCardComponent key={i} card={card} index={i} />
               ))}
             </div>
-          </section>
+          </div>
 
-          {/* ─── AUTONOMY / ESCALATION SPLIT ─────────────────── */}
-          <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="text-center mb-8">
-              <h2 className="text-sm font-bold text-[#999] uppercase tracking-widest mb-2">Intelligence Routing</h2>
-              <p className="text-[#555] text-sm">What Ultron handles, watches, and escalates.</p>
+          {/* ─── INTELLIGENCE ROUTING ──────────────────────── */}
+          <div className="mb-16">
+            <div className="text-center mb-10">
+              <span className="inline-block text-xs font-semibold tracking-[0.12em] uppercase text-[#ccc] border border-[#333] rounded-full px-4 py-1.5">
+                INTELLIGENCE ROUTING
+              </span>
+              <p className="mt-4 text-[#999] text-lg leading-relaxed">What Ultron handles, watches, and escalates.</p>
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              {/* Handled */}
-              <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-2xl p-5 animate-fade-up">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="w-2 h-2 rounded-full bg-green-500" />
-                  <h3 className="text-xs font-bold text-green-400 uppercase tracking-widest">Handled Automatically</h3>
-                </div>
-                <ul className="space-y-3">
-                  {activeCommand.handledAutomatically.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-[#999] animate-fade-up" style={{ animationDelay: `${i * 0.08}s` }}>
-                      <svg className="flex-shrink-0 w-4 h-4 text-green-500 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M20 6L9 17l-5-5" />
-                      </svg>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Watching */}
-              <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-2xl p-5 animate-fade-up" style={{ animationDelay: "0.1s" }}>
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="w-2 h-2 rounded-full bg-blue-500" />
-                  <h3 className="text-xs font-bold text-blue-400 uppercase tracking-widest">Watching</h3>
-                </div>
-                <ul className="space-y-3">
-                  {activeCommand.watchItems.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-[#999] animate-fade-up" style={{ animationDelay: `${(i + 2) * 0.08}s` }}>
-                      <svg className="flex-shrink-0 w-4 h-4 text-blue-400 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <circle cx="12" cy="12" r="3" />
-                      </svg>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Needs decision */}
-              <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-2xl p-5 animate-fade-up" style={{ animationDelay: "0.2s" }}>
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="w-2 h-2 rounded-full bg-[#DA4E24]" />
-                  <h3 className="text-xs font-bold text-[#DA4E24] uppercase tracking-widest">Needs Your Decision</h3>
-                </div>
-                <ul className="space-y-3">
-                  {activeCommand.founderDecisions.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-[#999] animate-fade-up" style={{ animationDelay: `${(i + 3) * 0.08}s` }}>
-                      <svg className="flex-shrink-0 w-4 h-4 text-[#DA4E24] mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                      </svg>
-                      {item.title}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              <RoutingColumn
+                dotColor="bg-green-500"
+                titleColor="text-green-400"
+                title="Handled Automatically"
+                icon={
+                  <svg className="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                }
+                items={activeCommand.handledAutomatically}
+              />
+              <RoutingColumn
+                dotColor="bg-blue-500"
+                titleColor="text-blue-400"
+                title="Watching"
+                delayOffset={2}
+                icon={
+                  <svg className="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                }
+                items={activeCommand.watchItems}
+              />
+              <RoutingColumn
+                dotColor="bg-[#DA4E24]"
+                titleColor="text-[#DA4E24]"
+                title="Needs Your Decision"
+                delayOffset={3}
+                icon={
+                  <svg className="w-4 h-4 text-[#DA4E24]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                  </svg>
+                }
+                items={activeCommand.founderDecisions}
+              />
             </div>
-          </section>
+          </div>
 
-          {/* ─── AGENT ACTIVATION STRIP ──────────────────────── */}
-          <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="text-center mb-8">
-              <h2 className="text-sm font-bold text-[#999] uppercase tracking-widest mb-2">Agent Activation</h2>
-              <p className="text-[#555] text-sm">The brain dispatches its capabilities.</p>
+          {/* ─── AGENT ACTIVATION ──────────────────────────── */}
+          <div className="mb-16">
+            <div className="text-center mb-10">
+              <span className="inline-block text-xs font-semibold tracking-[0.12em] uppercase text-[#ccc] border border-[#333] rounded-full px-4 py-1.5">
+                AGENT ACTIVATION
+              </span>
+              <p className="mt-4 text-[#999] text-lg leading-relaxed">The brain dispatches its capabilities.</p>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
               {activeCommand.agents.map((agent, i) => (
                 <AgentCard key={agent.id} agent={agent} index={i} />
               ))}
             </div>
-          </section>
+          </div>
 
-          {/* ─── DECISION QUEUE ──────────────────────────────── */}
-          <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="text-center mb-8">
-              <h2 className="text-sm font-bold text-[#999] uppercase tracking-widest mb-2">Decision Queue</h2>
-              <p className="text-[#555] text-sm">What Ultron brings to the founder.</p>
+          {/* ─── DECISION QUEUE ────────────────────────────── */}
+          <div className="max-w-[900px] mx-auto mb-16">
+            <div className="text-center mb-10">
+              <span className="inline-block text-xs font-semibold tracking-[0.12em] uppercase text-[#ccc] border border-[#333] rounded-full px-4 py-1.5">
+                DECISION QUEUE
+              </span>
+              <p className="mt-4 text-[#999] text-lg leading-relaxed">What Ultron brings to the founder.</p>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-5">
               {activeCommand.founderDecisions.map((decision, i) => (
                 <DecisionCardComponent key={i} decision={decision} index={i} />
               ))}
             </div>
-          </section>
+          </div>
 
-          {/* ─── COMPOUNDING OUTCOME PANEL ───────────────────── */}
-          <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="text-center mb-8">
-              <h2 className="text-sm font-bold text-[#999] uppercase tracking-widest mb-2">Outcome</h2>
-              <p className="text-[#555] text-sm">What this command produced.</p>
+          {/* ─── OUTCOME METRICS ───────────────────────────── */}
+          <div className="max-w-[900px] mx-auto">
+            <div className="text-center mb-10">
+              <span className="inline-block text-xs font-semibold tracking-[0.12em] uppercase text-[#ccc] border border-[#333] rounded-full px-4 py-1.5">
+                OUTCOME
+              </span>
+              <p className="mt-4 text-[#999] text-lg leading-relaxed">What this command produced.</p>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              <MetricCard label="Hours not spent" value={activeCommand.metrics.hoursNotSpent} suffix="h" active={showResults} />
-              <MetricCard label="Tasks absorbed" value={activeCommand.metrics.tasksAbsorbed} active={showResults} />
-              <MetricCard label="Signals watched" value={activeCommand.metrics.signalsUnderWatch} active={showResults} />
-              <MetricCard label="Pipeline recovered" value={activeCommand.metrics.pipelineRiskRecovered} active={showResults} />
-              <MetricCard label="Decisions simplified" value={activeCommand.metrics.decisionsSimplified} active={showResults} />
-              <MetricCard label="Follow-ups queued" value={activeCommand.metrics.followUpsQueued} active={showResults} />
-            </div>
-          </section>
+            <GlowCard>
+              <div className="p-8 sm:p-10">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8">
+                  <MetricCard label="Hours saved" value={activeCommand.metrics.hoursNotSpent} suffix="h" active={showResults} />
+                  <MetricCard label="Tasks absorbed" value={activeCommand.metrics.tasksAbsorbed} active={showResults} />
+                  <MetricCard label="Signals watched" value={activeCommand.metrics.signalsUnderWatch} active={showResults} />
+                  <MetricCard label="Pipeline recovered" value={activeCommand.metrics.pipelineRiskRecovered} active={showResults} />
+                  <MetricCard label="Decisions simplified" value={activeCommand.metrics.decisionsSimplified} active={showResults} />
+                  <MetricCard label="Follow-ups queued" value={activeCommand.metrics.followUpsQueued} active={showResults} />
+                </div>
+              </div>
+            </GlowCard>
+          </div>
         </div>
       )}
     </div>
