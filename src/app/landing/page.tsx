@@ -114,20 +114,20 @@ function FeatureCard({
 }) {
   return (
     <div className={`group relative rounded-2xl overflow-hidden ${className}`}>
-      {/* Animated orange glow border */}
-      <div className="absolute -inset-[1.5px] rounded-2xl z-0 overflow-hidden">
+      {/* Animated orange glow border — matches hero chatbox */}
+      <div className="absolute -inset-[1px] rounded-2xl overflow-hidden z-0">
         <div
           className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
           style={{
             background:
-              "conic-gradient(from 0deg, transparent 0%, transparent 60%, rgba(218,78,36,0.6) 72%, rgba(218,78,36,1) 80%, rgba(218,78,36,0.6) 88%, transparent 100%)",
+              "conic-gradient(from 0deg, transparent 0%, transparent 60%, rgba(218,78,36,0.35) 72%, rgba(218,78,36,0.6) 78%, rgba(218,78,36,0.35) 84%, transparent 100%)",
           }}
         />
       </div>
-      {/* Outer glow shadow */}
-      <div className="absolute -inset-px rounded-2xl shadow-[0_0_30px_rgba(218,78,36,0.06),0_0_60px_rgba(218,78,36,0.03)] z-0" />
+      {/* Outer subtle glow — matches hero chatbox */}
+      <div className="absolute -inset-px rounded-2xl shadow-[0_0_40px_rgba(218,78,36,0.08),0_0_80px_rgba(218,78,36,0.04)] z-0" />
       {/* Card content */}
-      <div className="relative z-10 rounded-2xl border border-[#333] bg-black overflow-hidden h-full">
+      <div className="relative z-10 rounded-2xl bg-[#0c0c0c] border border-[#1a1a1a] overflow-hidden h-full">
         {children}
       </div>
     </div>
@@ -307,7 +307,7 @@ export default function LandingPage() {
               </div>
 
               {/* Top row: 2 cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+              <div className="grid grid-cols-1 md:grid-cols-[0.65fr_1.35fr] gap-5 mb-5">
                 {/* OpenClaw Mission Control */}
                 <FeatureCard>
                   <div className="p-3">
@@ -350,7 +350,7 @@ export default function LandingPage() {
               </div>
 
               {/* Bottom row: 2 cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-[1.35fr_0.65fr] gap-5">
                 {/* Automation Empire Builder */}
                 <FeatureCard>
                   <div className="p-3">
