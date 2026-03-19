@@ -145,6 +145,40 @@ export default function LandingPage() {
           />
         </div>
 
+        {/* Grok-inspired glowing "ULTRON" watermark */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+          <div className="relative">
+            <span
+              className="text-[20vw] font-black tracking-tighter text-transparent hero-glow-text"
+              style={{
+                WebkitTextStroke: "1px rgba(218,78,36,0.06)",
+              }}
+            >
+              ULTRON
+            </span>
+            {/* Radial light burst behind text */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-[60%] h-[60%] rounded-full bg-[#DA4E24]/[0.03] blur-[100px] animate-hero-pulse" />
+            </div>
+          </div>
+        </div>
+
+        {/* Floating ambient particles */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 rounded-full bg-[#DA4E24] hero-particle"
+              style={{
+                left: `${15 + i * 14}%`,
+                top: `${20 + (i % 3) * 25}%`,
+                animationDelay: `${i * 0.8}s`,
+                opacity: 0.15 + (i % 3) * 0.1,
+              }}
+            />
+          ))}
+        </div>
+
         <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8">
           {/* Trust badge */}
           <div className="mb-6">
@@ -165,21 +199,19 @@ export default function LandingPage() {
             Delegate 70% of your work to Ultron in less than 10 minutes.
           </p>
 
-          {/* CTAs */}
-          <div className="flex items-center gap-4 mt-8">
-            <Link
-              href="https://app.51ultron.com/signup"
-              className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-6 py-2.5 hover:bg-[#DA4E24]/10 transition-colors"
-            >
-              Try for free
-            </Link>
-            <Link
-              href="/demo"
-              target="_blank"
-              className="text-sm font-semibold text-white border border-[#333] rounded-full px-6 py-2.5 hover:border-[#DA4E24]/50 hover:shadow-[0_0_12px_rgba(218,78,36,0.15)] transition-all"
-            >
-              See it in action
-            </Link>
+          {/* Inline agent stats — clean, minimal */}
+          <div className="grid grid-cols-4 gap-4 sm:flex sm:items-center sm:gap-8 mt-8">
+            {[
+              { value: "224", label: "Agents" },
+              { value: "6,747", label: "Tasks" },
+              { value: "54.8k", label: "API Calls" },
+              { value: "$109k", label: "Saved" },
+            ].map((stat) => (
+              <div key={stat.label} className="text-left">
+                <div className="text-xl font-bold text-white font-terminal">{stat.value}</div>
+                <div className="text-[11px] text-[#555] tracking-wide">{stat.label}</div>
+              </div>
+            ))}
           </div>
 
           {/* Animated chat box */}

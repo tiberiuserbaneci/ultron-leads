@@ -403,6 +403,35 @@ input[type="range"]:focus { outline: none; }
   }
 }
 
+/* ── Hero glowing watermark text ── */
+.hero-glow-text {
+  animation: heroTextGlow 6s ease-in-out infinite;
+}
+@keyframes heroTextGlow {
+  0%, 100% { opacity: 0.3; filter: blur(0px); }
+  50% { opacity: 0.5; filter: blur(1px); }
+}
+
+/* ── Hero ambient pulse ── */
+@keyframes heroPulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.15); }
+}
+.animate-hero-pulse {
+  animation: heroPulse 5s ease-in-out infinite;
+}
+
+/* ── Hero floating particles ── */
+@keyframes heroParticle {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  20% { opacity: 0.4; }
+  80% { opacity: 0.2; }
+  100% { transform: translateY(-120px) translateX(30px); opacity: 0; }
+}
+.hero-particle {
+  animation: heroParticle 6s ease-in-out infinite;
+}
+
 /* Brain results entrance */
 .brain-results > section {
   animation: fadeUp 0.5s ease-out both;

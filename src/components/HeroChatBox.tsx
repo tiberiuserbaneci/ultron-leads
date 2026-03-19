@@ -15,29 +15,198 @@ const PROMPTS = [
 ];
 
 const MODELS = [
-  { label: "Claude Sonnet 4", logo: "/logo claude.png" },
-  { label: "Claude Code", logo: "/logo claude code.png" },
+  { label: "Sonnet 4", logo: "/logo claude.png" },
+  { label: "Code", logo: "/logo claude code.png" },
   { label: "OpenClaw", logo: "/logo openclaw.png" },
 ];
 
 const TOOLS_MENU = [
-  { label: "Command Center", href: "https://work.51ultron.com/live/" },
-  { label: "Client Engine", href: "https://work.51ultron.com/client-engine/" },
-  { label: "Agents Map", href: "https://work.51ultron.com/agents-map/" },
-  { label: "ROI Calculator", href: "https://work.51ultron.com/calculator/" },
-  { label: "Resources", href: "https://catalinfetean.substack.com/" },
+  {
+    label: "Command Center",
+    href: "https://work.51ultron.com/live/",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+        <rect x="14" y="14" width="7" height="7" rx="1" />
+      </svg>
+    ),
+  },
+  {
+    label: "Client Engine",
+    href: "https://work.51ultron.com/client-engine/",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    ),
+  },
+  {
+    label: "Agents Map",
+    href: "https://work.51ultron.com/agents-map/",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
+      </svg>
+    ),
+  },
+  {
+    label: "ROI Calculator",
+    href: "https://work.51ultron.com/calculator/",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="4" y="2" width="16" height="20" rx="2" />
+        <line x1="8" y1="6" x2="16" y2="6" />
+        <line x1="8" y1="10" x2="10" y2="10" />
+        <line x1="14" y1="10" x2="16" y2="10" />
+        <line x1="8" y1="14" x2="10" y2="14" />
+        <line x1="14" y1="14" x2="16" y2="14" />
+        <line x1="8" y1="18" x2="16" y2="18" />
+      </svg>
+    ),
+  },
+  {
+    label: "Resources",
+    href: "https://catalinfetean.substack.com/",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      </svg>
+    ),
+  },
 ];
 
-function SparkleIcon({ className = "w-4 h-4" }: { className?: string }) {
+/* ─── Shared + button ─── */
+function PlusButton({
+  menuOpen,
+  onClick,
+}: {
+  menuOpen: boolean;
+  onClick: () => void;
+}) {
   return (
-    <svg className={className} viewBox="0 0 16 16" fill="none">
-      <path
-        d="M8 0L9.4 6.6L16 8L9.4 9.4L8 16L6.6 9.4L0 8L6.6 6.6L8 0Z"
-        fill="#DA4E24"
-      />
-    </svg>
+    <button
+      onClick={onClick}
+      className={`w-7 h-7 rounded-full flex items-center justify-center transition-all flex-shrink-0 ${
+        menuOpen
+          ? "bg-[#DA4E24] text-white"
+          : "bg-transparent text-[#555] border border-[#333] hover:border-[#555] hover:text-white"
+      }`}
+    >
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={`transition-transform duration-200 ${menuOpen ? "rotate-45" : ""}`}
+      >
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+    </button>
   );
 }
+
+/* ─── Shared send button ─── */
+function SendButton() {
+  return (
+    <a
+      href="https://app.51ultron.com"
+      className="w-7 h-7 rounded-full bg-[#DA4E24] flex items-center justify-center hover:bg-[#e8633f] transition-colors flex-shrink-0"
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="12" y1="19" x2="12" y2="5" />
+        <polyline points="5 12 12 5 19 12" />
+      </svg>
+    </a>
+  );
+}
+
+/* ─── Shared tools dropdown ─── */
+function ToolsDropdown({
+  onClose,
+  position = "bottom",
+}: {
+  onClose: () => void;
+  position?: "top" | "bottom";
+}) {
+  const posClass = position === "top"
+    ? "absolute bottom-full left-0 mb-2"
+    : "absolute top-full left-0 mt-2";
+
+  return (
+    <div className={`${posClass} w-52 bg-[#111] border border-[#222] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] overflow-hidden animate-fade-up z-50`}>
+      {TOOLS_MENU.map((item, i) => (
+        <a
+          key={item.label}
+          href={item.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={onClose}
+          className={`flex items-center gap-2.5 px-4 py-2.5 text-[13px] text-[#999] hover:bg-[#1a1a1a] hover:text-white transition-colors ${
+            i < TOOLS_MENU.length - 1 ? "border-b border-[#1a1a1a]" : ""
+          }`}
+        >
+          <span className="text-[#555] flex-shrink-0">{item.icon}</span>
+          {item.label}
+        </a>
+      ))}
+    </div>
+  );
+}
+
+/* ─── Model dropdown (shared) ─── */
+function ModelDropdown({
+  selectedModel,
+  onSelect,
+  position = "bottom",
+}: {
+  selectedModel: number;
+  onSelect: (i: number) => void;
+  position?: "top" | "bottom";
+}) {
+  const posClass = position === "top"
+    ? "absolute bottom-full mb-2"
+    : "absolute top-full mt-2";
+
+  return (
+    <div className={`${posClass} left-0 w-44 bg-[#111] border border-[#222] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] overflow-hidden animate-fade-up z-50`}>
+      {MODELS.map((model, i) => (
+        <button
+          key={model.label}
+          onClick={() => onSelect(i)}
+          className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] transition-colors ${
+            i === selectedModel
+              ? "text-white bg-[#1a1a1a]"
+              : "text-[#999] hover:bg-[#1a1a1a] hover:text-white"
+          } ${i < MODELS.length - 1 ? "border-b border-[#1a1a1a]" : ""}`}
+        >
+          <Image src={model.logo} alt="" width={16} height={16} className="rounded-sm flex-shrink-0" />
+          {model.label}
+          {i === selectedModel && (
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#DA4E24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-auto">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          )}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════ */
+/*                     MAIN COMPONENT                             */
+/* ═══════════════════════════════════════════════════════════════ */
 
 export default function HeroChatBox({
   onSwitchToWorkMode,
@@ -57,6 +226,8 @@ export default function HeroChatBox({
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const modelRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileModelRef = useRef<HTMLDivElement>(null);
 
   const typeNext = useCallback(() => {
     const currentPrompt = PROMPTS[promptIndex.current];
@@ -87,11 +258,13 @@ export default function HeroChatBox({
   useEffect(() => {
     if (!menuOpen && !modelOpen) return;
     const handleClick = (e: MouseEvent) => {
-      if (menuOpen && menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
+      if (menuOpen) {
+        const inMenu = menuRef.current?.contains(e.target as Node) || mobileMenuRef.current?.contains(e.target as Node);
+        if (!inMenu) setMenuOpen(false);
       }
-      if (modelOpen && modelRef.current && !modelRef.current.contains(e.target as Node)) {
-        setModelOpen(false);
+      if (modelOpen) {
+        const inModel = modelRef.current?.contains(e.target as Node) || mobileModelRef.current?.contains(e.target as Node);
+        if (!inModel) setModelOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClick);
@@ -112,58 +285,137 @@ export default function HeroChatBox({
     }
   };
 
+  /* ─── Typing text or input (shared) ─── */
+  const inputArea = (
+    <div className="relative flex-1 min-h-[24px]">
+      {!isUserTyping && !userText && (
+        <p className="text-[#666] text-[14px] md:text-[15px] leading-relaxed truncate">
+          {displayText}
+          <span className="inline-block w-[2px] h-[14px] bg-[#DA4E24] ml-[1px] align-middle animate-pulse" />
+        </p>
+      )}
+      {(isUserTyping || userText) && (
+        <input
+          type="text"
+          value={userText}
+          onChange={(e) => setUserText(e.target.value)}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className="w-full bg-transparent text-white text-[14px] md:text-[15px] outline-none placeholder:text-[#444]"
+          placeholder="Ask anything..."
+          autoFocus={isUserTyping}
+        />
+      )}
+      {!isUserTyping && (
+        <input
+          type="text"
+          onFocus={handleFocus}
+          className="absolute inset-0 w-full h-full bg-transparent opacity-0 cursor-text"
+          tabIndex={0}
+        />
+      )}
+    </div>
+  );
+
   return (
-    <div className="relative max-w-[600px] mx-auto">
-      {/* Gradient border + glow */}
-      <div className="rounded-2xl p-[1.5px] bg-gradient-to-b from-[#DA4E24]/60 via-[#DA4E24]/30 to-[#1F77F6]/40 shadow-[0_0_80px_rgba(218,78,36,0.2)]">
-        <div className="bg-[#0c0c0c] rounded-2xl p-5">
+    <>
+      {/* ═══ MOBILE: ChatGPT-style single line ═══ */}
+      <div className="md:hidden relative w-full mx-auto">
+        {/* Slim glow */}
+        <div className="absolute -inset-[1px] rounded-full overflow-hidden z-0">
+          <div
+            className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
+            style={{
+              background:
+                "conic-gradient(from 0deg, transparent 0%, transparent 60%, rgba(218,78,36,0.3) 72%, rgba(218,78,36,0.5) 78%, rgba(218,78,36,0.3) 84%, transparent 100%)",
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 bg-[#0c0c0c] rounded-full border border-[#1a1a1a] px-3 py-2 flex items-center gap-2.5">
+          {/* + button */}
+          <div className="relative" ref={mobileMenuRef}>
+            <PlusButton menuOpen={menuOpen} onClick={() => setMenuOpen(!menuOpen)} />
+            {menuOpen && <ToolsDropdown onClose={() => setMenuOpen(false)} position="top" />}
+          </div>
+
+          {/* Input */}
+          {inputArea}
+
+          {/* Model logo (tap to expand) */}
+          <div className="relative" ref={mobileModelRef}>
+            <button
+              onClick={() => setModelOpen(!modelOpen)}
+              className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-[#1a1a1a] transition-colors flex-shrink-0"
+            >
+              <Image
+                src={MODELS[selectedModel].logo}
+                alt=""
+                width={18}
+                height={18}
+                className="rounded-sm"
+              />
+            </button>
+            {modelOpen && (
+              <ModelDropdown
+                selectedModel={selectedModel}
+                onSelect={(i) => { setSelectedModel(i); setModelOpen(false); }}
+                position="top"
+              />
+            )}
+          </div>
+
+          {/* Send */}
+          <SendButton />
+        </div>
+      </div>
+
+      {/* ═══ DESKTOP: Full multi-row layout ═══ */}
+      <div className="hidden md:block relative w-full max-w-[720px] mx-auto">
+        {/* Slim animated glow border */}
+        <div className="absolute -inset-[1px] rounded-2xl overflow-hidden z-0">
+          <div
+            className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
+            style={{
+              background:
+                "conic-gradient(from 0deg, transparent 0%, transparent 60%, rgba(218,78,36,0.35) 72%, rgba(218,78,36,0.6) 78%, rgba(218,78,36,0.35) 84%, transparent 100%)",
+            }}
+          />
+        </div>
+
+        {/* Outer subtle glow */}
+        <div className="absolute -inset-px rounded-2xl shadow-[0_0_40px_rgba(218,78,36,0.08),0_0_80px_rgba(218,78,36,0.04)] z-0" />
+
+        <div className="relative z-10 bg-[#0c0c0c] rounded-2xl p-5 border border-[#1a1a1a]">
           {/* Top row: model selector + globe */}
           <div className="flex items-center gap-3 mb-4">
             <div className="relative" ref={modelRef}>
               <button
                 onClick={() => setModelOpen(!modelOpen)}
-                className="flex items-center gap-2 border border-[#333] rounded-full px-3 py-1.5 hover:border-[#555] transition-colors"
+                className="flex items-center gap-2 border border-[#262626] rounded-full px-3 py-1.5 hover:border-[#444] transition-colors"
               >
                 <Image
                   src={MODELS[selectedModel].logo}
                   alt=""
-                  width={16}
-                  height={16}
+                  width={14}
+                  height={14}
                   className="rounded-sm"
                 />
-                <span className="text-sm font-medium text-white">{MODELS[selectedModel].label}</span>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className={`text-[#666] transition-transform ${modelOpen ? "rotate-180" : ""}`}>
+                <span className="text-[13px] font-medium text-[#ccc]">{MODELS[selectedModel].label}</span>
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="none" className={`text-[#555] transition-transform ${modelOpen ? "rotate-180" : ""}`}>
                   <path d="M3 5L6 8L9 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
 
-              {/* Model dropdown */}
               {modelOpen && (
-                <div className="absolute top-full left-0 mt-2 w-52 bg-[#0a0a0a] border border-[#222] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] overflow-hidden animate-fade-up z-50">
-                  {MODELS.map((model, i) => (
-                    <button
-                      key={model.label}
-                      onClick={() => { setSelectedModel(i); setModelOpen(false); }}
-                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${
-                        i === selectedModel
-                          ? "text-white bg-[#1a1a1a]"
-                          : "text-[#ccc] hover:bg-[#1a1a1a] hover:text-white"
-                      } ${i < MODELS.length - 1 ? "border-b border-[#1a1a1a]" : ""}`}
-                    >
-                      <Image src={model.logo} alt="" width={18} height={18} className="rounded-sm flex-shrink-0" />
-                      {model.label}
-                      {i === selectedModel && (
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DA4E24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-auto">
-                          <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                      )}
-                    </button>
-                  ))}
-                </div>
+                <ModelDropdown
+                  selectedModel={selectedModel}
+                  onSelect={(i) => { setSelectedModel(i); setModelOpen(false); }}
+                />
               )}
             </div>
             {/* Globe icon */}
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-[#555]">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-[#444]">
               <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
               <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10A15.3 15.3 0 0112 2z" stroke="currentColor" strokeWidth="1.5" />
             </svg>
@@ -172,7 +424,7 @@ export default function HeroChatBox({
           {/* Text input area */}
           <div className="relative mb-5 min-h-[32px]">
             {!isUserTyping && !userText && (
-              <p className="text-[#999] text-[15px] leading-relaxed">
+              <p className="text-[#666] text-[15px] leading-relaxed">
                 {displayText}
                 <span className="inline-block w-[2px] h-[16px] bg-[#DA4E24] ml-[1px] align-middle animate-pulse" />
               </p>
@@ -184,7 +436,7 @@ export default function HeroChatBox({
                 onChange={(e) => setUserText(e.target.value)}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
-                className="w-full bg-transparent text-white text-[15px] outline-none placeholder:text-[#555]"
+                className="w-full bg-transparent text-white text-[15px] outline-none placeholder:text-[#444]"
                 placeholder="Ask Ultron anything..."
                 autoFocus={isUserTyping}
               />
@@ -199,96 +451,43 @@ export default function HeroChatBox({
             )}
           </div>
 
-          {/* Bottom row: + menu + work mode */}
+          {/* Bottom row: + menu + action */}
           <div className="flex items-center justify-between">
             {/* + Button with dropdown */}
             <div className="relative" ref={menuRef}>
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-                  menuOpen
-                    ? "bg-[#DA4E24] text-white"
-                    : "bg-[#1a1a1a] text-[#999] border border-[#333] hover:border-[#555] hover:text-white"
-                }`}
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className={`transition-transform duration-200 ${menuOpen ? "rotate-45" : ""}`}
-                >
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
-              </button>
-
-              {/* Dropdown */}
-              {menuOpen && (
-                <div className="absolute bottom-full left-0 mb-2 w-56 bg-[#0a0a0a] border border-[#222] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] overflow-hidden animate-fade-up z-50">
-                  {TOOLS_MENU.map((item, i) => (
-                    <a
-                      key={item.label}
-                      href={item.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => setMenuOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-3 text-sm text-[#ccc] hover:bg-[#1a1a1a] hover:text-white transition-colors ${
-                        i < TOOLS_MENU.length - 1 ? "border-b border-[#1a1a1a]" : ""
-                      }`}
-                    >
-                        {item.label}
-                    </a>
-                  ))}
-                </div>
-              )}
+              <PlusButton menuOpen={menuOpen} onClick={() => setMenuOpen(!menuOpen)} />
+              {menuOpen && <ToolsDropdown onClose={() => setMenuOpen(false)} position="top" />}
             </div>
 
-            {/* Switch to Work Mode / Back to Overview */}
+            {/* Apple-inspired right side action */}
             {onSwitchToWorkMode && (
               <button
                 onClick={onSwitchToWorkMode}
-                className={`group flex items-center gap-2 text-sm font-semibold rounded-lg px-4 py-2 transition-all ${
-                  demoMode
-                    ? "text-[#999] border border-[#333] hover:border-[#555] hover:text-white"
-                    : "text-white bg-gradient-to-r from-[#DA4E24] to-[#e8633f] shadow-[0_0_20px_rgba(218,78,36,0.4)] hover:shadow-[0_0_28px_rgba(218,78,36,0.6)] animate-pulse-soft"
-                }`}
+                className="group flex items-center gap-1.5 text-[13px] text-[#666] hover:text-white transition-colors"
               >
                 {demoMode ? (
                   <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="15 18 9 12 15 6" />
                     </svg>
-                    Back to overview
+                    <span>Overview</span>
                   </>
                 ) : (
                   <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 transition-transform">
-                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                    <span>Work Mode</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 transition-transform">
+                      <polyline points="9 18 15 12 9 6" />
                     </svg>
-                    Switch to Work Mode
                   </>
                 )}
               </button>
             )}
 
-            {/* Fallback: plain Send when not on landing page */}
-            {!onSwitchToWorkMode && (
-              <a
-                href="https://app.51ultron.com"
-                className="flex items-center gap-2 text-sm font-semibold text-white bg-gradient-to-r from-[#DA4E24]/20 to-[#DA4E24]/10 border border-[#DA4E24]/50 rounded-lg px-4 py-2 hover:from-[#DA4E24]/30 hover:to-[#DA4E24]/20 transition-all"
-              >
-                <SparkleIcon className="w-3.5 h-3.5" />
-                Send
-              </a>
-            )}
+            {/* Fallback: send arrow */}
+            {!onSwitchToWorkMode && <SendButton />}
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -27,7 +27,7 @@ const config: Config = {
         "fade-in": "fadeIn 0.4s ease-out forwards",
         "slide-up": "slideUp 0.4s ease-out forwards",
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "glow-spin": "glowSpin 6s linear infinite",
+        "glow-spin": "glowSpin 4s linear infinite",
       },
       keyframes: {
         fadeIn: {
