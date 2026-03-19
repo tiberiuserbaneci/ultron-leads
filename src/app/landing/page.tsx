@@ -113,8 +113,8 @@ function FeatureCard({
   className?: string;
 }) {
   return (
-    <div className={`group relative rounded-2xl overflow-hidden ${className}`}>
-      {/* Animated orange glow border — matches hero chatbox */}
+    <div className={`group relative rounded-2xl ${className}`}>
+      {/* Animated orange glow border — same as hero chatbox */}
       <div className="absolute -inset-[1px] rounded-2xl overflow-hidden z-0">
         <div
           className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
@@ -124,10 +124,10 @@ function FeatureCard({
           }}
         />
       </div>
-      {/* Outer subtle glow — matches hero chatbox */}
+      {/* Outer subtle glow */}
       <div className="absolute -inset-px rounded-2xl shadow-[0_0_40px_rgba(218,78,36,0.08),0_0_80px_rgba(218,78,36,0.04)] z-0" />
       {/* Card content */}
-      <div className="relative z-10 rounded-2xl bg-black overflow-hidden h-full">
+      <div className="relative z-10 rounded-2xl bg-black border border-[#222] overflow-hidden h-full flex flex-col">
         {children}
       </div>
     </div>
@@ -306,17 +306,17 @@ export default function LandingPage() {
                 </p>
               </div>
 
-              {/* Top row: 2 cards */}
-              <div className="grid grid-cols-1 md:grid-cols-[0.65fr_1.35fr] gap-5 mb-5">
+              {/* Top row: 2 cards — Framer: 455px / 661px, height ~492px */}
+              <div className="grid grid-cols-1 md:grid-cols-[455fr_661fr] md:grid-rows-[492px] gap-5 mb-5">
                 {/* OpenClaw Mission Control */}
                 <FeatureCard>
-                  <div className="p-3">
-                    <div className="aspect-[16/10] relative rounded-xl overflow-hidden">
+                  <div className="flex-1 p-3">
+                    <div className="relative rounded-xl overflow-hidden h-full">
                       <Image
                         src="/Group 2147204318@3x.png"
                         alt="OpenClaw Mission Control"
                         fill
-                        className="object-cover"
+                        className="object-contain object-left-bottom"
                       />
                     </div>
                   </div>
@@ -330,13 +330,13 @@ export default function LandingPage() {
 
                 {/* AI Sales Engine */}
                 <FeatureCard>
-                  <div className="p-3">
-                    <div className="aspect-[16/10] relative rounded-xl overflow-hidden">
+                  <div className="flex-1 p-3">
+                    <div className="relative rounded-xl overflow-hidden h-full">
                       <Image
                         src="/Group 1321314679@3x.png"
                         alt="AI Sales Engine"
                         fill
-                        className="object-cover"
+                        className="object-contain object-center"
                       />
                     </div>
                   </div>
@@ -349,17 +349,17 @@ export default function LandingPage() {
                 </FeatureCard>
               </div>
 
-              {/* Bottom row: 2 cards */}
-              <div className="grid grid-cols-1 md:grid-cols-[1.35fr_0.65fr] gap-5">
+              {/* Bottom row: 2 cards — Framer: 739px / 375px, height ~492px */}
+              <div className="grid grid-cols-1 md:grid-cols-[739fr_375fr] md:grid-rows-[492px] gap-5">
                 {/* Automation Empire Builder */}
                 <FeatureCard>
-                  <div className="p-3">
-                    <div className="aspect-[16/9] md:aspect-[2/1] relative rounded-xl overflow-hidden">
+                  <div className="flex-1 p-3">
+                    <div className="relative rounded-xl overflow-hidden h-full">
                       <Image
                         src="/Group 1321314678@3x.png"
                         alt="Automation Empire Builder"
                         fill
-                        className="object-cover"
+                        className="object-contain object-center"
                       />
                     </div>
                   </div>
@@ -373,13 +373,13 @@ export default function LandingPage() {
 
                 {/* Viral-Ready Playbooks */}
                 <FeatureCard>
-                  <div className="p-3">
-                    <div className="aspect-[16/9] md:aspect-[2/1] relative rounded-xl overflow-hidden">
+                  <div className="flex-1 p-3">
+                    <div className="relative rounded-xl overflow-hidden h-full">
                       <Image
                         src="/Group 1321314677@3x.png"
                         alt="Viral-Ready Playbooks"
                         fill
-                        className="object-cover"
+                        className="object-contain object-center"
                       />
                     </div>
                   </div>
