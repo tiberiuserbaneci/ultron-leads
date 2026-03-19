@@ -418,149 +418,95 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* Delegate Sales card */}
-          <FeatureCard className="p-8 lg:p-12">
-            <div className="grid lg:grid-cols-2 gap-10 items-center">
-              {/* Left: text */}
-              <div>
-                <h3 className="text-3xl sm:text-4xl font-bold mb-4">Delegate Sales</h3>
-                <p className="text-[#999] text-[15px] leading-relaxed mb-8">
-                  Find your ideal customers, write personalized outreach, and close deals. All from one chat.
-                </p>
-                <div className="flex flex-col gap-4">
-                  <Bullet>Find and score leads in seconds</Bullet>
-                  <Bullet>Personalized cold emails that convert</Bullet>
-                  <Bullet>Automated follow-ups until they book</Bullet>
-                </div>
-              </div>
-
-              {/* Right: Actions menu mockup */}
-              <div className="relative">
-                <div
-                  className="rounded-2xl overflow-hidden border border-[#222]"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, rgba(218,78,36,0.08) 0%, #0a0a0a 40%, rgba(31,119,246,0.06) 100%)",
-                  }}
-                >
-                  <div className="p-6">
-                    {/* Search bar */}
-                    <div className="bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 mb-4">
-                      <span className="text-sm text-[#666]">
-                        <span className="text-[#444] mr-1">|</span> Actions
-                      </span>
+          {/* Sticky stacking cards */}
+          <div className="space-y-8">
+            {/* Delegate Sales */}
+            <div className="lg:sticky lg:top-24" style={{ zIndex: 10 }}>
+              <FeatureCard>
+                <div className="grid lg:grid-cols-2 gap-0 items-stretch">
+                  {/* Left: text */}
+                  <div className="p-8 lg:p-12 flex flex-col justify-center">
+                    <h3 className="text-3xl sm:text-4xl font-bold mb-4">Delegate Sales</h3>
+                    <p className="text-[#999] text-[15px] leading-relaxed mb-8">
+                      Find your ideal customers, write personalized outreach, and close deals. All from one chat.
+                    </p>
+                    <div className="flex flex-col gap-4">
+                      <Bullet>Find and score leads in seconds</Bullet>
+                      <Bullet>Personalized cold emails that convert</Bullet>
+                      <Bullet>Automated follow-ups until they book</Bullet>
                     </div>
-                    {/* Action items */}
-                    <div className="flex flex-col gap-1">
-                      {[
-                        { icon: "🟦", label: "Create Email Draft", color: "#1F77F6" },
-                        { icon: "💬", label: "Send WhatsApp", color: "#25D366" },
-                        { icon: "🔶", label: "Create Hubspot Contact", color: "#FF7A59" },
-                        { icon: "📅", label: "Cancel Meeting", color: "#4285F4" },
-                        { icon: "🔴", label: "Create Issue", color: "#DA4E24" },
-                      ].map((action) => (
-                        <div
-                          key={action.label}
-                          className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#1a1a1a] transition-colors cursor-pointer"
-                        >
-                          <span className="text-base">{action.icon}</span>
-                          <span className="text-sm text-[#ccc]">{action.label}</span>
-                        </div>
-                      ))}
+                  </div>
+                  {/* Right: Image */}
+                  <div className="relative aspect-[4/3] lg:aspect-auto">
+                    <Image
+                      src="/delegate-sales.png"
+                      alt="Delegate Sales"
+                      fill
+                      className="object-cover lg:rounded-r-2xl"
+                    />
+                  </div>
+                </div>
+              </FeatureCard>
+            </div>
+
+            {/* Build Workforces */}
+            <div className="lg:sticky lg:top-28" style={{ zIndex: 11 }}>
+              <FeatureCard>
+                <div className="grid lg:grid-cols-2 gap-0 items-stretch">
+                  {/* Left: Image */}
+                  <div className="relative aspect-[4/3] lg:aspect-auto">
+                    <Image
+                      src="/build-workforces.png"
+                      alt="Build Workforces"
+                      fill
+                      className="object-cover lg:rounded-l-2xl"
+                    />
+                  </div>
+                  {/* Right: Text */}
+                  <div className="p-8 lg:p-12 flex flex-col justify-center">
+                    <h3 className="text-3xl sm:text-4xl font-bold mb-4">Build Workforces</h3>
+                    <p className="text-[#999] text-[15px] leading-relaxed mb-8">
+                      Deploy AI agents and automation workflows. Use them to run your business or sell them to clients.
+                    </p>
+                    <div className="flex flex-col gap-4">
+                      <Bullet>Deploy unlimited AI agents</Bullet>
+                      <Bullet>Pre-built automation templates</Bullet>
+                      <Bullet>Sell agents as a product</Bullet>
                     </div>
                   </div>
                 </div>
-              </div>
+              </FeatureCard>
             </div>
-          </FeatureCard>
-        </div>
-      </section>
 
-      {/* ─── BUILD WORKFORCES + GO VIRAL ─── */}
-      <section className="py-24 lg:py-32">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-8 space-y-5">
-          {/* Build Workforces */}
-          <FeatureCard className="p-8 lg:p-12">
-            <div className="grid lg:grid-cols-2 gap-10 items-center">
-              {/* Left: Workflow diagram */}
-              <div
-                className="rounded-2xl overflow-hidden border border-[#222] p-8 relative"
-                style={{
-                  background:
-                    "linear-gradient(135deg, rgba(31,119,246,0.1) 0%, #0a0a0a 30%, rgba(218,78,36,0.08) 70%, rgba(218,78,36,0.15) 100%)",
-                }}
-              >
-                {/* Ultron logo orb */}
-                <div className="flex justify-center mb-6">
-                  <div className="w-14 h-14 rounded-xl bg-[#111] border border-[#333] flex items-center justify-center">
-                    <Image src="/logo.png" alt="" width={28} height={28} className="rounded-sm" />
+            {/* Go Viral */}
+            <div className="lg:sticky lg:top-32" style={{ zIndex: 12 }}>
+              <FeatureCard>
+                <div className="grid lg:grid-cols-2 gap-0 items-stretch">
+                  {/* Left: text */}
+                  <div className="p-8 lg:p-12 flex flex-col justify-center">
+                    <h3 className="text-3xl sm:text-4xl font-bold mb-4">Go Viral</h3>
+                    <p className="text-[#999] text-[15px] leading-relaxed mb-8">
+                      Scrape viral content, extract what works, and generate original posts in your voice. Every platform. Every day.
+                    </p>
+                    <div className="flex flex-col gap-4">
+                      <Bullet>Viral content research on autopilot</Bullet>
+                      <Bullet>Original posts in your voice</Bullet>
+                      <Bullet>Multi-platform publishing</Bullet>
+                    </div>
+                  </div>
+                  {/* Right: Image */}
+                  <div className="relative aspect-[4/3] lg:aspect-auto">
+                    <Image
+                      src="/go-viral.png"
+                      alt="Go Viral"
+                      fill
+                      className="object-cover lg:rounded-r-2xl"
+                    />
                   </div>
                 </div>
-
-                {/* Workflow steps */}
-                <div className="flex flex-col items-center gap-3">
-                  {[
-                    { label: "Ultron", accent: true },
-                    { label: "Workflows", accent: false },
-                    { label: "Execution schedule", accent: false },
-                    { label: "Deployment", accent: false },
-                  ].map((step) => (
-                    <div
-                      key={step.label}
-                      className={`w-full max-w-[280px] text-center py-3 px-6 rounded-xl border text-sm font-medium ${
-                        step.accent
-                          ? "bg-gradient-to-r from-[#DA4E24] to-[#1F77F6] border-transparent text-white"
-                          : "bg-[#111] border-[#333] text-[#ccc]"
-                      }`}
-                    >
-                      {step.label}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Right: Text */}
-              <div>
-                <h3 className="text-3xl sm:text-4xl font-bold mb-4">Build Workforces</h3>
-                <p className="text-[#999] text-[15px] leading-relaxed mb-8">
-                  Deploy AI agents and automation workflows. Use them to run your business or sell them to clients.
-                </p>
-                <div className="flex flex-col gap-4">
-                  <Bullet>Deploy unlimited AI agents</Bullet>
-                  <Bullet>Pre-built automation templates</Bullet>
-                  <Bullet>Sell agents as a product</Bullet>
-                </div>
-              </div>
+              </FeatureCard>
             </div>
-          </FeatureCard>
-
-          {/* Go Viral */}
-          <FeatureCard className="p-8 lg:p-12">
-            <div className="grid lg:grid-cols-2 gap-10 items-center">
-              {/* Left: Text */}
-              <div>
-                <h3 className="text-3xl sm:text-4xl font-bold mb-4">Go Viral</h3>
-                <p className="text-[#999] text-[15px] leading-relaxed mb-8">
-                  Scrape viral content, extract what works, and generate original posts in your voice. Every platform. Every day.
-                </p>
-                <div className="flex flex-col gap-4">
-                  <Bullet>Viral content research on autopilot</Bullet>
-                  <Bullet>Original posts in your voice</Bullet>
-                  <Bullet>Multi-platform publishing</Bullet>
-                </div>
-              </div>
-
-              {/* Right: Chat image */}
-              <div className="relative aspect-square max-h-[400px]">
-                <Image
-                  src="/Group 1321314683@3x.png"
-                  alt="Go Viral conversation"
-                  fill
-                  className="object-contain rounded-2xl"
-                />
-              </div>
-            </div>
-          </FeatureCard>
+          </div>
         </div>
       </section>
 
@@ -581,24 +527,13 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-3 gap-5">
             {/* Step 1: You talk to Ultron */}
             <FeatureCard>
-              <div
-                className="aspect-[4/3] relative p-6 flex flex-col justify-center"
-                style={{
-                  background:
-                    "linear-gradient(135deg, rgba(218,78,36,0.1) 0%, #0a0a0a 60%, rgba(31,119,246,0.06) 100%)",
-                }}
-              >
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3 bg-[#1a1a1a] border border-[#333] rounded-xl px-4 py-3 max-w-[220px]">
-                    <span className="text-amber-400">⚡</span>
-                    <span className="text-sm text-[#ccc]">When this happen</span>
-                  </div>
-                  <div className="w-px h-6 bg-[#333] ml-6" />
-                  <div className="flex items-center gap-3 bg-[#1a1a1a] border border-[#333] rounded-xl px-4 py-3 max-w-[220px]">
-                    <span className="text-white">🌑</span>
-                    <span className="text-sm text-[#ccc]">Do this</span>
-                  </div>
-                </div>
+              <div className="aspect-[4/3] relative overflow-hidden rounded-t-2xl">
+                <Image
+                  src="/youtalktoultron.png"
+                  alt="You talk to Ultron"
+                  fill
+                  className="object-cover"
+                />
               </div>
               <div className="p-6">
                 <h3 className="text-lg font-bold mb-2">
@@ -612,23 +547,13 @@ export default function LandingPage() {
 
             {/* Step 2: Connect your apps */}
             <FeatureCard>
-              <div
-                className="aspect-[4/3] relative p-6 flex items-center justify-center"
-                style={{
-                  background:
-                    "linear-gradient(135deg, rgba(31,119,246,0.08) 0%, #0a0a0a 60%, rgba(218,78,36,0.06) 100%)",
-                }}
-              >
-                <div className="grid grid-cols-3 gap-4">
-                  {["🟣", "🦋", "❇️", "🔷", "✦", "🔶"].map((icon, i) => (
-                    <div
-                      key={i}
-                      className="w-14 h-14 rounded-xl bg-[#1a1a1a] border border-[#333] flex items-center justify-center text-xl"
-                    >
-                      {icon}
-                    </div>
-                  ))}
-                </div>
+              <div className="aspect-[4/3] relative overflow-hidden rounded-t-2xl">
+                <Image
+                  src="/connectyourapps.png"
+                  alt="Connect your apps"
+                  fill
+                  className="object-cover"
+                />
               </div>
               <div className="p-6">
                 <h3 className="text-lg font-bold mb-2">
@@ -642,18 +567,13 @@ export default function LandingPage() {
 
             {/* Step 3: Ultron executes 24/7 */}
             <FeatureCard>
-              <div
-                className="aspect-[4/3] relative p-6 flex items-center justify-center"
-                style={{
-                  background:
-                    "linear-gradient(135deg, rgba(218,78,36,0.06) 0%, #0a0a0a 60%, rgba(31,119,246,0.1) 100%)",
-                }}
-              >
-                <div className="w-20 h-20 rounded-2xl bg-[#111] border border-[#333] flex items-center justify-center shadow-lg shadow-[#DA4E24]/10">
-                  <svg className="w-10 h-10 text-[#DA4E24]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
+              <div className="aspect-[4/3] relative overflow-hidden rounded-t-2xl">
+                <Image
+                  src="/ultronexecutes24:7.png"
+                  alt="Ultron executes 24/7"
+                  fill
+                  className="object-cover"
+                />
               </div>
               <div className="p-6">
                 <h3 className="text-lg font-bold mb-2">
