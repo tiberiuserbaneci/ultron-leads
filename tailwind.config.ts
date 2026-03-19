@@ -28,6 +28,7 @@ const config: Config = {
         "slide-up": "slideUp 0.4s ease-out forwards",
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "glow-spin": "glowSpin 4s linear infinite",
+        "logo-spin": "logoSpin 8s linear infinite",
       },
       keyframes: {
         fadeIn: {
@@ -41,6 +42,10 @@ const config: Config = {
         glowSpin: {
           from: { transform: "rotate(0deg)" },
           to: { transform: "rotate(360deg)" },
+        },
+        logoSpin: {
+          from: { transform: "rotateY(0deg)" },
+          to: { transform: "rotateY(360deg)" },
         },
       },
     },
