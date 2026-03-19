@@ -57,7 +57,6 @@ function HeroStats() {
     <>
       {stats.map((stat) => (
         <span key={stat.label} className={`inline-flex items-center gap-1.5 text-[14px] sm:text-[15px] ${stat.mobileHide ? "hidden sm:inline-flex" : ""}`}>
-          <span className="w-px h-4 bg-[#444]" />
           <span ref={stat.ref} className="text-white font-semibold tabular-nums">{stat.format(stat.value)}</span>
           <span className="text-[#e0e0e0]">{stat.label}</span>
         </span>
@@ -67,41 +66,6 @@ function HeroStats() {
 }
 
 /* ───────────────────────── Landing Nav ───────────────────────── */
-function LandingNav() {
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-[60] border-b border-[#1a1a1a] bg-black/90 backdrop-blur-md">
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/landing" className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="Ultron" width={32} height={32} className="rounded-sm" />
-            <span className="font-bold text-white text-lg tracking-tight">Ultron</span>
-          </Link>
-
-          {/* Center links */}
-          <div className="hidden md:flex items-center gap-8">
-            {["How it works", "Pricing", "Documentation", "Resources", "DealMaker"].map((l) => (
-              <a key={l} href="#" className="text-sm text-[#999] hover:text-white transition-colors">
-                {l}
-              </a>
-            ))}
-          </div>
-
-          {/* CTA */}
-          <div className="flex items-center gap-3">
-            <Link
-              href="https://app.51ultron.com/signup"
-              className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-5 py-1.5 hover:bg-[#DA4E24]/10 transition-colors"
-            >
-              Try Ultron
-            </Link>
-          </div>
-        </div>
-      </div>
-    </nav>
-  );
-}
-
 /* ───────────────────────── Sparkle Icon ───────────────────────── */
 function SparkleIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
@@ -175,8 +139,7 @@ export default function LandingPage() {
   const [demoMode, setDemoMode] = useState(false);
 
   return (
-    <div className="-mt-14 bg-black text-white">
-      <LandingNav />
+    <div className="bg-black text-white">
 
       {/* ─── HERO ─── */}
       <section className="relative min-h-screen pt-40 sm:pt-48 pb-32 overflow-hidden">
@@ -248,8 +211,8 @@ export default function LandingPage() {
               <br />
               without scaling headcount
             </h1>
-            {/* Mobile heading — different copy */}
-            <h1 className="sm:hidden text-[40px] font-semibold leading-[1.12] tracking-tight text-white">
+            {/* Mobile heading — different copy, BIG */}
+            <h1 className="sm:hidden text-[52px] font-bold leading-[1.08] tracking-tight text-white">
               100x Your
               <br />
               Founder-Led
@@ -262,18 +225,17 @@ export default function LandingPage() {
               Hire AI employees, set goals and go from zero to autonomous company in one command.
             </p>
 
-            {/* Stats bar — transparent box with clean border */}
-            <div className="mt-8 inline-flex items-center gap-4 sm:gap-5 border border-[#333] rounded-full px-5 py-2.5">
+            {/* Stats bar — transparent box with clean border, no separators */}
+            <div className="mt-8 inline-flex flex-wrap items-center gap-5 sm:gap-7 border border-[#333] rounded-full px-6 py-2.5">
               <span className="text-[14px] sm:text-[15px] text-[#e0e0e0]">
                 <span className="text-white font-semibold">2,000+</span> founders
               </span>
-              <span className="w-px h-4 bg-[#444]" />
               <HeroStats />
             </div>
           </div>
 
           {/* Animated chat box with ambient glow */}
-          <div className="relative mt-14 sm:mt-32">
+          <div className="relative mt-20 sm:mt-36">
             {/* Orange ambient glow behind chatbox */}
             <div className="absolute -inset-20 pointer-events-none">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full bg-[#DA4E24]/[0.12] blur-[150px]" />

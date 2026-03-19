@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="bg-black text-white min-h-screen">
         <Nav />
-        <main className="pt-14">
+        <main className="pt-16">
           {children}
         </main>
         <script
