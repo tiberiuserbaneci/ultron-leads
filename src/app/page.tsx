@@ -6,6 +6,11 @@ import FounderTerminal from "@/components/FounderTerminal";
 
 const diagnosticOptions = [
   {
+    pain: "I want to see Ultron work before I commit",
+    sub: "Watch agents execute real business tasks in real time",
+    route: "/demo",
+  },
+  {
     pain: "I'm doing everything myself and there aren't enough hours",
     sub: "See the 5-agent architecture that replaces a full team",
     route: "/blueprint",
@@ -40,9 +45,20 @@ const diagnosticOptions = [
     sub: "See the 4 levels of AI automation and where you stand",
     route: "/levels",
   },
+  {
+    pain: "I want to see every agent a business needs",
+    sub: "The complete map of 32 agents across 7 departments",
+    route: "/agents-map",
+  },
+  {
+    pain: "I want to build the exact growth engine my business needs",
+    sub: "6 prebuilt engines. See what activates, what gets replaced, how it compounds.",
+    route: "/client-engine",
+  },
 ];
 
 const allResources = [
+  { route: "/demo", title: "Interactive Demo", tag: "Live Demo", desc: "Pick a command. Watch 5 AI agents execute in real time." },
   { route: "/blueprint", title: "The 5-Agent Blueprint", tag: "Architecture", desc: "Interactive diagram. 5 agents. $20K team for $19/month." },
   { route: "/72hours", title: "72 Hours of Ultron", tag: "Real Logs", desc: "50+ timestamped entries. Zero human input." },
   { route: "/calculator", title: "AI Team ROI Calculator", tag: "Interactive", desc: "Calculate the real cost of doing everything manually." },
@@ -50,6 +66,10 @@ const allResources = [
   { route: "/competitor", title: "Your Competitor's AI Stack in 2026", tag: "Reality Check", desc: "Monday morning to end of quarter. Them vs you." },
   { route: "/assess", title: "Business Automation Assessment", tag: "Quiz", desc: "10 questions. Find out what's missing in your stack." },
   { route: "/levels", title: "The 4 Levels of AI Automation", tag: "Framework", desc: "Self-assess your level. Understand the gap. See the bridge." },
+  { route: "/agents-map", title: "The Complete AI Agent Map", tag: "Agent Map", desc: "32 agents across 7 departments. Click any to see what it replaces." },
+  { route: "/live", title: "Ultron Command Center", tag: "Dashboard", desc: "Real-time dashboard. Every agent, every metric, every insight. The CEO view." },
+  { route: "/client-engine", title: "Client Engine", tag: "Strategy", desc: "6 growth engines. Pick one, see what activates, what gets replaced, and how it compounds." },
+  { route: "/claude-skills", title: "Claude Skills Library", tag: "Free Resource", desc: "12 production-ready skills for Claude Code. Browse, inspect, and download the full pack." },
 ];
 
 export default function HomePage() {

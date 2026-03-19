@@ -27,6 +27,7 @@ const config: Config = {
         "fade-in": "fadeIn 0.4s ease-out forwards",
         "slide-up": "slideUp 0.4s ease-out forwards",
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "glow-spin": "glowSpin 4s linear infinite",
       },
       keyframes: {
         fadeIn: {
@@ -36,6 +37,10 @@ const config: Config = {
         slideUp: {
           from: { opacity: "0", transform: "translateY(16px)" },
           to: { opacity: "1", transform: "translateY(0)" },
+        },
+        glowSpin: {
+          from: { transform: "rotate(0deg)" },
+          to: { transform: "rotate(360deg)" },
         },
       },
     },
