@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import HeroChatBox from "@/components/HeroChatBox";
 import { DemoContent, LiveStatsBar } from "@/components/DemoSection";
+import { BrainContent } from "@/components/BrainSection";
 
 /* ───────────────────────── Hero Stats (count-up) ───────────────────────── */
 function useCountUp(target: number, duration = 2000) {
@@ -391,11 +392,9 @@ export default function LandingPage() {
             </div>
           </section>
 
-          {/* ─── LIVE STATS ─── */}
-          <section className="pb-8 lg:pb-12">
-            <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
-              <LiveStatsBar />
-            </div>
+          {/* ─── BRAIN: Interactive Command Section ─── */}
+          <section className="py-24 lg:py-32">
+            <BrainContent embedded />
           </section>
 
           {/* ─── YOUR ENTIRE WORK LIFE ─── */}
