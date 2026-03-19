@@ -173,28 +173,29 @@ export default function LandingPage() {
             >
               Try for free
             </Link>
-            <button
-              onClick={() => {
-                setDemoMode(!demoMode);
-                if (!demoMode) {
+            <Link
+              href="/demo"
+              target="_blank"
+              className="text-sm font-semibold text-white border border-[#333] rounded-full px-6 py-2.5 hover:border-[#DA4E24]/50 hover:shadow-[0_0_12px_rgba(218,78,36,0.15)] transition-all"
+            >
+              See it in action
+            </Link>
+          </div>
+
+          {/* Animated chat box */}
+          <div className="mt-20">
+            <HeroChatBox
+              onSwitchToWorkMode={() => {
+                const next = !demoMode;
+                setDemoMode(next);
+                if (next) {
                   setTimeout(() => {
                     document.getElementById("demo-section")?.scrollIntoView({ behavior: "smooth" });
                   }, 100);
                 }
               }}
-              className={`text-sm font-semibold rounded-full px-6 py-2.5 transition-all ${
-                demoMode
-                  ? "text-white bg-[#DA4E24]/20 border border-[#DA4E24] shadow-[0_0_16px_rgba(218,78,36,0.3)]"
-                  : "text-white border border-[#333] hover:border-[#DA4E24]/50 hover:shadow-[0_0_12px_rgba(218,78,36,0.15)]"
-              }`}
-            >
-              {demoMode ? "Back to overview" : "See it in action"}
-            </button>
-          </div>
-
-          {/* Animated chat box */}
-          <div className="mt-20">
-            <HeroChatBox />
+              demoMode={demoMode}
+            />
           </div>
         </div>
       </section>

@@ -141,6 +141,11 @@ input[type="range"]:focus { outline: none; }
   50% { opacity: 0.5; transform: scale(1.4); }
 }
 .pulse-soft { animation: softPulse 2s ease-in-out infinite; }
+.animate-pulse-soft { animation: glowPulse 2s ease-in-out infinite; }
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(218,78,36,0.4); }
+  50% { box-shadow: 0 0 32px rgba(218,78,36,0.7), 0 0 48px rgba(218,78,36,0.3); }
+}
 
 /* Card lift */
 .card-lift {
