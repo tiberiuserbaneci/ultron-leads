@@ -209,8 +209,8 @@ export default function LandingPage() {
           {/* Hero copy — LEFT aligned */}
           <div className="max-w-[800px]">
             {/* Desktop heading */}
-            <h1 className="hidden sm:block text-5xl lg:text-[64px] font-semibold leading-[1.12] tracking-tight text-white">
-              Scale your founder-led growth,
+            <h1 className="hidden sm:block text-6xl lg:text-[72px] font-semibold leading-[1.1] tracking-tight text-white">
+              100x Founder-Led Growth,
               <br />
               without scaling headcount
             </h1>
@@ -228,13 +228,6 @@ export default function LandingPage() {
               Hire AI employees, set goals and go from zero to autonomous company in one command.
             </p>
 
-            {/* Stats bar — transparent box with clean border, no separators */}
-            <div className="mt-8 inline-flex flex-wrap items-center gap-5 sm:gap-7 border border-[#333] rounded-full px-6 py-2.5">
-              <span className="text-[14px] sm:text-[15px] text-[#e0e0e0]">
-                <span className="text-white font-semibold">2,000+</span> founders
-              </span>
-              <HeroStats />
-            </div>
           </div>
 
           {/* Animated chat box with ambient glow */}
@@ -257,6 +250,16 @@ export default function LandingPage() {
                 }}
                 demoMode={demoMode}
               />
+            </div>
+
+            {/* Stats bar — under chat box */}
+            <div className="mt-8 flex justify-center">
+              <div className="inline-flex flex-wrap items-center justify-center gap-5 sm:gap-7 border border-[#333] rounded-full px-6 py-2.5">
+                <span className="text-[14px] sm:text-[15px] text-[#e0e0e0]">
+                  <span className="text-white font-semibold">2,000+</span> founders
+                </span>
+                <HeroStats />
+              </div>
             </div>
           </div>
         </div>
