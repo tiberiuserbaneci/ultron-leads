@@ -1,8 +1,10 @@
 "use client";
 
+import { useState, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import HeroChatBox from "@/components/HeroChatBox";
+import { DemoContent, LiveStatsBar } from "@/components/DemoSection";
 
 /* ───────────────────────── Landing Nav ───────────────────────── */
 function LandingNav() {
@@ -110,6 +112,8 @@ function FeatureCard({
 /* ═══════════════════════════════════════════════════════════════ */
 
 export default function LandingPage() {
+  const [demoMode, setDemoMode] = useState(false);
+
   return (
     <div className="-mt-14 bg-black text-white">
       <LandingNav />
@@ -169,12 +173,23 @@ export default function LandingPage() {
             >
               Try for free
             </Link>
-            <a
-              href="#how-it-works"
-              className="text-sm font-semibold text-white border border-[#333] rounded-full px-6 py-2.5 hover:border-[#555] transition-colors"
+            <button
+              onClick={() => {
+                setDemoMode(!demoMode);
+                if (!demoMode) {
+                  setTimeout(() => {
+                    document.getElementById("demo-section")?.scrollIntoView({ behavior: "smooth" });
+                  }, 100);
+                }
+              }}
+              className={`text-sm font-semibold rounded-full px-6 py-2.5 transition-all ${
+                demoMode
+                  ? "text-white bg-[#DA4E24]/20 border border-[#DA4E24] shadow-[0_0_16px_rgba(218,78,36,0.3)]"
+                  : "text-white border border-[#333] hover:border-[#DA4E24]/50 hover:shadow-[0_0_12px_rgba(218,78,36,0.15)]"
+              }`}
             >
-              How it works
-            </a>
+              {demoMode ? "Back to overview" : "See it in action"}
+            </button>
           </div>
 
           {/* Animated chat box */}
@@ -184,113 +199,143 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ─── FOUNDER-LED GROWTH FEATURES ─── */}
-      <section className="py-24 lg:py-32">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
-          {/* Header */}
-          <div className="text-center mb-16">
-            <Badge>FOUNDER-LED GROWTH</Badge>
-            <h2 className="mt-5 text-4xl sm:text-5xl lg:text-[56px] font-bold leading-[1.1]">
-              Everything You&apos;d Hire For.
-              <br />
-              Already Built.
-            </h2>
-            <p className="mt-5 text-[#999] text-lg max-w-[500px] mx-auto leading-relaxed">
-              Founder-led growth used to mean doing things alone.
-              <br />
-              Now you have Ultron with you.
-            </p>
+      {/* ─── DEMO MODE vs MARKETING SECTIONS ─── */}
+      {demoMode ? (
+        <section id="demo-section" className="py-16 lg:py-24">
+          <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center gap-1.5 bg-[#161616] border border-[#2a2a2a] rounded-full px-3 py-1 mb-5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#DA4E24] pulse-soft" />
+                <span className="text-[#999] text-xs font-medium">Interactive Demo</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4 leading-tight">
+                See Ultron execute in real time.
+              </h2>
+              <p className="text-lg text-[#999] max-w-md mx-auto">
+                Pick a command. Watch every agent work.
+              </p>
+            </div>
+            <Suspense fallback={<div className="text-center text-[#555] py-12">Loading demo...</div>}>
+              <DemoContent embedded />
+            </Suspense>
           </div>
-
-          {/* Top row: 2 cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-            {/* OpenClaw Mission Control */}
-            <FeatureCard>
-              <div className="p-3">
-                <div className="aspect-[16/10] relative rounded-xl overflow-hidden">
-                  <Image
-                    src="/Group 2147204318@3x.png"
-                    alt="OpenClaw Mission Control"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-              <div className="px-5 pb-5 sm:px-6 sm:pb-6">
-                <h3 className="text-lg sm:text-xl font-bold mb-2">OpenClaw Mission Control</h3>
-                <p className="text-[#999] text-sm leading-relaxed">
-                  Ultron runs autonomously 24/7 across Telegram, WhatsApp and native dashboard.
+        </section>
+      ) : (
+        <>
+          {/* ─── FOUNDER-LED GROWTH FEATURES ─── */}
+          <section className="py-24 lg:py-32">
+            <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+              {/* Header */}
+              <div className="text-center mb-16">
+                <Badge>FOUNDER-LED GROWTH</Badge>
+                <h2 className="mt-5 text-4xl sm:text-5xl lg:text-[56px] font-bold leading-[1.1]">
+                  Everything You&apos;d Hire For.
+                  <br />
+                  Already Built.
+                </h2>
+                <p className="mt-5 text-[#999] text-lg max-w-[500px] mx-auto leading-relaxed">
+                  Founder-led growth used to mean doing things alone.
+                  <br />
+                  Now you have Ultron with you.
                 </p>
               </div>
-            </FeatureCard>
 
-            {/* AI Sales Engine */}
-            <FeatureCard>
-              <div className="p-3">
-                <div className="aspect-[16/10] relative rounded-xl overflow-hidden">
-                  <Image
-                    src="/Group 1321314679@3x.png"
-                    alt="AI Sales Engine"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-              <div className="px-5 pb-5 sm:px-6 sm:pb-6">
-                <h3 className="text-lg sm:text-xl font-bold mb-2">AI Sales Engine</h3>
-                <p className="text-[#999] text-sm leading-relaxed">
-                  Ultron finds, researches, and reaches out to your ideal customers autonomously. You wake up to booked meetings.
-                </p>
-              </div>
-            </FeatureCard>
-          </div>
+              {/* Top row: 2 cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                {/* OpenClaw Mission Control */}
+                <FeatureCard>
+                  <div className="p-3">
+                    <div className="aspect-[16/10] relative rounded-xl overflow-hidden">
+                      <Image
+                        src="/Group 2147204318@3x.png"
+                        alt="OpenClaw Mission Control"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </div>
+                  <div className="px-5 pb-5 sm:px-6 sm:pb-6">
+                    <h3 className="text-lg sm:text-xl font-bold mb-2">OpenClaw Mission Control</h3>
+                    <p className="text-[#999] text-sm leading-relaxed">
+                      Ultron runs autonomously 24/7 across Telegram, WhatsApp and native dashboard.
+                    </p>
+                  </div>
+                </FeatureCard>
 
-          {/* Bottom row: 2 cards */}
-          <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] gap-5">
-            {/* Automation Empire Builder */}
-            <FeatureCard>
-              <div className="p-3">
-                <div className="aspect-[16/9] md:aspect-[2/1] relative rounded-xl overflow-hidden">
-                  <Image
-                    src="/Group 1321314678@3x.png"
-                    alt="Automation Empire Builder"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
+                {/* AI Sales Engine */}
+                <FeatureCard>
+                  <div className="p-3">
+                    <div className="aspect-[16/10] relative rounded-xl overflow-hidden">
+                      <Image
+                        src="/Group 1321314679@3x.png"
+                        alt="AI Sales Engine"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </div>
+                  <div className="px-5 pb-5 sm:px-6 sm:pb-6">
+                    <h3 className="text-lg sm:text-xl font-bold mb-2">AI Sales Engine</h3>
+                    <p className="text-[#999] text-sm leading-relaxed">
+                      Ultron finds, researches, and reaches out to your ideal customers autonomously. You wake up to booked meetings.
+                    </p>
+                  </div>
+                </FeatureCard>
               </div>
-              <div className="px-5 pb-5 sm:px-6 sm:pb-6">
-                <h3 className="text-lg sm:text-xl font-bold mb-2">Automation Empire Builder</h3>
-                <p className="text-[#999] text-sm leading-relaxed">
-                  Deploys unlimited AI agents internally to scale your ops or externally as a product your clients pay for.
-                </p>
-              </div>
-            </FeatureCard>
 
-            {/* Viral-Ready Playbooks */}
-            <FeatureCard>
-              <div className="p-3">
-                <div className="aspect-[16/9] md:aspect-[2/1] relative rounded-xl overflow-hidden">
-                  <Image
-                    src="/Group 1321314677@3x.png"
-                    alt="Viral-Ready Playbooks"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-              <div className="px-5 pb-5 sm:px-6 sm:pb-6">
-                <h3 className="text-lg sm:text-xl font-bold mb-2">Viral-Ready Playbooks</h3>
-                <p className="text-[#999] text-sm leading-relaxed">
-                  Scrapes viral strategies, extracts what works, and generates winning content.
-                </p>
-              </div>
-            </FeatureCard>
-          </div>
-        </div>
-      </section>
+              {/* Bottom row: 2 cards */}
+              <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] gap-5">
+                {/* Automation Empire Builder */}
+                <FeatureCard>
+                  <div className="p-3">
+                    <div className="aspect-[16/9] md:aspect-[2/1] relative rounded-xl overflow-hidden">
+                      <Image
+                        src="/Group 1321314678@3x.png"
+                        alt="Automation Empire Builder"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </div>
+                  <div className="px-5 pb-5 sm:px-6 sm:pb-6">
+                    <h3 className="text-lg sm:text-xl font-bold mb-2">Automation Empire Builder</h3>
+                    <p className="text-[#999] text-sm leading-relaxed">
+                      Deploys unlimited AI agents internally to scale your ops or externally as a product your clients pay for.
+                    </p>
+                  </div>
+                </FeatureCard>
 
-      {/* ─── YOUR ENTIRE WORK LIFE ─── */}
+                {/* Viral-Ready Playbooks */}
+                <FeatureCard>
+                  <div className="p-3">
+                    <div className="aspect-[16/9] md:aspect-[2/1] relative rounded-xl overflow-hidden">
+                      <Image
+                        src="/Group 1321314677@3x.png"
+                        alt="Viral-Ready Playbooks"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </div>
+                  <div className="px-5 pb-5 sm:px-6 sm:pb-6">
+                    <h3 className="text-lg sm:text-xl font-bold mb-2">Viral-Ready Playbooks</h3>
+                    <p className="text-[#999] text-sm leading-relaxed">
+                      Scrapes viral strategies, extracts what works, and generates winning content.
+                    </p>
+                  </div>
+                </FeatureCard>
+              </div>
+            </div>
+          </section>
+
+          {/* ─── LIVE STATS ─── */}
+          <section className="pb-8 lg:pb-12">
+            <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+              <LiveStatsBar />
+            </div>
+          </section>
+
+          {/* ─── YOUR ENTIRE WORK LIFE ─── */}
       <section className="py-24 lg:py-32">
         <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
           {/* Header */}
@@ -584,6 +629,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+        </>
+      )}
 
       {/* ─── FOOTER ─── */}
       <footer className="border-t border-[#1a1a1a] py-10">
