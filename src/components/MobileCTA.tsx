@@ -6,7 +6,7 @@ export default function MobileCTA() {
   const pathname = usePathname();
 
   // Homepage and demo page have their own CTAs
-  if (pathname === "/" || pathname.startsWith("/demo") || pathname.startsWith("/live") || pathname.startsWith("/brain") || pathname.startsWith("/rfp") || pathname.startsWith("/client-kit")) return null;
+  if (pathname === "/" || pathname.startsWith("/demo") || pathname.startsWith("/live") || pathname.startsWith("/brain") || pathname.startsWith("/rfp") || pathname.startsWith("/client-kit") || pathname.startsWith("/cheatsheets")) return null;
 
   return (
     <div className="sm:hidden fixed bottom-0 left-0 right-0 z-50 p-3 bg-black border-t border-[#1a1a1a]">
