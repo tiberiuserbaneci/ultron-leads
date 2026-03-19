@@ -206,15 +206,17 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
             {/* OpenClaw Mission Control */}
             <FeatureCard>
-              <div className="aspect-[16/10] relative">
-                <Image
-                  src="/Group 2147204318@3x.png"
-                  alt="OpenClaw Mission Control"
-                  fill
-                  className="object-cover"
-                />
+              <div className="p-3">
+                <div className="aspect-[16/10] relative rounded-xl overflow-hidden">
+                  <Image
+                    src="/Group 2147204318@3x.png"
+                    alt="OpenClaw Mission Control"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               </div>
-              <div className="p-5 sm:p-6">
+              <div className="px-5 pb-5 sm:px-6 sm:pb-6">
                 <h3 className="text-lg sm:text-xl font-bold mb-2">OpenClaw Mission Control</h3>
                 <p className="text-[#999] text-sm leading-relaxed">
                   Ultron runs autonomously 24/7 across Telegram, WhatsApp and native dashboard.
@@ -224,15 +226,17 @@ export default function LandingPage() {
 
             {/* AI Sales Engine */}
             <FeatureCard>
-              <div className="aspect-[16/10] relative">
-                <Image
-                  src="/Group 1321314679@3x.png"
-                  alt="AI Sales Engine"
-                  fill
-                  className="object-cover"
-                />
+              <div className="p-3">
+                <div className="aspect-[16/10] relative rounded-xl overflow-hidden">
+                  <Image
+                    src="/Group 1321314679@3x.png"
+                    alt="AI Sales Engine"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               </div>
-              <div className="p-5 sm:p-6">
+              <div className="px-5 pb-5 sm:px-6 sm:pb-6">
                 <h3 className="text-lg sm:text-xl font-bold mb-2">AI Sales Engine</h3>
                 <p className="text-[#999] text-sm leading-relaxed">
                   Ultron finds, researches, and reaches out to your ideal customers autonomously. You wake up to booked meetings.
@@ -245,15 +249,17 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] gap-5">
             {/* Automation Empire Builder */}
             <FeatureCard>
-              <div className="aspect-[16/9] md:aspect-[2/1] relative">
-                <Image
-                  src="/Group 1321314678@3x.png"
-                  alt="Automation Empire Builder"
-                  fill
-                  className="object-cover"
-                />
+              <div className="p-3">
+                <div className="aspect-[16/9] md:aspect-[2/1] relative rounded-xl overflow-hidden">
+                  <Image
+                    src="/Group 1321314678@3x.png"
+                    alt="Automation Empire Builder"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               </div>
-              <div className="p-5 sm:p-6">
+              <div className="px-5 pb-5 sm:px-6 sm:pb-6">
                 <h3 className="text-lg sm:text-xl font-bold mb-2">Automation Empire Builder</h3>
                 <p className="text-[#999] text-sm leading-relaxed">
                   Deploys unlimited AI agents internally to scale your ops or externally as a product your clients pay for.
@@ -263,15 +269,17 @@ export default function LandingPage() {
 
             {/* Viral-Ready Playbooks */}
             <FeatureCard>
-              <div className="aspect-[16/9] md:aspect-[2/1] relative">
-                <Image
-                  src="/Group 1321314677@3x.png"
-                  alt="Viral-Ready Playbooks"
-                  fill
-                  className="object-cover"
-                />
+              <div className="p-3">
+                <div className="aspect-[16/9] md:aspect-[2/1] relative rounded-xl overflow-hidden">
+                  <Image
+                    src="/Group 1321314677@3x.png"
+                    alt="Viral-Ready Playbooks"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               </div>
-              <div className="p-5 sm:p-6">
+              <div className="px-5 pb-5 sm:px-6 sm:pb-6">
                 <h3 className="text-lg sm:text-xl font-bold mb-2">Viral-Ready Playbooks</h3>
                 <p className="text-[#999] text-sm leading-relaxed">
                   Scrapes viral strategies, extracts what works, and generates winning content.
