@@ -44,20 +44,22 @@ function HeroStats() {
   const agents = useCountUp(224);
   const tasks = useCountUp(6747);
   const api = useCountUp(54811);
+  const saved = useCountUp(109088);
 
   const stats = [
     { ...agents, label: "agents", format: (v: number) => v.toLocaleString() },
     { ...tasks, label: "tasks", format: (v: number) => v.toLocaleString() },
-    { ...api, label: "API calls", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v.toString() },
+    { ...api, label: "API calls", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toString() },
+    { ...saved, label: "saved", format: (v: number) => `$${v >= 1000 ? `${Math.round(v / 1000)}K` : v}` },
   ];
 
   return (
     <>
-      {stats.map((stat, i) => (
-        <span key={stat.label} className="hidden sm:inline-flex items-center gap-1.5 text-[13px]">
-          {i > 0 && <span className="w-px h-4 bg-[#333] mr-1.5" />}
-          <span ref={stat.ref} className="text-white font-medium tabular-nums">{stat.format(stat.value)}</span>
-          <span className="text-[#888]">{stat.label}</span>
+      {stats.map((stat) => (
+        <span key={stat.label} className="inline-flex items-center gap-1.5 text-[14px]">
+          <span className="w-px h-4 bg-[#444]" />
+          <span ref={stat.ref} className="text-white font-semibold tabular-nums">{stat.format(stat.value)}</span>
+          <span className="text-[#ccc]">{stat.label}</span>
         </span>
       ))}
     </>
@@ -238,36 +240,36 @@ export default function LandingPage() {
         </div>
 
         <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8">
-          {/* Centered hero copy */}
-          <div className="text-center max-w-[800px] mx-auto">
-            {/* Heading — lighter weight, centered */}
-            <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-semibold leading-[1.1] tracking-tight">
+          {/* Hero copy — LEFT aligned like Relevance AI */}
+          <div className="max-w-[700px]">
+            {/* Heading */}
+            <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-medium leading-[1.15] tracking-tight text-white">
               Scale your founder-led growth,
-              <br className="hidden sm:block" />
-              <span className="text-[#999]"> without scaling headcount</span>
+              <br />
+              without scaling headcount
             </h1>
 
-            {/* Subtitle — more visible */}
-            <p className="mt-5 text-[#aaa] text-base sm:text-lg max-w-[560px] mx-auto leading-relaxed">
+            {/* Subtitle */}
+            <p className="mt-6 text-[#ccc] text-base sm:text-[17px] leading-relaxed max-w-[520px]">
               Hire AI employees, set goals and go from zero to autonomous company in one command.
             </p>
 
-            {/* Stats bar: founders badge + live stats — like Relevance AI's CTA row */}
-            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mt-8">
-              <span className="text-[13px] text-[#888]">
-                <span className="text-white font-medium">2,000+</span> founders
+            {/* Stats row — like Relevance AI's "Talk to sales · Try it free · 100+ integrations" */}
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-8">
+              <span className="text-[14px] text-[#ccc]">
+                <span className="text-white font-semibold">2,000+</span> founders
               </span>
-              <span className="hidden sm:block w-px h-4 bg-[#333]" />
+              <span className="w-px h-4 bg-[#444]" />
               <HeroStats />
             </div>
           </div>
 
           {/* Animated chat box with ambient glow — pushed lower */}
-          <div className="relative mt-16 sm:mt-24">
-            {/* Blue + dark orange ambient glow behind chatbox */}
+          <div className="relative mt-16 sm:mt-28">
+            {/* Orange ambient glow behind chatbox — slightly stronger */}
             <div className="absolute -inset-20 pointer-events-none">
-              <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-[#DA4E24]/[0.08] blur-[140px]" />
-              <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[350px] rounded-full bg-[#1F77F6]/[0.06] blur-[140px]" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full bg-[#DA4E24]/[0.10] blur-[150px]" />
+              <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[400px] h-[300px] rounded-full bg-[#1F77F6]/[0.05] blur-[120px]" />
             </div>
             <div className="relative">
               <HeroChatBox
