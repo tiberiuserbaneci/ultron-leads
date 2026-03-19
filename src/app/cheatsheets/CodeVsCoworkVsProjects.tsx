@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useCallback } from "react";
 import Link from "next/link";
+import { toPng } from "html-to-image";
 
 /* ═══════════════════════════════════════════════════════════
  *  INFOGRAPHIC: Chat vs Cowork vs Projects
@@ -24,40 +25,37 @@ const COWORK_BG = "#C0462B";
 const COWORK_TEXT = "#FFFFFF";
 
 export default function ChatVsCoworkVsProjects() {
-  const [showUI, setShowUI] = useState(true);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const handleDownload = useCallback(async () => {
+    if (!ref.current) return;
+    const dataUrl = await toPng(ref.current, { pixelRatio: 2, backgroundColor: BG });
+    const link = document.createElement("a");
+    link.download = "chat-vs-cowork-vs-projects.png";
+    link.href = dataUrl;
+    link.click();
+  }, []);
 
   return (
     <div className="min-h-screen" style={{ background: BG, color: TEXT }}>
 
       {/* Utility bar */}
-      {showUI && (
-        <div className="fixed top-0 left-0 right-0 z-50 print:hidden" style={{ background: `${BG}ee`, borderBottom: `1px solid ${BORDER}` }}>
-          <div className="max-w-[960px] mx-auto px-4 h-11 flex items-center justify-between">
-            <Link href="/cheatsheets" className="text-[12px] hover:opacity-70 transition-opacity flex items-center gap-1.5" style={{ color: MUTED }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-              Cheatsheets
-            </Link>
-            <div className="flex items-center gap-2">
-              <button onClick={() => setShowUI(false)} className="text-[11px] px-2.5 py-1 rounded-md border transition-all" style={{ borderColor: ACCENT, color: ACCENT }}>
-                Screenshot mode
-              </button>
-              <button onClick={() => window.print()} className="text-[11px] px-2.5 py-1 rounded-md border transition-all" style={{ borderColor: BORDER, color: MUTED }}>
-                Print / PDF
-              </button>
-            </div>
-          </div>
+      <div className="fixed top-0 left-0 right-0 z-50 print:hidden" style={{ background: `${BG}ee`, borderBottom: `1px solid ${BORDER}` }}>
+        <div className="max-w-[960px] mx-auto px-4 h-11 flex items-center justify-between">
+          <Link href="/cheatsheets" className="text-[12px] hover:opacity-70 transition-opacity flex items-center gap-1.5" style={{ color: MUTED }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+            Cheatsheets
+          </Link>
+          <button onClick={handleDownload} className="text-[11px] px-2.5 py-1 rounded-md border transition-all flex items-center gap-1.5" style={{ borderColor: ACCENT, color: ACCENT }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" /></svg>
+            Download
+          </button>
         </div>
-      )}
-
-      {!showUI && (
-        <button onClick={() => setShowUI(true)} className="fixed top-3 right-3 z-50 print:hidden text-[10px] px-2 py-1 rounded border" style={{ background: CARD, borderColor: BORDER, color: MUTED }}>
-          Exit
-        </button>
-      )}
+      </div>
 
       {/* ═══ THE INFOGRAPHIC ═══ */}
-      <div className={`max-w-[960px] mx-auto ${showUI ? "pt-14" : "pt-4"} pb-4 px-4 print:pt-0 print:pb-0 print:px-0 print:max-w-none`}>
-        <div id="infographic" className="overflow-hidden" style={{ background: BG }}>
+      <div className="max-w-[960px] mx-auto pt-14 pb-4 px-4 print:pt-0 print:pb-0 print:px-0 print:max-w-none">
+        <div ref={ref} id="infographic" className="overflow-hidden" style={{ background: BG }}>
 
           {/* ── HEADER ── */}
           <div className="text-center pt-6 pb-4 px-6">
