@@ -120,20 +120,20 @@ export default function ChatVsCoworkVsProjects() {
           </div>
 
           {/* ── TWO-COLUMN: Real Difference + Feature Grid ── */}
-          <div className="mx-6 mb-4 grid grid-cols-[240px_1fr] gap-4">
+          <div className="mx-6 mb-4 grid grid-cols-[260px_1fr] gap-4">
 
             {/* Left column: The Real Difference */}
-            <div className="relative">
-              {/* Vertical label */}
-              <div className="absolute -left-1 top-1/2 -translate-y-1/2 -rotate-90 origin-center whitespace-nowrap">
-                <span className="text-[11px] font-bold uppercase tracking-widest px-2 py-0.5 rounded" style={{ color: COWORK_TEXT, background: ACCENT_BG }}>The real difference</span>
+            <div className="flex gap-2">
+              {/* Vertical label - sits in its own column, no overlap */}
+              <div className="flex items-center justify-center shrink-0" style={{ writingMode: "vertical-rl" }}>
+                <span className="rotate-180 text-[11px] font-bold uppercase tracking-widest px-1.5 py-2 rounded" style={{ color: COWORK_TEXT, background: ACCENT_BG }}>The real difference</span>
               </div>
 
-              <div className="ml-6 space-y-3">
+              <div className="flex-1 grid grid-rows-3 gap-3">
                 {/* Chat */}
-                <div className="rounded-lg border p-3.5" style={{ borderColor: BORDER, background: CARD }}>
+                <div className="rounded-lg border p-3.5 flex flex-col" style={{ borderColor: BORDER, background: CARD }}>
                   <p className="text-[12px] font-bold mb-2" style={{ color: TEXT }}>Chat:</p>
-                  <div className="space-y-1 text-[11px]" style={{ color: TEXT }}>
+                  <div className="space-y-1 text-[11px] flex-1" style={{ color: TEXT }}>
                     <p><strong>The skill you need:</strong> clear prompts</p>
                     <p><strong>Output quality:</strong> generic unless you prompt very well</p>
                     <p><strong>The vibe:</strong> texting a very smart stranger</p>
@@ -141,9 +141,9 @@ export default function ChatVsCoworkVsProjects() {
                 </div>
 
                 {/* Cowork */}
-                <div className="rounded-lg p-3.5" style={{ background: ACCENT_BG, color: COWORK_TEXT }}>
+                <div className="rounded-lg p-3.5 flex flex-col" style={{ background: ACCENT_BG, color: COWORK_TEXT }}>
                   <p className="text-[12px] font-bold mb-2">Cowork:</p>
-                  <div className="space-y-1 text-[11px]">
+                  <div className="space-y-1 text-[11px] flex-1">
                     <p><strong>The skill you need:</strong> clear context files (your style, your rules, your examples)</p>
                     <p><strong>Output quality:</strong> sounds like you. Because it read your files.</p>
                     <p><strong>The vibe:</strong> working with an assistant who read every brief</p>
@@ -151,9 +151,9 @@ export default function ChatVsCoworkVsProjects() {
                 </div>
 
                 {/* Projects */}
-                <div className="rounded-lg border p-3.5" style={{ borderColor: BORDER, background: CARD }}>
+                <div className="rounded-lg border p-3.5 flex flex-col" style={{ borderColor: BORDER, background: CARD }}>
                   <p className="text-[12px] font-bold mb-2" style={{ color: TEXT }}>Projects:</p>
-                  <div className="space-y-1 text-[11px]" style={{ color: TEXT }}>
+                  <div className="space-y-1 text-[11px] flex-1" style={{ color: TEXT }}>
                     <p><strong>The skill you need:</strong> picking the right files and clear instructions</p>
                     <p><strong>Output quality:</strong> sounds like you. Because it has your guides.</p>
                     <p><strong>The vibe:</strong> a team member who knows your playbook</p>
