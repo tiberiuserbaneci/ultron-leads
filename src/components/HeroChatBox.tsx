@@ -90,7 +90,7 @@ const TOOLS_MENU = [
     ),
   },
   {
-    label: "Chat with us",
+    label: "Support",
     href: "#",
     isIntercom: true,
     icon: (
@@ -342,17 +342,7 @@ export default function HeroChatBox({
             {menuOpen && <ToolsDropdown onClose={() => setMenuOpen(false)} position="top" />}
           </div>
 
-          {/* Rotating phrase — no typing, just fade */}
-          <div className="flex-1 min-w-0">
-            <p
-              key={mobilePhrase}
-              className="text-[#888] text-[13px] truncate animate-fade-in"
-            >
-              {MOBILE_PHRASES[mobilePhrase]}
-            </p>
-          </div>
-
-          {/* Model logo (tap to expand) */}
+          {/* Model logo (tap to expand) — left side for clean dropdown */}
           <div className="relative" ref={mobileModelRef}>
             <button
               onClick={() => setModelOpen(!modelOpen)}
@@ -373,6 +363,16 @@ export default function HeroChatBox({
                 position="top"
               />
             )}
+          </div>
+
+          {/* Rotating phrase — no typing, just fade */}
+          <div className="flex-1 min-w-0">
+            <p
+              key={mobilePhrase}
+              className="text-[#888] text-[13px] truncate animate-fade-in"
+            >
+              {MOBILE_PHRASES[mobilePhrase]}
+            </p>
           </div>
 
           {/* Send */}

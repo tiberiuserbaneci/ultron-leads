@@ -178,7 +178,7 @@ export default function LandingPage() {
       <LandingNav />
 
       {/* ─── HERO ─── */}
-      <section className="relative pt-32 pb-24 overflow-hidden">
+      <section className="relative min-h-screen pt-32 pb-32 overflow-hidden">
         {/* Background image — diagonal light streaks */}
         <div className="absolute inset-0 pointer-events-none">
           <Image
@@ -261,22 +261,32 @@ export default function LandingPage() {
           {/* Inline agent stats — hidden on mobile, count-up on desktop */}
           <HeroStats />
 
-          {/* Animated chat box */}
-          <div className="mt-20">
-            <HeroChatBox
-              onSwitchToWorkMode={() => {
-                const next = !demoMode;
-                setDemoMode(next);
-                if (next) {
-                  setTimeout(() => {
-                    document.getElementById("demo-section")?.scrollIntoView({ behavior: "smooth" });
-                  }, 100);
-                }
-              }}
-              demoMode={demoMode}
-            />
+          {/* Animated chat box with ambient glow */}
+          <div className="relative mt-20">
+            {/* Blue + dark orange ambient glow behind chatbox */}
+            <div className="absolute -inset-20 pointer-events-none">
+              <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] rounded-full bg-[#DA4E24]/[0.06] blur-[120px]" />
+              <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[400px] h-[300px] rounded-full bg-[#1F77F6]/[0.05] blur-[120px]" />
+            </div>
+            <div className="relative">
+              <HeroChatBox
+                onSwitchToWorkMode={() => {
+                  const next = !demoMode;
+                  setDemoMode(next);
+                  if (next) {
+                    setTimeout(() => {
+                      document.getElementById("demo-section")?.scrollIntoView({ behavior: "smooth" });
+                    }, 100);
+                  }
+                }}
+                demoMode={demoMode}
+              />
+            </div>
           </div>
         </div>
+
+        {/* Bottom gradient fade mask — smooth transition to next section */}
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none z-10" />
       </section>
 
       {/* ─── DEMO MODE vs MARKETING SECTIONS ─── */}

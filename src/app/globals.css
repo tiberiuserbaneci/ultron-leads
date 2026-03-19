@@ -40,6 +40,13 @@ body {
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #DA4E24; }
 
+/* Hide Intercom default launcher — we use our own "Support" button */
+.intercom-lightweight-app,
+#intercom-container .intercom-launcher-frame,
+.intercom-launcher {
+  display: none !important;
+}
+
 /* Agent badge. all same accent color */
 .agent-badge { color: #DA4E24; font-weight: 700; }
 
