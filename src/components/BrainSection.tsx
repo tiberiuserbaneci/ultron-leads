@@ -86,8 +86,13 @@ function MetricCard({ label, value, suffix, active }: { label: string; value: nu
 
 /* ─── Urgency badge ──────────────────────────────────────── */
 function UrgencyBadge({ score }: { score: number }) {
+  const color = score >= 8
+    ? "text-red-400 border-red-400/30"
+    : score >= 6
+    ? "text-amber-400 border-amber-400/30"
+    : "text-[#999] border-[#444]";
   return (
-    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full border text-[#ccc] border-[#444]">
+    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${color}`}>
       {score}/10
     </span>
   );
@@ -95,13 +100,18 @@ function UrgencyBadge({ score }: { score: number }) {
 
 /* ─── State badge ────────────────────────────────────────── */
 function StateBadge({ state }: { state: AttentionCard["state"] }) {
+  const styles: Record<string, string> = {
+    "auto-handle": "text-green-400 border-green-400/30",
+    monitor: "text-blue-400 border-blue-400/30",
+    escalate: "text-[#DA4E24] border-[#DA4E24]/30",
+  };
   const labels: Record<string, string> = {
     "auto-handle": "AUTO-HANDLE",
     monitor: "MONITORING",
     escalate: "ESCALATE",
   };
   return (
-    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full border text-[#ccc] border-[#444]">
+    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${styles[state]}`}>
       {labels[state]}
     </span>
   );
@@ -117,7 +127,7 @@ function AttentionCardComponent({ card, index }: { card: AttentionCard; index: n
         style={{ animationDelay: `${index * 0.08}s` }}
       >
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-semibold tracking-[0.12em] uppercase text-[#ccc]">{card.signal}</span>
+          <span className="text-xs font-semibold tracking-[0.12em] uppercase text-[#DA4E24]">{card.signal}</span>
           <div className="flex items-center gap-2">
             <UrgencyBadge score={card.urgency} />
             <StateBadge state={card.state} />
@@ -172,11 +182,11 @@ function DecisionCardComponent({ decision, index }: { decision: DecisionCard; in
                 <p className="text-[#999] mt-1 leading-relaxed">{decision.why}</p>
               </div>
               <div>
-                <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#ccc]">Ultron recommends</span>
+                <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#DA4E24]">Ultron recommends</span>
                 <p className="text-[#ccc] mt-1 leading-relaxed">{decision.recommendation}</p>
               </div>
               <div>
-                <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#888]">If approved</span>
+                <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-green-500">If approved</span>
                 <p className="text-[#888] mt-1 leading-relaxed">{decision.ifApproved}</p>
               </div>
             </div>
@@ -497,11 +507,11 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
                   <p className="text-white font-bold text-lg mt-1">&ldquo;{activeCommand.input}&rdquo;</p>
                 </div>
                 <div className="border-t border-[#333] pt-5">
-                  <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#ccc]">Ultron interprets</span>
+                  <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#DA4E24]">Ultron interprets</span>
                   <ul className="mt-3 space-y-2">
                     {activeCommand.interpretation.map((item, i) => (
                       <li key={i} className="flex items-start gap-2.5 text-sm text-[#999] leading-relaxed animate-fade-up" style={{ animationDelay: `${i * 0.08}s` }}>
-                        <span className="text-[#555] mt-0.5 flex-shrink-0">&rarr;</span>
+                        <span className="text-[#DA4E24] mt-0.5 flex-shrink-0">&rarr;</span>
                         {item}
                       </li>
                     ))}
@@ -536,8 +546,8 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               <RoutingColumn
-                dotColor="bg-[#555]"
-                titleColor="text-[#ccc]"
+                dotColor="bg-green-500"
+                titleColor="text-green-400"
                 title="Handled Automatically"
                 icon={
                   <svg className="w-4 h-4 text-[#555]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -547,8 +557,8 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
                 items={activeCommand.handledAutomatically}
               />
               <RoutingColumn
-                dotColor="bg-[#555]"
-                titleColor="text-[#ccc]"
+                dotColor="bg-blue-500"
+                titleColor="text-blue-400"
                 title="Watching"
                 delayOffset={2}
                 icon={
@@ -560,8 +570,8 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
                 items={activeCommand.watchItems}
               />
               <RoutingColumn
-                dotColor="bg-[#555]"
-                titleColor="text-[#ccc]"
+                dotColor="bg-[#DA4E24]"
+                titleColor="text-[#DA4E24]"
                 title="Needs Your Decision"
                 delayOffset={3}
                 icon={

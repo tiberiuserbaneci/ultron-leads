@@ -115,15 +115,17 @@ function FeatureCard({
   return (
     <div className={`group relative rounded-2xl overflow-hidden ${className}`}>
       {/* Animated orange glow border */}
-      <div className="absolute -inset-[1px] rounded-2xl z-0 overflow-hidden">
+      <div className="absolute -inset-[1.5px] rounded-2xl z-0 overflow-hidden">
         <div
           className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
           style={{
             background:
-              "conic-gradient(from 0deg, transparent 0%, transparent 70%, rgba(218,78,36,0.5) 80%, rgba(218,78,36,0.8) 85%, rgba(218,78,36,0.5) 90%, transparent 100%)",
+              "conic-gradient(from 0deg, transparent 0%, transparent 60%, rgba(218,78,36,0.6) 72%, rgba(218,78,36,1) 80%, rgba(218,78,36,0.6) 88%, transparent 100%)",
           }}
         />
       </div>
+      {/* Outer glow shadow */}
+      <div className="absolute -inset-px rounded-2xl shadow-[0_0_30px_rgba(218,78,36,0.06),0_0_60px_rgba(218,78,36,0.03)] z-0" />
       {/* Card content */}
       <div className="relative z-10 rounded-2xl border border-[#333] bg-black overflow-hidden h-full">
         {children}
@@ -348,7 +350,7 @@ export default function LandingPage() {
               </div>
 
               {/* Bottom row: 2 cards */}
-              <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Automation Empire Builder */}
                 <FeatureCard>
                   <div className="p-3">
@@ -372,12 +374,12 @@ export default function LandingPage() {
                 {/* Viral-Ready Playbooks */}
                 <FeatureCard>
                   <div className="p-3">
-                    <div className="aspect-[4/3] md:aspect-[3/2] relative rounded-xl overflow-hidden">
+                    <div className="aspect-[16/9] md:aspect-[2/1] relative rounded-xl overflow-hidden">
                       <Image
                         src="/Group 1321314677@3x.png"
                         alt="Viral-Ready Playbooks"
                         fill
-                        className="object-contain object-center"
+                        className="object-cover"
                       />
                     </div>
                   </div>
