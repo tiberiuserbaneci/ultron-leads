@@ -107,20 +107,23 @@ export default function LandingPage() {
       <LandingNav />
 
       {/* ─── HERO ─── */}
-      <section className="relative pt-32 pb-0 overflow-hidden">
-        {/* Background image */}
+      <section className="relative pt-32 pb-0 overflow-hidden min-h-[90vh]">
+        {/* Background image — diagonal light streaks */}
         <div className="absolute inset-0 pointer-events-none">
           <Image
             src="/hero-background.png"
             alt=""
             fill
-            className="object-cover object-top"
+            className="object-cover"
             priority
           />
         </div>
 
-        {/* Vector art (top-right decorative element) */}
-        <div className="absolute top-0 right-0 w-[55%] h-full pointer-events-none">
+        {/* Vector blob overlay — blended onto dark bg */}
+        <div
+          className="absolute top-[-5%] right-[-5%] w-[70%] h-[60%] pointer-events-none"
+          style={{ mixBlendMode: "screen" }}
+        >
           <Image
             src="/hero-vector.png"
             alt=""
@@ -166,17 +169,90 @@ export default function LandingPage() {
             </a>
           </div>
 
-          {/* Chat + Dashboard composite image */}
-          <div className="relative mt-16 mb-0">
-            <div className="relative max-w-[900px] mx-auto">
+          {/* Chat prompt bar */}
+          <div className="relative mt-20 mb-0">
+            <div className="relative max-w-[700px] mx-auto">
               <Image
                 src="/hero-chat.png"
-                alt="Ultron dashboard with chat prompt"
-                width={1800}
-                height={1000}
+                alt="Ultron chat prompt"
+                width={1400}
+                height={300}
                 className="w-full h-auto"
                 priority
               />
+            </div>
+
+            {/* Dashboard mockup below the chat bar */}
+            <div className="relative -mt-2 max-w-[900px] mx-auto">
+              <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-2xl overflow-hidden shadow-2xl">
+                <div className="flex">
+                  {/* Sidebar */}
+                  <div className="w-[200px] border-r border-[#1a1a1a] p-4 hidden sm:block">
+                    <div className="flex items-center gap-2 mb-6">
+                      <Image src="/logo.png" alt="" width={20} height={20} className="rounded-sm" />
+                      <span className="text-sm font-semibold">Ultron</span>
+                    </div>
+                    <button className="w-full text-sm text-white bg-[#1a1a1a] border border-[#DA4E24]/30 rounded-lg px-3 py-2 mb-4 flex items-center gap-2">
+                      <SparkleIcon className="w-3.5 h-3.5" />
+                      New Chat
+                    </button>
+                    {["Dashboard", "Command Center", "Agents", "Integrations"].map((item) => (
+                      <div key={item} className="text-sm text-[#666] py-2 px-1">
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Main content */}
+                  <div className="flex-1 p-4">
+                    {/* Stat cards */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                      {[
+                        { label: "Active Tasks", value: "0", color: "#DA4E24" },
+                        { label: "Success Rate", value: "0%", color: "#22c55e" },
+                        { label: "Queue Depth", value: "0", color: "#1F77F6" },
+                        { label: "Recent Actions", value: "5", color: "#DA4E24" },
+                      ].map((s) => (
+                        <div
+                          key={s.label}
+                          className="bg-[#111] rounded-lg p-3 border-t-2"
+                          style={{ borderTopColor: s.color + "40" }}
+                        >
+                          <div className="text-[10px] text-[#666] uppercase tracking-wider">
+                            {s.label}
+                          </div>
+                          <div className="text-lg font-bold mt-1">{s.value}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Agent status */}
+                    <div className="bg-[#111] rounded-lg p-3">
+                      <div className="text-[10px] text-[#DA4E24] font-semibold tracking-wider mb-3">
+                        AGENT STATUS
+                      </div>
+                      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                        {[
+                          { name: "Striker", color: "#22c55e" },
+                          { name: "Sentinel", color: "#1F77F6" },
+                          { name: "Pulse", color: "#a855f7" },
+                          { name: "Cortex", color: "#eab308" },
+                          { name: "Specter", color: "#DA4E24" },
+                        ].map((a) => (
+                          <div key={a.name} className="bg-[#0a0a0a] rounded-lg p-2 text-center">
+                            <div
+                              className="w-6 h-6 rounded-full mx-auto mb-1"
+                              style={{ background: a.color + "30", border: `1px solid ${a.color}40` }}
+                            />
+                            <div className="text-[11px] font-medium">{a.name}</div>
+                            <div className="text-[9px] text-[#666] mt-0.5">• SLEEPING</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
               {/* Fade out bottom */}
               <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent" />
             </div>
