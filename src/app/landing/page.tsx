@@ -1,10 +1,69 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import HeroChatBox from "@/components/HeroChatBox";
 import { DemoContent, LiveStatsBar } from "@/components/DemoSection";
+
+/* ───────────────────────── Hero Stats (count-up) ───────────────────────── */
+function useCountUp(target: number, duration = 2000) {
+  const [value, setValue] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true;
+          const start = performance.now();
+          const animate = (now: number) => {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            // Ease out cubic
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setValue(Math.round(eased * target));
+            if (progress < 1) requestAnimationFrame(animate);
+          };
+          requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [target, duration]);
+
+  return { value, ref };
+}
+
+function HeroStats() {
+  const agents = useCountUp(224);
+  const tasks = useCountUp(6747);
+  const api = useCountUp(54811);
+  const saved = useCountUp(109088);
+
+  const stats = [
+    { ...agents, label: "Agents deployed", format: (v: number) => v.toLocaleString() },
+    { ...tasks, label: "Tasks completed", format: (v: number) => v.toLocaleString() },
+    { ...api, label: "API calls", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v.toString() },
+    { ...saved, label: "Money saved", format: (v: number) => `$${v >= 1000 ? `${Math.round(v / 1000)}k` : v}` },
+  ];
+
+  return (
+    <div className="hidden sm:flex items-center gap-10 mt-8">
+      {stats.map((stat) => (
+        <div key={stat.label} ref={stat.ref} className="text-left">
+          <div className="text-2xl font-semibold text-white tabular-nums">{stat.format(stat.value)}</div>
+          <div className="text-[12px] text-[#888] mt-0.5">{stat.label}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 /* ───────────────────────── Landing Nav ───────────────────────── */
 function LandingNav() {
@@ -199,20 +258,8 @@ export default function LandingPage() {
             Delegate 70% of your work to Ultron in less than 10 minutes.
           </p>
 
-          {/* Inline agent stats — clean, minimal */}
-          <div className="grid grid-cols-4 gap-4 sm:flex sm:items-center sm:gap-8 mt-8">
-            {[
-              { value: "224", label: "Agents" },
-              { value: "6,747", label: "Tasks" },
-              { value: "54.8k", label: "API Calls" },
-              { value: "$109k", label: "Saved" },
-            ].map((stat) => (
-              <div key={stat.label} className="text-left">
-                <div className="text-xl font-bold text-white font-terminal">{stat.value}</div>
-                <div className="text-[11px] text-[#555] tracking-wide">{stat.label}</div>
-              </div>
-            ))}
-          </div>
+          {/* Inline agent stats — hidden on mobile, count-up on desktop */}
+          <HeroStats />
 
           {/* Animated chat box */}
           <div className="mt-20">

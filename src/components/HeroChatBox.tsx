@@ -14,6 +14,15 @@ const PROMPTS = [
   "Design a referral program with tiered rewards",
 ];
 
+const MOBILE_PHRASES = [
+  "Ultron is thinking...",
+  "Activating neural pathways...",
+  "Processing at lightspeed...",
+  "Assembling your answer...",
+  "Scanning your data...",
+  "Deploying agents...",
+];
+
 const MODELS = [
   { label: "Sonnet 4", logo: "/logo claude.png" },
   { label: "Code", logo: "/logo claude code.png" },
@@ -77,6 +86,16 @@ const TOOLS_MENU = [
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      </svg>
+    ),
+  },
+  {
+    label: "Chat with us",
+    href: "#",
+    isIntercom: true,
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
       </svg>
     ),
   },
@@ -150,9 +169,15 @@ function ToolsDropdown({
         <a
           key={item.label}
           href={item.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={onClose}
+          target={item.isIntercom ? undefined : "_blank"}
+          rel={item.isIntercom ? undefined : "noopener noreferrer"}
+          onClick={(e) => {
+            if (item.isIntercom) {
+              e.preventDefault();
+              try { (window as any).Intercom?.("show"); } catch {}
+            }
+            onClose();
+          }}
           className={`flex items-center gap-2.5 px-4 py-2.5 text-[13px] text-[#999] hover:bg-[#1a1a1a] hover:text-white transition-colors ${
             i < TOOLS_MENU.length - 1 ? "border-b border-[#1a1a1a]" : ""
           }`}
@@ -221,6 +246,7 @@ export default function HeroChatBox({
   const [menuOpen, setMenuOpen] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState(0);
+  const [mobilePhrase, setMobilePhrase] = useState(0);
   const promptIndex = useRef(0);
   const charIndex = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -229,6 +255,7 @@ export default function HeroChatBox({
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const mobileModelRef = useRef<HTMLDivElement>(null);
 
+  // Desktop typewriter
   const typeNext = useCallback(() => {
     const currentPrompt = PROMPTS[promptIndex.current];
     if (charIndex.current < currentPrompt.length) {
@@ -253,6 +280,14 @@ export default function HeroChatBox({
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [isUserTyping, typeNext]);
+
+  // Mobile rotating phrases
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMobilePhrase((p) => (p + 1) % MOBILE_PHRASES.length);
+    }, 2800);
+    return () => clearInterval(interval);
+  }, []);
 
   // Close menus on outside click
   useEffect(() => {
@@ -285,38 +320,6 @@ export default function HeroChatBox({
     }
   };
 
-  /* ─── Typing text or input (shared) ─── */
-  const inputArea = (
-    <div className="relative flex-1 min-h-[24px]">
-      {!isUserTyping && !userText && (
-        <p className="text-[#666] text-[14px] md:text-[15px] leading-relaxed truncate">
-          {displayText}
-          <span className="inline-block w-[2px] h-[14px] bg-[#DA4E24] ml-[1px] align-middle animate-pulse" />
-        </p>
-      )}
-      {(isUserTyping || userText) && (
-        <input
-          type="text"
-          value={userText}
-          onChange={(e) => setUserText(e.target.value)}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          className="w-full bg-transparent text-white text-[14px] md:text-[15px] outline-none placeholder:text-[#444]"
-          placeholder="Ask anything..."
-          autoFocus={isUserTyping}
-        />
-      )}
-      {!isUserTyping && (
-        <input
-          type="text"
-          onFocus={handleFocus}
-          className="absolute inset-0 w-full h-full bg-transparent opacity-0 cursor-text"
-          tabIndex={0}
-        />
-      )}
-    </div>
-  );
-
   return (
     <>
       {/* ═══ MOBILE: ChatGPT-style single line ═══ */}
@@ -332,15 +335,22 @@ export default function HeroChatBox({
           />
         </div>
 
-        <div className="relative z-10 bg-[#0c0c0c] rounded-full border border-[#1a1a1a] px-3 py-2 flex items-center gap-2.5">
+        <div className="relative z-10 bg-[#0c0c0c] rounded-full border border-[#1a1a1a] px-3 py-2 flex items-center gap-2">
           {/* + button */}
           <div className="relative" ref={mobileMenuRef}>
             <PlusButton menuOpen={menuOpen} onClick={() => setMenuOpen(!menuOpen)} />
             {menuOpen && <ToolsDropdown onClose={() => setMenuOpen(false)} position="top" />}
           </div>
 
-          {/* Input */}
-          {inputArea}
+          {/* Rotating phrase — no typing, just fade */}
+          <div className="flex-1 min-w-0">
+            <p
+              key={mobilePhrase}
+              className="text-[#888] text-[13px] truncate animate-fade-in"
+            >
+              {MOBILE_PHRASES[mobilePhrase]}
+            </p>
+          </div>
 
           {/* Model logo (tap to expand) */}
           <div className="relative" ref={mobileModelRef}>
@@ -371,7 +381,7 @@ export default function HeroChatBox({
       </div>
 
       {/* ═══ DESKTOP: Full multi-row layout ═══ */}
-      <div className="hidden md:block relative w-full max-w-[720px] mx-auto">
+      <div className="hidden md:block relative w-full max-w-[800px] mx-auto">
         {/* Slim animated glow border */}
         <div className="absolute -inset-[1px] rounded-2xl overflow-hidden z-0">
           <div
@@ -424,7 +434,7 @@ export default function HeroChatBox({
           {/* Text input area */}
           <div className="relative mb-5 min-h-[32px]">
             {!isUserTyping && !userText && (
-              <p className="text-[#666] text-[15px] leading-relaxed">
+              <p className="text-[#999] text-[15px] leading-relaxed">
                 {displayText}
                 <span className="inline-block w-[2px] h-[16px] bg-[#DA4E24] ml-[1px] align-middle animate-pulse" />
               </p>
@@ -436,7 +446,7 @@ export default function HeroChatBox({
                 onChange={(e) => setUserText(e.target.value)}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
-                className="w-full bg-transparent text-white text-[15px] outline-none placeholder:text-[#444]"
+                className="w-full bg-transparent text-white text-[15px] outline-none placeholder:text-[#555]"
                 placeholder="Ask Ultron anything..."
                 autoFocus={isUserTyping}
               />
@@ -459,11 +469,15 @@ export default function HeroChatBox({
               {menuOpen && <ToolsDropdown onClose={() => setMenuOpen(false)} position="top" />}
             </div>
 
-            {/* Apple-inspired right side action */}
+            {/* Work Mode — visible pill style */}
             {onSwitchToWorkMode && (
               <button
                 onClick={onSwitchToWorkMode}
-                className="group flex items-center gap-1.5 text-[13px] text-[#666] hover:text-white transition-colors"
+                className={`group flex items-center gap-1.5 text-[13px] font-medium transition-all ${
+                  demoMode
+                    ? "text-[#999] hover:text-white"
+                    : "text-[#ddd] bg-[#1a1a1a] rounded-full px-4 py-1.5 border border-[#333] hover:border-[#DA4E24]/50 hover:text-white"
+                }`}
               >
                 {demoMode ? (
                   <>
@@ -474,8 +488,11 @@ export default function HeroChatBox({
                   </>
                 ) : (
                   <>
-                    <span>Work Mode</span>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 transition-transform">
+                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                    </svg>
+                    <span>Work Mode</span>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 transition-transform">
                       <polyline points="9 18 15 12 9 6" />
                     </svg>
                   </>
