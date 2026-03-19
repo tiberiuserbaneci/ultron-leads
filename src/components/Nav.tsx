@@ -16,7 +16,7 @@ export default function Nav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[60] bg-black/90 backdrop-blur-md">
+    <nav className={`fixed top-0 left-0 right-0 z-[60] backdrop-blur-md ${mobileMenuOpen ? "bg-black" : "bg-black/90"}`}>
       <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -36,9 +36,10 @@ export default function Nav() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
+            {/* Try Ultron — desktop only */}
             <Link
               href="https://app.51ultron.com/signup"
-              className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-5 py-1.5 hover:bg-[#DA4E24]/10 transition-colors"
+              className="hidden md:inline-flex text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-5 py-1.5 hover:bg-[#DA4E24]/10 transition-colors"
             >
               Try Ultron
             </Link>
@@ -67,7 +68,7 @@ export default function Nav() {
 
       {/* Mobile dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#0a0a0a] border-t border-[#1a1a1a] animate-fade-up">
+        <div className="md:hidden bg-black border-t border-[#1a1a1a]">
           <div className="px-6 py-4 space-y-1">
             {NAV_LINKS.map((l) => (
               <a
@@ -80,6 +81,13 @@ export default function Nav() {
                 {l.label}
               </a>
             ))}
+            <Link
+              href="https://app.51ultron.com/signup"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-center mt-3 text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-5 py-2.5 hover:bg-[#DA4E24]/10 transition-colors"
+            >
+              Try Ultron
+            </Link>
           </div>
         </div>
       )}

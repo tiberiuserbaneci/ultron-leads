@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Footer from "@/components/Footer";
 import FounderTerminal from "@/components/FounderTerminal";
 import { BrainContent } from "@/components/BrainSection";
 
@@ -73,7 +72,6 @@ export default function BrainPage() {
             <FounderTerminal />
           </div>
 
-          <Footer />
         </>
       )}
 
