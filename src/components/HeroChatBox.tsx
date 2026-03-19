@@ -469,30 +469,26 @@ export default function HeroChatBox({
               {menuOpen && <ToolsDropdown onClose={() => setMenuOpen(false)} position="top" />}
             </div>
 
-            {/* Work Mode — visible pill style */}
+            {/* Work Mode — pill with animated chevron */}
             {onSwitchToWorkMode && (
               <button
                 onClick={onSwitchToWorkMode}
-                className={`group flex items-center gap-1.5 text-[13px] font-medium transition-all ${
-                  demoMode
-                    ? "text-[#999] hover:text-white"
-                    : "text-[#ddd] bg-[#1a1a1a] rounded-full px-4 py-1.5 border border-[#333] hover:border-[#DA4E24]/50 hover:text-white"
-                }`}
+                className="group flex items-center gap-1.5 text-[13px] font-medium text-[#ddd] bg-[#1a1a1a] rounded-full px-4 py-1.5 border border-[#333] hover:border-[#DA4E24]/50 hover:text-white transition-all min-w-[140px] justify-center"
               >
                 {demoMode ? (
                   <>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-0.5 transition-transform">
                       <polyline points="15 18 9 12 15 6" />
                     </svg>
                     <span>Overview</span>
                   </>
                 ) : (
                   <>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 transition-transform">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                     </svg>
                     <span>Work Mode</span>
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 transition-transform">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-nudge-right">
                       <polyline points="9 18 15 12 9 6" />
                     </svg>
                   </>

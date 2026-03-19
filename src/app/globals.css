@@ -410,6 +410,15 @@ input[type="range"]:focus { outline: none; }
   }
 }
 
+/* ── Work Mode chevron nudge animation ── */
+@keyframes nudgeRight {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+}
+.animate-nudge-right {
+  animation: nudgeRight 1.5s ease-in-out infinite;
+}
+
 /* ── Hero glowing watermark text ── */
 .hero-glow-text {
   animation: heroTextGlow 6s ease-in-out infinite;
