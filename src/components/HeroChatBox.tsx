@@ -137,16 +137,31 @@ function PlusButton({
 }
 
 /* ─── Shared send button ─── */
-function SendButton() {
+function SendButton({ onClick }: { onClick?: () => void }) {
+  const arrow = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="19" x2="12" y2="5" />
+      <polyline points="5 12 12 5 19 12" />
+    </svg>
+  );
+
+  if (onClick) {
+    return (
+      <button
+        onClick={onClick}
+        className="w-7 h-7 rounded-full bg-[#DA4E24] flex items-center justify-center hover:bg-[#e8633f] transition-colors flex-shrink-0"
+      >
+        {arrow}
+      </button>
+    );
+  }
+
   return (
     <a
       href="https://app.51ultron.com"
       className="w-7 h-7 rounded-full bg-[#DA4E24] flex items-center justify-center hover:bg-[#e8633f] transition-colors flex-shrink-0"
     >
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="12" y1="19" x2="12" y2="5" />
-        <polyline points="5 12 12 5 19 12" />
-      </svg>
+      {arrow}
     </a>
   );
 }
@@ -375,8 +390,8 @@ export default function HeroChatBox({
             </p>
           </div>
 
-          {/* Send */}
-          <SendButton />
+          {/* Send — triggers Work Mode on landing, links to app otherwise */}
+          <SendButton onClick={onSwitchToWorkMode} />
         </div>
       </div>
 
@@ -496,8 +511,9 @@ export default function HeroChatBox({
               </button>
             )}
 
-            {/* Fallback: send arrow */}
+            {/* Fallback: send arrow (when not on landing page) */}
             {!onSwitchToWorkMode && <SendButton />}
+
           </div>
         </div>
       </div>

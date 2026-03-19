@@ -47,19 +47,19 @@ function HeroStats() {
   const saved = useCountUp(109088);
 
   const stats = [
-    { ...agents, label: "agents", format: (v: number) => v.toLocaleString() },
-    { ...tasks, label: "tasks", format: (v: number) => v.toLocaleString() },
-    { ...api, label: "API calls", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toString() },
-    { ...saved, label: "saved", format: (v: number) => `$${v >= 1000 ? `${Math.round(v / 1000)}K` : v}` },
+    { ...agents, label: "agents", format: (v: number) => v.toLocaleString(), mobileHide: true },
+    { ...tasks, label: "tasks", format: (v: number) => v.toLocaleString(), mobileHide: false },
+    { ...api, label: "API calls", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toString(), mobileHide: true },
+    { ...saved, label: "saved", format: (v: number) => `$${v >= 1000 ? `${Math.round(v / 1000)}K` : v}`, mobileHide: false },
   ];
 
   return (
     <>
       {stats.map((stat) => (
-        <span key={stat.label} className="inline-flex items-center gap-1.5 text-[14px]">
+        <span key={stat.label} className={`inline-flex items-center gap-1.5 text-[14px] sm:text-[15px] ${stat.mobileHide ? "hidden sm:inline-flex" : ""}`}>
           <span className="w-px h-4 bg-[#444]" />
           <span ref={stat.ref} className="text-white font-semibold tabular-nums">{stat.format(stat.value)}</span>
-          <span className="text-[#ccc]">{stat.label}</span>
+          <span className="text-[#e0e0e0]">{stat.label}</span>
         </span>
       ))}
     </>
@@ -179,7 +179,7 @@ export default function LandingPage() {
       <LandingNav />
 
       {/* ─── HERO ─── */}
-      <section className="relative min-h-screen pt-32 pb-32 overflow-hidden">
+      <section className="relative min-h-screen pt-40 sm:pt-48 pb-32 overflow-hidden">
         {/* Background image — diagonal light streaks */}
         <div className="absolute inset-0 pointer-events-none">
           <Image
@@ -240,23 +240,31 @@ export default function LandingPage() {
         </div>
 
         <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8">
-          {/* Hero copy — LEFT aligned like Relevance AI */}
-          <div className="max-w-[700px]">
-            {/* Heading */}
-            <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-medium leading-[1.15] tracking-tight text-white">
+          {/* Hero copy — LEFT aligned */}
+          <div className="max-w-[800px]">
+            {/* Desktop heading */}
+            <h1 className="hidden sm:block text-5xl lg:text-[64px] font-semibold leading-[1.12] tracking-tight text-white">
               Scale your founder-led growth,
               <br />
               without scaling headcount
             </h1>
+            {/* Mobile heading — different copy */}
+            <h1 className="sm:hidden text-[40px] font-semibold leading-[1.12] tracking-tight text-white">
+              100x Your
+              <br />
+              Founder-Led
+              <br />
+              Growth
+            </h1>
 
             {/* Subtitle */}
-            <p className="mt-6 text-[#ccc] text-base sm:text-[17px] leading-relaxed max-w-[520px]">
+            <p className="mt-6 text-[#e0e0e0] text-[15px] sm:text-[18px] leading-relaxed max-w-[540px]">
               Hire AI employees, set goals and go from zero to autonomous company in one command.
             </p>
 
-            {/* Stats row — like Relevance AI's "Talk to sales · Try it free · 100+ integrations" */}
-            <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-8">
-              <span className="text-[14px] text-[#ccc]">
+            {/* Stats bar — transparent box with clean border */}
+            <div className="mt-8 inline-flex items-center gap-4 sm:gap-5 border border-[#333] rounded-full px-5 py-2.5">
+              <span className="text-[14px] sm:text-[15px] text-[#e0e0e0]">
                 <span className="text-white font-semibold">2,000+</span> founders
               </span>
               <span className="w-px h-4 bg-[#444]" />
@@ -264,11 +272,11 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Animated chat box with ambient glow — pushed lower */}
-          <div className="relative mt-16 sm:mt-28">
-            {/* Orange ambient glow behind chatbox — slightly stronger */}
+          {/* Animated chat box with ambient glow */}
+          <div className="relative mt-14 sm:mt-32">
+            {/* Orange ambient glow behind chatbox */}
             <div className="absolute -inset-20 pointer-events-none">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full bg-[#DA4E24]/[0.10] blur-[150px]" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full bg-[#DA4E24]/[0.12] blur-[150px]" />
               <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[400px] h-[300px] rounded-full bg-[#1F77F6]/[0.05] blur-[120px]" />
             </div>
             <div className="relative">
