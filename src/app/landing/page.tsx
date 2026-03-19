@@ -127,7 +127,7 @@ function FeatureCard({
       {/* Outer subtle glow — matches hero chatbox */}
       <div className="absolute -inset-px rounded-2xl shadow-[0_0_40px_rgba(218,78,36,0.08),0_0_80px_rgba(218,78,36,0.04)] z-0" />
       {/* Card content */}
-      <div className="relative z-10 rounded-2xl bg-[#0c0c0c] border border-[#1a1a1a] overflow-hidden h-full">
+      <div className="relative z-10 rounded-2xl bg-black overflow-hidden h-full">
         {children}
       </div>
     </div>
