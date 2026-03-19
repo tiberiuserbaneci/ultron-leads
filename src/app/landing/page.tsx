@@ -86,14 +86,21 @@ function FeatureCard({
   className?: string;
 }) {
   return (
-    <div
-      className={`relative rounded-2xl border border-[#1a1a1a] bg-[#0a0a0a] overflow-hidden ${className}`}
-      style={{
-        backgroundImage:
-          "linear-gradient(135deg, rgba(218,78,36,0.06) 0%, transparent 40%)",
-      }}
-    >
-      {children}
+    <div className={`group relative rounded-2xl overflow-hidden ${className}`}>
+      {/* Animated orange glow border */}
+      <div className="absolute -inset-[1px] rounded-2xl z-0 overflow-hidden">
+        <div
+          className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
+          style={{
+            background:
+              "conic-gradient(from 0deg, transparent 0%, transparent 70%, rgba(218,78,36,0.5) 80%, rgba(218,78,36,0.8) 85%, rgba(218,78,36,0.5) 90%, transparent 100%)",
+          }}
+        />
+      </div>
+      {/* Card content */}
+      <div className="relative z-10 rounded-2xl border border-[#1a1a1a] bg-[#0a0a0a] overflow-hidden h-full">
+        {children}
+      </div>
     </div>
   );
 }
@@ -196,10 +203,10 @@ export default function LandingPage() {
           </div>
 
           {/* Top row: 2 cards */}
-          <div className="grid md:grid-cols-2 gap-5 mb-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
             {/* OpenClaw Mission Control */}
             <FeatureCard>
-              <div className="aspect-[4/3] relative">
+              <div className="aspect-[16/10] relative">
                 <Image
                   src="/Group 2147204318@3x.png"
                   alt="OpenClaw Mission Control"
@@ -207,8 +214,8 @@ export default function LandingPage() {
                   className="object-cover"
                 />
               </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-2">OpenClaw Mission Control</h3>
+              <div className="p-5 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-bold mb-2">OpenClaw Mission Control</h3>
                 <p className="text-[#999] text-sm leading-relaxed">
                   Ultron runs autonomously 24/7 across Telegram, WhatsApp and native dashboard.
                 </p>
@@ -217,7 +224,7 @@ export default function LandingPage() {
 
             {/* AI Sales Engine */}
             <FeatureCard>
-              <div className="aspect-[4/3] relative">
+              <div className="aspect-[16/10] relative">
                 <Image
                   src="/Group 1321314679@3x.png"
                   alt="AI Sales Engine"
@@ -225,8 +232,8 @@ export default function LandingPage() {
                   className="object-cover"
                 />
               </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-2">AI Sales Engine</h3>
+              <div className="p-5 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-bold mb-2">AI Sales Engine</h3>
                 <p className="text-[#999] text-sm leading-relaxed">
                   Ultron finds, researches, and reaches out to your ideal customers autonomously. You wake up to booked meetings.
                 </p>
@@ -235,28 +242,40 @@ export default function LandingPage() {
           </div>
 
           {/* Bottom row: 2 cards */}
-          <div className="grid md:grid-cols-[1.2fr_0.8fr] gap-5">
-            {/* Agent Orchestration */}
+          <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] gap-5">
+            {/* Automation Empire Builder */}
             <FeatureCard>
-              <div className="aspect-[2/1] relative">
+              <div className="aspect-[16/9] md:aspect-[2/1] relative">
                 <Image
                   src="/Group 1321314678@3x.png"
-                  alt="Agent Orchestration"
+                  alt="Automation Empire Builder"
                   fill
                   className="object-cover"
                 />
               </div>
+              <div className="p-5 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-bold mb-2">Automation Empire Builder</h3>
+                <p className="text-[#999] text-sm leading-relaxed">
+                  Deploys unlimited AI agents internally to scale your ops or externally as a product your clients pay for.
+                </p>
+              </div>
             </FeatureCard>
 
-            {/* Social Platforms */}
+            {/* Viral-Ready Playbooks */}
             <FeatureCard>
-              <div className="aspect-[2/1] relative">
+              <div className="aspect-[16/9] md:aspect-[2/1] relative">
                 <Image
                   src="/Group 1321314677@3x.png"
-                  alt="Social Platforms"
+                  alt="Viral-Ready Playbooks"
                   fill
                   className="object-cover"
                 />
+              </div>
+              <div className="p-5 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-bold mb-2">Viral-Ready Playbooks</h3>
+                <p className="text-[#999] text-sm leading-relaxed">
+                  Scrapes viral strategies, extracts what works, and generates winning content.
+                </p>
               </div>
             </FeatureCard>
           </div>
