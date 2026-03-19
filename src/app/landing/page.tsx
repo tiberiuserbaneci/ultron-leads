@@ -125,7 +125,7 @@ function FeatureCard({
         />
       </div>
       {/* Card content */}
-      <div className="relative z-10 rounded-2xl border border-[#1a1a1a] bg-[#0a0a0a] overflow-hidden h-full">
+      <div className="relative z-10 rounded-2xl border border-[#333] bg-black overflow-hidden h-full">
         {children}
       </div>
     </div>
@@ -372,12 +372,12 @@ export default function LandingPage() {
                 {/* Viral-Ready Playbooks */}
                 <FeatureCard>
                   <div className="p-3">
-                    <div className="aspect-[16/9] md:aspect-[2/1] relative rounded-xl overflow-hidden">
+                    <div className="aspect-[4/3] md:aspect-[3/2] relative rounded-xl overflow-hidden">
                       <Image
                         src="/Group 1321314677@3x.png"
                         alt="Viral-Ready Playbooks"
                         fill
-                        className="object-cover"
+                        className="object-contain object-center"
                       />
                     </div>
                   </div>
