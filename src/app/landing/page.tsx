@@ -423,7 +423,7 @@ export default function LandingPage() {
             {/* Delegate Sales */}
             <div className="lg:sticky lg:top-24" style={{ zIndex: 10 }}>
               <FeatureCard>
-                <div className="grid lg:grid-cols-2 gap-0 items-stretch">
+                <div className="grid lg:grid-cols-2 gap-0 lg:min-h-[526px]">
                   {/* Left: text */}
                   <div className="p-8 lg:p-12 flex flex-col justify-center">
                     <h3 className="text-3xl sm:text-4xl font-bold mb-4">Delegate Sales</h3>
@@ -437,12 +437,12 @@ export default function LandingPage() {
                     </div>
                   </div>
                   {/* Right: Image */}
-                  <div className="relative aspect-[4/3] lg:aspect-auto">
+                  <div className="relative min-h-[300px]">
                     <Image
                       src="/delegate-sales.png"
                       alt="Delegate Sales"
                       fill
-                      className="object-cover lg:rounded-r-2xl"
+                      className="object-cover rounded-b-2xl lg:rounded-bl-none lg:rounded-r-2xl"
                     />
                   </div>
                 </div>
@@ -452,18 +452,18 @@ export default function LandingPage() {
             {/* Build Workforces */}
             <div className="lg:sticky lg:top-28" style={{ zIndex: 11 }}>
               <FeatureCard>
-                <div className="grid lg:grid-cols-2 gap-0 items-stretch">
+                <div className="grid lg:grid-cols-2 gap-0 lg:min-h-[526px]">
                   {/* Left: Image */}
-                  <div className="relative aspect-[4/3] lg:aspect-auto">
+                  <div className="relative min-h-[300px] order-2 lg:order-1">
                     <Image
                       src="/build-workforces.png"
                       alt="Build Workforces"
                       fill
-                      className="object-cover lg:rounded-l-2xl"
+                      className="object-cover rounded-b-2xl lg:rounded-br-none lg:rounded-l-2xl"
                     />
                   </div>
                   {/* Right: Text */}
-                  <div className="p-8 lg:p-12 flex flex-col justify-center">
+                  <div className="p-8 lg:p-12 flex flex-col justify-center order-1 lg:order-2">
                     <h3 className="text-3xl sm:text-4xl font-bold mb-4">Build Workforces</h3>
                     <p className="text-[#999] text-[15px] leading-relaxed mb-8">
                       Deploy AI agents and automation workflows. Use them to run your business or sell them to clients.
@@ -481,7 +481,7 @@ export default function LandingPage() {
             {/* Go Viral */}
             <div className="lg:sticky lg:top-32" style={{ zIndex: 12 }}>
               <FeatureCard>
-                <div className="grid lg:grid-cols-2 gap-0 items-stretch">
+                <div className="grid lg:grid-cols-2 gap-0 lg:min-h-[526px]">
                   {/* Left: text */}
                   <div className="p-8 lg:p-12 flex flex-col justify-center">
                     <h3 className="text-3xl sm:text-4xl font-bold mb-4">Go Viral</h3>
@@ -495,12 +495,12 @@ export default function LandingPage() {
                     </div>
                   </div>
                   {/* Right: Image */}
-                  <div className="relative aspect-[4/3] lg:aspect-auto">
+                  <div className="relative min-h-[300px]">
                     <Image
                       src="/go-viral.png"
                       alt="Go Viral"
                       fill
-                      className="object-cover lg:rounded-r-2xl"
+                      className="object-cover rounded-b-2xl lg:rounded-bl-none lg:rounded-r-2xl"
                     />
                   </div>
                 </div>
