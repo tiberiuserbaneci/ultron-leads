@@ -120,10 +120,10 @@ export default function LandingPage() {
           />
         </div>
 
-        {/* Vector blob overlay — bottom-left warm glow */}
+        {/* Vector color accent — blended onto dark bg to enhance warm glow */}
         <div
           className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[70%] pointer-events-none"
-          style={{ mixBlendMode: "screen" }}
+          style={{ mixBlendMode: "darken" }}
         >
           <Image
             src="/hero-vector.png"

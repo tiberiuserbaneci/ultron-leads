@@ -3,17 +3,28 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
 const PROMPTS = [
-  "Generate weekly sales summary report for Q1...",
-  "Build a landing page for our new product launch...",
-  "Analyze competitor pricing and create comparison chart...",
-  "Draft outreach emails for 50 potential leads...",
-  "Create a social media content calendar for March...",
-  "Set up automated follow-up sequence for cold leads...",
-  "Design a referral program with tiered rewards...",
-  "Write SEO-optimized blog posts for our top keywords...",
+  "Generate weekly sales summary report for Q1",
+  "Create CRM contact from emails",
+  "Build a landing page for our new product launch",
+  "Analyze competitor pricing and create comparison",
+  "Draft outreach emails for 50 potential leads",
+  "Create a social media content calendar for March",
+  "Set up automated follow-up sequence for cold leads",
+  "Design a referral program with tiered rewards",
 ];
 
 const TABS = ["Sales", "Creates", "Builds"];
+
+function SparkleIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none">
+      <path
+        d="M8 0L9.4 6.6L16 8L9.4 9.4L8 16L6.6 9.4L0 8L6.6 6.6L8 0Z"
+        fill="#DA4E24"
+      />
+    </svg>
+  );
+}
 
 export default function HeroChatBox() {
   const [displayText, setDisplayText] = useState("");
@@ -31,7 +42,6 @@ export default function HeroChatBox() {
       charIndex.current++;
       timeoutRef.current = setTimeout(typeNext, 40 + Math.random() * 40);
     } else {
-      // Pause then clear and move to next prompt
       timeoutRef.current = setTimeout(() => {
         promptIndex.current = (promptIndex.current + 1) % PROMPTS.length;
         charIndex.current = 0;
@@ -64,48 +74,33 @@ export default function HeroChatBox() {
     }
   };
 
-  const shownText = isUserTyping ? userText : displayText;
-
   return (
-    <div className="relative max-w-[680px] mx-auto">
-      {/* Outer glow border */}
-      <div className="rounded-2xl p-[1px] bg-gradient-to-b from-[#DA4E24]/40 via-[#DA4E24]/20 to-[#1F77F6]/30 shadow-[0_0_60px_rgba(218,78,36,0.15)]">
+    <div className="relative max-w-[600px] mx-auto">
+      {/* Gradient border + glow */}
+      <div className="rounded-2xl p-[1.5px] bg-gradient-to-b from-[#DA4E24]/60 via-[#DA4E24]/30 to-[#1F77F6]/40 shadow-[0_0_80px_rgba(218,78,36,0.2)]">
         <div className="bg-[#0c0c0c] rounded-2xl p-5">
-          {/* Top row: model selector */}
-          <div className="flex items-center gap-2 mb-4">
+          {/* Top row: model selector + globe */}
+          <div className="flex items-center gap-3 mb-4">
             <div className="flex items-center gap-2 border border-[#333] rounded-full px-3 py-1.5">
-              {/* Sparkle icon */}
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M8 0L9.4 6.6L16 8L9.4 9.4L8 16L6.6 9.4L0 8L6.6 6.6L8 0Z"
-                  fill="#DA4E24"
-                />
-              </svg>
-              <span className="text-sm font-medium text-white">Sonnet 4.6</span>
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 12 12"
-                fill="none"
-                className="text-[#666]"
-              >
-                <path
-                  d="M3 5L6 8L9 5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+              <SparkleIcon className="w-3.5 h-3.5" />
+              <span className="text-sm font-medium text-white">Sonnet 4</span>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-[#666]">
+                <path d="M3 5L6 8L9 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
+            {/* Globe icon */}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-[#555]">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10A15.3 15.3 0 0112 2z" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
           </div>
 
           {/* Text input area */}
-          <div className="relative mb-4 min-h-[40px]">
+          <div className="relative mb-5 min-h-[32px]">
             {!isUserTyping && !userText && (
-              <p className="text-[#888] text-base leading-relaxed">
-                {shownText}
-                <span className="inline-block w-[2px] h-[18px] bg-[#DA4E24] ml-[1px] align-middle animate-pulse" />
+              <p className="text-[#999] text-[15px] leading-relaxed">
+                {displayText}
+                <span className="inline-block w-[2px] h-[16px] bg-[#DA4E24] ml-[1px] align-middle animate-pulse" />
               </p>
             )}
             {(isUserTyping || userText) && (
@@ -115,7 +110,7 @@ export default function HeroChatBox() {
                 onChange={(e) => setUserText(e.target.value)}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
-                className="w-full bg-transparent text-white text-base outline-none placeholder:text-[#555]"
+                className="w-full bg-transparent text-white text-[15px] outline-none placeholder:text-[#555]"
                 placeholder="Ask Ultron anything..."
                 autoFocus={isUserTyping}
               />
@@ -140,7 +135,7 @@ export default function HeroChatBox() {
                   className={`text-sm px-3 py-1.5 rounded-lg transition-colors ${
                     activeTab === i
                       ? "bg-[#1a1a1a] text-white border border-[#333]"
-                      : "text-[#666] hover:text-[#999]"
+                      : "text-[#555] hover:text-[#888]"
                   }`}
                 >
                   {tab}
@@ -152,13 +147,8 @@ export default function HeroChatBox() {
               href="https://app.51ultron.com"
               className="flex items-center gap-2 text-sm font-semibold text-white bg-gradient-to-r from-[#DA4E24]/20 to-[#DA4E24]/10 border border-[#DA4E24]/50 rounded-lg px-4 py-2 hover:from-[#DA4E24]/30 hover:to-[#DA4E24]/20 transition-all"
             >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M8 0L9.4 6.6L16 8L9.4 9.4L8 16L6.6 9.4L0 8L6.6 6.6L8 0Z"
-                  fill="#DA4E24"
-                />
-              </svg>
-              Start building
+              <SparkleIcon className="w-3.5 h-3.5" />
+              Send
             </a>
           </div>
         </div>
