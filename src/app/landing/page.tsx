@@ -311,12 +311,12 @@ export default function LandingPage() {
                 {/* OpenClaw Mission Control */}
                 <FeatureCard>
                   <div className="flex-1 p-3">
-                    <div className="relative rounded-xl overflow-hidden h-full">
+                    <div className="aspect-[16/10] md:aspect-auto relative rounded-xl overflow-hidden md:h-full">
                       <Image
                         src="/Group 2147204318@3x.png"
                         alt="OpenClaw Mission Control"
                         fill
-                        className="object-contain object-left-bottom"
+                        className="object-cover md:object-contain md:object-top"
                       />
                     </div>
                   </div>
@@ -331,12 +331,12 @@ export default function LandingPage() {
                 {/* AI Sales Engine */}
                 <FeatureCard>
                   <div className="flex-1 p-3">
-                    <div className="relative rounded-xl overflow-hidden h-full">
+                    <div className="aspect-[16/10] md:aspect-auto relative rounded-xl overflow-hidden md:h-full">
                       <Image
                         src="/Group 1321314679@3x.png"
                         alt="AI Sales Engine"
                         fill
-                        className="object-contain object-center"
+                        className="object-cover md:object-contain md:object-top"
                       />
                     </div>
                   </div>
@@ -354,19 +354,19 @@ export default function LandingPage() {
                 {/* Automation Empire Builder */}
                 <FeatureCard>
                   <div className="flex-1 p-3">
-                    <div className="relative rounded-xl overflow-hidden h-full">
+                    <div className="aspect-[16/10] md:aspect-auto relative rounded-xl overflow-hidden md:h-full">
                       <Image
                         src="/Group 1321314678@3x.png"
                         alt="Automation Empire Builder"
                         fill
-                        className="object-contain object-center"
+                        className="object-cover md:object-contain md:object-top"
                       />
                     </div>
                   </div>
                   <div className="px-5 pb-5 sm:px-6 sm:pb-6">
                     <h3 className="text-lg sm:text-xl font-bold mb-2">Automation Empire Builder</h3>
                     <p className="text-[#999] text-sm leading-relaxed">
-                      Deploys unlimited AI agents internally to scale your ops or externally as a product your clients pay for.
+                      Deploys unlimited AI agents internally to scale your<br className="hidden md:inline" /> ops or externally as a product your clients pay for.
                     </p>
                   </div>
                 </FeatureCard>
@@ -374,12 +374,12 @@ export default function LandingPage() {
                 {/* Viral-Ready Playbooks */}
                 <FeatureCard>
                   <div className="flex-1 p-3">
-                    <div className="relative rounded-xl overflow-hidden h-full">
+                    <div className="aspect-[16/10] md:aspect-auto relative rounded-xl overflow-hidden md:h-full">
                       <Image
                         src="/Group 1321314677@3x.png"
                         alt="Viral-Ready Playbooks"
                         fill
-                        className="object-contain object-center"
+                        className="object-cover md:object-contain md:object-top"
                       />
                     </div>
                   </div>
