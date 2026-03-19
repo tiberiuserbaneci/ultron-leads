@@ -61,22 +61,11 @@ function useCountUp(target: number, active: boolean, duration = 1200) {
   return value;
 }
 
-/* ─── Glow Card (matches FeatureCard from /landing) ──────── */
-function GlowCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+/* ─── Card with clean border (black bg, gray border) ─────── */
+function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`group relative rounded-2xl overflow-hidden ${className}`}>
-      <div className="absolute -inset-[1px] rounded-2xl z-0 overflow-hidden">
-        <div
-          className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
-          style={{
-            background:
-              "conic-gradient(from 0deg, transparent 0%, transparent 70%, rgba(218,78,36,0.5) 80%, rgba(218,78,36,0.8) 85%, rgba(218,78,36,0.5) 90%, transparent 100%)",
-          }}
-        />
-      </div>
-      <div className="relative z-10 rounded-2xl border border-[#1a1a1a] bg-[#0a0a0a] overflow-hidden h-full">
-        {children}
-      </div>
+    <div className={`rounded-2xl border border-[#333] bg-black overflow-hidden ${className}`}>
+      {children}
     </div>
   );
 }
@@ -98,10 +87,10 @@ function MetricCard({ label, value, suffix, active }: { label: string; value: nu
 /* ─── Urgency badge ──────────────────────────────────────── */
 function UrgencyBadge({ score }: { score: number }) {
   const color = score >= 8
-    ? "text-red-400 border-red-400/20 bg-red-400/5"
+    ? "text-red-400 border-red-400/30"
     : score >= 6
-    ? "text-amber-400 border-amber-400/20 bg-amber-400/5"
-    : "text-[#999] border-[#333] bg-[#111]";
+    ? "text-amber-400 border-amber-400/30"
+    : "text-[#999] border-[#444]";
   return (
     <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${color}`}>
       {score}/10
@@ -112,9 +101,9 @@ function UrgencyBadge({ score }: { score: number }) {
 /* ─── State badge ────────────────────────────────────────── */
 function StateBadge({ state }: { state: AttentionCard["state"] }) {
   const styles: Record<string, string> = {
-    "auto-handle": "text-green-400 border-green-400/20 bg-green-400/5",
-    monitor: "text-blue-400 border-blue-400/20 bg-blue-400/5",
-    escalate: "text-[#DA4E24] border-[#DA4E24]/20 bg-[#DA4E24]/5",
+    "auto-handle": "text-green-400 border-green-400/30",
+    monitor: "text-blue-400 border-blue-400/30",
+    escalate: "text-[#DA4E24] border-[#DA4E24]/30",
   };
   const labels: Record<string, string> = {
     "auto-handle": "AUTO-HANDLE",
@@ -132,7 +121,7 @@ function StateBadge({ state }: { state: AttentionCard["state"] }) {
 
 function AttentionCardComponent({ card, index }: { card: AttentionCard; index: number }) {
   return (
-    <GlowCard>
+    <Card>
       <div
         className="p-5 sm:p-6 animate-fade-up"
         style={{ animationDelay: `${index * 0.08}s` }}
@@ -147,34 +136,34 @@ function AttentionCardComponent({ card, index }: { card: AttentionCard; index: n
         <p className="text-sm text-[#ccc] leading-relaxed mb-2">{card.observation}</p>
         <span className="text-[11px] text-[#555]">{card.source}</span>
       </div>
-    </GlowCard>
+    </Card>
   );
 }
 
 function AgentCard({ agent, index }: { agent: AgentActivation; index: number }) {
   return (
-    <div
-      className={`rounded-2xl border p-5 text-center transition-all duration-500 animate-fade-up ${
-        agent.active
-          ? "border-[#DA4E24]/30 bg-[#0a0a0a] shadow-[0_0_20px_rgba(218,78,36,0.08)]"
-          : "border-[#1a1a1a] bg-[#0a0a0a] opacity-40"
-      }`}
-      style={{ animationDelay: `${index * 0.08}s` }}
-    >
-      <div className="flex items-center justify-center gap-2 mb-2">
-        <span className={`w-2 h-2 rounded-full ${agent.active ? "bg-[#DA4E24] pulse-soft" : "bg-[#333]"}`} />
-        <span className={`text-xs font-bold ${agent.active ? "text-white" : "text-[#555]"}`}>{agent.label}</span>
+    <Card>
+      <div
+        className={`p-5 text-center transition-all duration-500 animate-fade-up ${
+          !agent.active ? "opacity-40" : ""
+        }`}
+        style={{ animationDelay: `${index * 0.08}s` }}
+      >
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <span className={`w-2 h-2 rounded-full ${agent.active ? "bg-[#DA4E24] pulse-soft" : "bg-[#333]"}`} />
+          <span className={`text-xs font-bold ${agent.active ? "text-white" : "text-[#555]"}`}>{agent.label}</span>
+        </div>
+        {agent.active && agent.role && (
+          <p className="text-[11px] text-[#888] leading-relaxed">{agent.role}</p>
+        )}
       </div>
-      {agent.active && agent.role && (
-        <p className="text-[11px] text-[#888] leading-relaxed">{agent.role}</p>
-      )}
-    </div>
+    </Card>
   );
 }
 
 function DecisionCardComponent({ decision, index }: { decision: DecisionCard; index: number }) {
   return (
-    <GlowCard>
+    <Card>
       <div
         className="p-6 sm:p-8 animate-fade-up"
         style={{ animationDelay: `${index * 0.12}s` }}
@@ -204,7 +193,7 @@ function DecisionCardComponent({ decision, index }: { decision: DecisionCard; in
           </div>
         </div>
       </div>
-    </GlowCard>
+    </Card>
   );
 }
 
@@ -225,7 +214,7 @@ function RoutingColumn({
   delayOffset?: number;
 }) {
   return (
-    <GlowCard>
+    <Card>
       <div className="p-6 animate-fade-up">
         <div className="flex items-center gap-2.5 mb-5">
           <span className={`w-2.5 h-2.5 rounded-full ${dotColor}`} />
@@ -244,7 +233,7 @@ function RoutingColumn({
           ))}
         </ul>
       </div>
-    </GlowCard>
+    </Card>
   );
 }
 
@@ -258,6 +247,7 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
   const [micState, setMicState] = useState<MicState>("idle");
   const [activeCommand, setActiveCommand] = useState<CommandData | null>(null);
   const [showResults, setShowResults] = useState(false);
+  const [chipsOpen, setChipsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -278,6 +268,7 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
 
     setInput(text);
     setShowResults(false);
+    setChipsOpen(false);
     setBrainState("thinking");
 
     setTimeout(() => {
@@ -356,10 +347,13 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
   const handleChipClick = useCallback(
     (cmd: string) => {
       setInput(cmd);
+      setChipsOpen(false);
       runCommand(cmd);
     },
     [runCommand]
   );
+
+  const isProcessing = brainState === "thinking" || brainState === "dispatching";
 
   return (
     <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
@@ -369,9 +363,9 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
           BUSINESS BRAIN
         </span>
         <h2 className="mt-5 text-4xl sm:text-5xl lg:text-[56px] font-bold leading-[1.1]">
-          Attach a brain to{" "}
-          <br className="sm:hidden" />
-          <span className="gradient-text">your business.</span>
+          Attach a brain to
+          <br />
+          your business.
         </h2>
         <p className="mt-5 text-[#999] text-lg max-w-[560px] mx-auto leading-relaxed">
           Ask Ultron what matters. It routes attention, handles the repeatable
@@ -379,13 +373,13 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
         </p>
       </div>
 
-      {/* ─── BRAIN ORB ───────────────────────────────────── */}
+      {/* ─── BRAIN ORB (full size, not compact) ──────────── */}
       <div className="flex justify-center mb-10">
-        <BrainOrb state={brainState} compact={embedded} />
+        <BrainOrb state={brainState} />
       </div>
 
-      {/* ─── CHAT BAR (matches HeroChatBox mobile pill) ──── */}
-      <div className="max-w-[800px] mx-auto mb-8">
+      {/* ─── CHAT BAR ────────────────────────────────────── */}
+      <div className="max-w-[800px] mx-auto mb-6 relative">
         <form onSubmit={handleSubmit} className="relative w-full">
           {/* Animated glow border */}
           <div className="absolute -inset-[1px] rounded-full overflow-hidden z-0">
@@ -429,6 +423,7 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onFocus={() => setChipsOpen(true)}
               placeholder="Ask Ultron what matters..."
               className="flex-1 min-w-0 bg-transparent text-white text-[14px] sm:text-[15px] outline-none placeholder:text-[#555]"
             />
@@ -436,7 +431,7 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
             {/* Send button */}
             <button
               type="submit"
-              disabled={!input.trim() || brainState === "thinking" || brainState === "dispatching"}
+              disabled={!input.trim() || isProcessing}
               className="w-7 h-7 rounded-full bg-[#DA4E24] flex items-center justify-center hover:bg-[#e8633f] transition-colors flex-shrink-0 disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -446,16 +441,54 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
             </button>
           </div>
         </form>
+
+        {/* ─── MOBILE: Chips dropdown under chat bar ─────── */}
+        <div className="sm:hidden relative z-20">
+          {/* Toggle button */}
+          <button
+            onClick={() => setChipsOpen(!chipsOpen)}
+            className="w-full flex items-center justify-center gap-1.5 mt-3 py-2 text-[12px] text-[#666] hover:text-[#999] transition-colors"
+          >
+            <span>{chipsOpen ? "Hide" : "Show"} suggestions</span>
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 12 12"
+              fill="none"
+              className={`text-[#555] transition-transform duration-200 ${chipsOpen ? "rotate-180" : ""}`}
+            >
+              <path d="M3 5L6 8L9 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+
+          {/* Dropdown panel */}
+          {chipsOpen && (
+            <div className="mt-1 rounded-2xl border border-[#333] bg-black p-3 animate-fade-up">
+              <div className="flex flex-col gap-1.5">
+                {PREBUILT_COMMANDS.map((cmd) => (
+                  <button
+                    key={cmd}
+                    onClick={() => handleChipClick(cmd)}
+                    disabled={isProcessing}
+                    className="text-left text-[13px] text-[#999] px-3.5 py-2.5 rounded-xl hover:bg-[#111] hover:text-white transition-colors disabled:opacity-30"
+                  >
+                    {cmd}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* ─── COMMAND CHIPS (Try Ultron style) ────────────── */}
-      <div className="flex flex-wrap justify-center gap-2.5 max-w-[800px] mx-auto">
+      {/* ─── DESKTOP: Chips scattered ────────────────────── */}
+      <div className="hidden sm:flex flex-wrap justify-center gap-3 max-w-[900px] mx-auto">
         {PREBUILT_COMMANDS.map((cmd) => (
           <button
             key={cmd}
             onClick={() => handleChipClick(cmd)}
-            disabled={brainState === "thinking" || brainState === "dispatching"}
-            className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-5 py-1.5 hover:bg-[#DA4E24]/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            disabled={isProcessing}
+            className="text-[13px] text-[#888] border border-[#333] rounded-full px-4 py-1.5 hover:text-white hover:border-[#555] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {cmd}
           </button>
@@ -467,13 +500,13 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
         <div ref={resultsRef} className="mt-20">
           {/* ─── INTERPRETATION ────────────────────────────── */}
           <div className="max-w-[900px] mx-auto mb-16">
-            <GlowCard>
+            <Card>
               <div className="p-6 sm:p-8 animate-fade-up">
                 <div className="mb-5">
                   <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#555]">You asked</span>
                   <p className="text-white font-bold text-lg mt-1">&ldquo;{activeCommand.input}&rdquo;</p>
                 </div>
-                <div className="border-t border-[#1a1a1a] pt-5">
+                <div className="border-t border-[#333] pt-5">
                   <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#DA4E24]">Ultron interprets</span>
                   <ul className="mt-3 space-y-2">
                     {activeCommand.interpretation.map((item, i) => (
@@ -485,7 +518,7 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
                   </ul>
                 </div>
               </div>
-            </GlowCard>
+            </Card>
           </div>
 
           {/* ─── ATTENTION SURFACE ─────────────────────────── */}
@@ -589,7 +622,7 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
               </span>
               <p className="mt-4 text-[#999] text-lg leading-relaxed">What this command produced.</p>
             </div>
-            <GlowCard>
+            <Card>
               <div className="p-8 sm:p-10">
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8">
                   <MetricCard label="Hours saved" value={activeCommand.metrics.hoursNotSpent} suffix="h" active={showResults} />
@@ -600,7 +633,7 @@ export function BrainContent({ embedded }: { embedded?: boolean }) {
                   <MetricCard label="Follow-ups queued" value={activeCommand.metrics.followUpsQueued} active={showResults} />
                 </div>
               </div>
-            </GlowCard>
+            </Card>
           </div>
         </div>
       )}
