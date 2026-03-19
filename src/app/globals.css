@@ -336,78 +336,65 @@ input[type="range"]:focus { outline: none; }
   color: #333;
 }
 
-/* ── Client Kit: Print styles ── */
+/* ── Print styles ── */
 @media print {
   /* Hide non-essential UI */
-  nav, footer, .print\\:hidden {
+  nav, footer, .print\:hidden {
     display: none !important;
   }
 
-  body {
-    background: white !important;
-    color: black !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  /* Document container */
-  [data-theme] {
-    background: white !important;
-    color: black !important;
-  }
-
-  /* Typography */
-  h1, h2, h3, h4 {
-    color: black !important;
-  }
-
-  /* Section headers */
-  .font-terminal {
-    color: #DA4E24 !important;
-  }
-
-  /* Fields */
-  .editable-field,
-  input[type="text"] {
-    color: black !important;
-    border-color: transparent !important;
-  }
-  .editable-field:empty::before {
-    color: #ccc !important;
-  }
-
-  /* Tables */
-  table {
-    border-collapse: collapse;
-  }
-  th {
-    color: #666 !important;
-    border-bottom: 1px solid #ddd !important;
-  }
-  td {
-    border-bottom: 1px solid #eee !important;
-    color: black !important;
-  }
-
-  /* Labels */
-  label {
-    color: #999 !important;
-  }
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 
   /* Page breaks */
   .page-break-before {
     page-break-before: always;
   }
 
-  /* Clean margins */
-  @page {
-    margin: 0.75in;
-    size: letter;
-  }
-
-  /* Remove shadows, borders, rounded corners */
+  /* Remove shadows */
   * {
     box-shadow: none !important;
+  }
+
+  /* ── Client Kit: light print ── */
+  [data-theme] body,
+  [data-theme] {
+    background: white !important;
+    color: black !important;
+  }
+  [data-theme] h1,
+  [data-theme] h2,
+  [data-theme] h3,
+  [data-theme] h4 {
+    color: black !important;
+  }
+  [data-theme] .font-terminal {
+    color: #DA4E24 !important;
+  }
+  [data-theme] .editable-field,
+  [data-theme] input[type="text"] {
+    color: black !important;
+    border-color: transparent !important;
+  }
+  [data-theme] .editable-field:empty::before {
+    color: #ccc !important;
+  }
+  [data-theme] table { border-collapse: collapse; }
+  [data-theme] th { color: #666 !important; border-bottom: 1px solid #ddd !important; }
+  [data-theme] td { border-bottom: 1px solid #eee !important; color: black !important; }
+  [data-theme] label { color: #999 !important; }
+  @page { margin: 0.5in; size: letter; }
+
+  /* ── Cheatsheet infographic: preserve dark background ── */
+  #infographic,
+  #infographic * {
+    color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #infographic {
+    border: none !important;
+    border-radius: 0 !important;
   }
 }
 

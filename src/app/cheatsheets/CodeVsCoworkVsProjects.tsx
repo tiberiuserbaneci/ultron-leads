@@ -1,411 +1,280 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
-/* ─── Shared cell component ─── */
-function Cell({ children, highlight, className = "" }: { children: React.ReactNode; highlight?: boolean; className?: string }) {
-  return (
-    <td className={`px-4 py-3 text-[13px] leading-relaxed ${highlight ? "text-[#ddd]" : "text-[#999]"} ${className}`}>
-      {children}
-    </td>
-  );
-}
+/* ═══════════════════════════════════════════════════════
+ *  INFOGRAPHIC: Code vs Cowork vs Projects
+ *  Designed as a single-page visual poster for PDF/screenshot
+ * ═══════════════════════════════════════════════════════ */
 
-function HeaderCell({ children }: { children: React.ReactNode }) {
-  return (
-    <th className="px-4 py-2.5 text-[10px] font-bold text-[#DA4E24] uppercase tracking-widest font-terminal text-left">
-      {children}
-    </th>
-  );
-}
-
-function RowLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <td className="px-4 py-3 text-[11px] font-semibold text-[#777] uppercase tracking-wider font-terminal whitespace-nowrap align-top">
-      {children}
-    </td>
-  );
-}
-
-/* ─── Accent tag ─── */
-function Tag({ children, accent }: { children: React.ReactNode; accent?: boolean }) {
-  return (
-    <span className={`inline-block text-[11px] font-terminal px-2 py-0.5 rounded border ${
-      accent ? "border-[#DA4E24]/30 text-[#DA4E24] bg-[#DA4E24]/5" : "border-[#1a1a1a] text-[#555]"
-    }`}>
-      {children}
-    </span>
-  );
-}
-
-/* ─── Yes/Feature tag ─── */
-function Yes({ children, note }: { children?: React.ReactNode; note?: string }) {
-  return (
-    <span className="text-[13px] text-[#ddd]">
-      {children || "Yes"}
-      {note && <span className="text-[#777]">. {note}</span>}
-    </span>
-  );
-}
-
-/* ─── Vibe card ─── */
-function VibeCard({
-  name,
-  color,
-  skill,
-  quality,
-  vibe,
-}: {
-  name: string;
-  color: string;
-  skill: string;
-  quality: string;
-  vibe: string;
-}) {
-  return (
-    <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-5 hover:border-[#333] transition-colors">
-      <h4 className="text-[14px] font-bold text-white mb-3 flex items-center gap-2">
-        <span className="w-2 h-2 rounded-full" style={{ background: color }} />
-        {name}
-      </h4>
-      <div className="space-y-2.5">
-        <div>
-          <span className="text-[11px] font-terminal text-[#666] uppercase tracking-wider">The skill you need</span>
-          <p className="text-[13px] text-[#ccc] mt-0.5">{skill}</p>
-        </div>
-        <div>
-          <span className="text-[11px] font-terminal text-[#666] uppercase tracking-wider">Output quality</span>
-          <p className="text-[13px] text-[#ccc] mt-0.5">{quality}</p>
-        </div>
-        <div>
-          <span className="text-[11px] font-terminal text-[#666] uppercase tracking-wider">The vibe</span>
-          <p className="text-[13px] text-[#DA4E24] mt-0.5 font-medium">{vibe}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ─── When-to-use card ─── */
-function WhenCard({ title, color, items }: { title: string; color: string; items: string[] }) {
-  return (
-    <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-5">
-      <h4 className="text-[13px] font-bold text-white mb-3 flex items-center gap-2">
-        <span className="w-2 h-2 rounded-full" style={{ background: color }} />
-        {title}
-      </h4>
-      <ul className="space-y-1.5">
-        {items.map((item, i) => (
-          <li key={i} className="text-[12px] text-[#999] flex items-start gap-2">
-            <span className="text-[#DA4E24] mt-0.5 flex-shrink-0">&#8226;</span>
-            {item}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-/* ─── Section divider ─── */
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-3 my-10">
-      <div className="h-px flex-1 bg-[#1a1a1a]" />
-      <span className="text-[10px] font-bold text-[#555] uppercase tracking-widest font-terminal">{children}</span>
-      <div className="h-px flex-1 bg-[#1a1a1a]" />
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════
- *  MAIN CHEATSHEET
- * ═══════════════════════════════════════════════ */
 export default function CodeVsCoworkVsProjects() {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => { setVisible(true); }, []);
+  const [showUI, setShowUI] = useState(true);
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-24 pb-20">
+    <div className="min-h-screen bg-black">
 
-        {/* ── Hero ── */}
-        <div className={`text-center mb-12 transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-          <div className="flex items-center justify-center gap-2 text-[11px] text-[#555] mb-6 font-terminal">
-            <Link href="/cheatsheets" className="hover:text-[#999] transition-colors">cheatsheets</Link>
-            <span className="text-[#333]">/</span>
-            <span className="text-[#DA4E24]">code-vs-cowork-vs-projects</span>
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-3">
-            Claude: Code vs Cowork vs Projects
-          </h1>
-          <p className="text-[15px] text-[#999] max-w-xl mx-auto leading-relaxed">
-            Same AI. Three different ways to use it. Here is how to pick.
-          </p>
-
-          <div className="flex items-center justify-center gap-3 mt-5">
-            <Tag accent>Pro Plan required</Tag>
-            <Tag>Print friendly</Tag>
-          </div>
-        </div>
-
-        {/* ── Quick Overview Table ── */}
-        <div className={`transition-all duration-500 delay-100 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-          <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse min-w-[640px]">
-                <thead>
-                  <tr className="border-b border-[#1a1a1a]">
-                    <th className="w-[120px]" />
-                    <HeaderCell>Code</HeaderCell>
-                    <HeaderCell>Cowork</HeaderCell>
-                    <HeaderCell>Projects</HeaderCell>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-[#111]">
-                    <RowLabel>What it is</RowLabel>
-                    <Cell highlight>You describe what you want built. Claude Code builds it. Like a technical assistant on your team.</Cell>
-                    <Cell highlight>Claude sits on your desktop. It reads your files, creates new ones.</Cell>
-                    <Cell highlight>A saved workspace. You upload your stuff once, Claude remembers it.</Cell>
-                  </tr>
-                  <tr className="border-b border-[#111]">
-                    <RowLabel>Access</RowLabel>
-                    <Cell>Your browser, desktop app, or code editor (VS Code, etc.)</Cell>
-                    <Cell>Desktop app only (click the Cowork tab)</Cell>
-                    <Cell>Browser, phone, or desktop app</Cell>
-                  </tr>
-                  <tr>
-                    <RowLabel>Setup</RowLabel>
-                    <Cell>~5 minutes. Install the app, log in, and start building.</Cell>
-                    <Cell>~10 minutes. Download app, pick a folder, add your files.</Cell>
-                    <Cell>~5 minutes. Create a project, upload files, write instructions.</Cell>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        {/* ── The Real Difference ── */}
-        <SectionLabel>The real difference</SectionLabel>
-
-        <div className={`grid sm:grid-cols-3 gap-4 transition-all duration-500 delay-200 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-          <VibeCard
-            name="Code"
-            color="#DA4E24"
-            skill="Describe clearly what you want built"
-            quality="Extremely high. Because it sees your whole project and can run things itself."
-            vibe="Having a developer who builds what you describe"
-          />
-          <VibeCard
-            name="Cowork"
-            color="#DA4E24"
-            skill="Clear context files (your style, your rules, your examples)"
-            quality="Sounds like you. Because it read your files."
-            vibe="Working with an assistant who read every brief"
-          />
-          <VibeCard
-            name="Projects"
-            color="#DA4E24"
-            skill="Picking the right files and clear instructions"
-            quality="Sounds like you. Because it has your guides."
-            vibe="A team member who knows your playbook"
-          />
-        </div>
-
-        {/* ── Feature Comparison Grid ── */}
-        <SectionLabel>What it can do</SectionLabel>
-
-        <div className={`transition-all duration-500 delay-300 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-          <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse min-w-[640px]">
-                <thead>
-                  <tr className="border-b border-[#1a1a1a]">
-                    <th className="w-[200px]" />
-                    <HeaderCell>Code</HeaderCell>
-                    <HeaderCell>Cowork</HeaderCell>
-                    <HeaderCell>Projects</HeaderCell>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-[#111]">
-                    <RowLabel>Answer questions</RowLabel>
-                    <Cell><Yes /></Cell>
-                    <Cell><Yes /></Cell>
-                    <Cell><Yes /></Cell>
-                  </tr>
-                  <tr className="border-b border-[#111]">
-                    <RowLabel>Create real files</RowLabel>
-                    <Cell><Yes note="Saves files directly into your project folder" /></Cell>
-                    <Cell><Yes note="Files appear in your folders, ready to open" /></Cell>
-                    <Cell><Yes note="Files can be saved or downloaded" /></Cell>
-                  </tr>
-                  <tr className="border-b border-[#111]">
-                    <RowLabel>Build interactive things</RowLabel>
-                    <Cell><Yes note="Not just previews. It builds real apps you can run" /></Cell>
-                    <Cell><Yes note="Via Artifacts" /></Cell>
-                    <Cell><Yes note="Via Artifacts" /></Cell>
-                  </tr>
-                  <tr className="border-b border-[#111]">
-                    <RowLabel>Use plugins</RowLabel>
-                    <Cell><Yes note="Connect any tool with add-ons" /></Cell>
-                    <Cell><Yes note="Install from a library. Use slash commands" /></Cell>
-                    <Cell><span className="text-[13px] text-[#555]">No</span></Cell>
-                  </tr>
-                  <tr className="border-b border-[#111]">
-                    <RowLabel>Connect to tools</RowLabel>
-                    <Cell><Yes note="Connects to Jira, GitHub, Slack, and more" /></Cell>
-                    <Cell><Yes /></Cell>
-                    <Cell><Yes /></Cell>
-                  </tr>
-                  <tr className="border-b border-[#111]">
-                    <RowLabel>Search the internet</RowLabel>
-                    <Cell><Yes /></Cell>
-                    <Cell><Yes /></Cell>
-                    <Cell><Yes /></Cell>
-                  </tr>
-                  <tr>
-                    <RowLabel>Extended Thinking</RowLabel>
-                    <Cell><Yes note="On by default" /></Cell>
-                    <Cell><Yes note="On by default" /></Cell>
-                    <Cell><Yes note="You turn it on manually" /></Cell>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        {/* ── When to Use ── */}
-        <SectionLabel>When to use each</SectionLabel>
-
-        <div className="grid sm:grid-cols-3 gap-4">
-          <WhenCard
-            title="Use Code when..."
-            color="#DA4E24"
-            items={[
-              "You want to build software or a website",
-              "You want Claude to write and save code",
-              "You need changes across many files at once",
-              "You want help publishing project updates",
-              "You need long, hands-free building sessions",
-            ]}
-          />
-          <WhenCard
-            title="Use Cowork when..."
-            color="#DA4E24"
-            items={[
-              "You are doing real work (analysis, spreadsheets)",
-              "You want Claude to create actual files",
-              "You want it to sound like you",
-              "You need long, deep sessions that do not break",
-            ]}
-          />
-          <WhenCard
-            title="Set up a Project when..."
-            color="#DA4E24"
-            items={[
-              "You do the same task every week (newsletter, reports)",
-              "You are tired of repeating yourself",
-              "You want your context saved forever, not just for one session",
-            ]}
-          />
-        </div>
-
-        {/* ── Context Comparison ── */}
-        <SectionLabel>How context works</SectionLabel>
-
-        <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse min-w-[640px]">
-              <thead>
-                <tr className="border-b border-[#1a1a1a]">
-                  <th className="w-[160px]" />
-                  <HeaderCell>Code</HeaderCell>
-                  <HeaderCell>Cowork</HeaderCell>
-                  <HeaderCell>Projects</HeaderCell>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-[#111]">
-                  <RowLabel>Your identity</RowLabel>
-                  <Cell>You write a short instructions file in your project. Claude reads it every time.</Cell>
-                  <Cell>Yes, if you put info about yourself in text files inside your folder.</Cell>
-                  <Cell>Yes, from the files and instructions you added to the project.</Cell>
-                </tr>
-                <tr className="border-b border-[#111]">
-                  <RowLabel>Context input</RowLabel>
-                  <Cell>Your instructions file + your entire project. Claude reads it all automatically.</Cell>
-                  <Cell>You write .md or .txt files once. Drop them in a folder. Point Claude to it.</Cell>
-                  <Cell>You upload files and write instructions once. They stick.</Cell>
-                </tr>
-                <tr>
-                  <RowLabel>Context between chats</RowLabel>
-                  <Cell>Your project instructions stay. You can also resume where you left off.</Cell>
-                  <Cell>Yes, as long as you are in the same folder.</Cell>
-                  <Cell>Yes. Every new chat inside the project has it.</Cell>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* ── Bottom Summary ── */}
-        <SectionLabel>Quick picks</SectionLabel>
-
-        <div className="grid sm:grid-cols-3 gap-4 mb-6">
-          <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-4 flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-[#DA4E24] flex-shrink-0" />
-            <div>
-              <p className="text-[12px] text-[#777]">Building software</p>
-              <p className="text-[14px] font-semibold text-white">Code</p>
-            </div>
-          </div>
-          <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-4 flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-[#DA4E24] flex-shrink-0" />
-            <div>
-              <p className="text-[12px] text-[#777]">Deep working sessions</p>
-              <p className="text-[14px] font-semibold text-white">Cowork</p>
-            </div>
-          </div>
-          <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-4 flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-[#DA4E24] flex-shrink-0" />
-            <div>
-              <p className="text-[12px] text-[#777]">Recurring work</p>
-              <p className="text-[14px] font-semibold text-white">Projects or Cowork</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-5 text-center">
-          <p className="text-[14px] text-[#ccc] leading-relaxed">
-            All three need a <strong className="text-white">Pro Plan ($20/mo)</strong>.
-            Cowork is desktop only.
-            Extended Thinking works everywhere. Always turn it on.
-          </p>
-        </div>
-
-        {/* ── Cross-links ── */}
-        <div className="grid sm:grid-cols-3 gap-3 mt-10">
-          {[
-            { label: "Browse all cheatsheets", href: "/cheatsheets" },
-            { label: "Scope a workflow", href: "/rfp" },
-            { label: "Client document templates", href: "/client-kit" },
-          ].map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="flex items-center justify-between gap-2 p-4 bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl hover:border-[#333] hover:bg-[#111] transition-all group text-sm text-[#999] hover:text-white"
-            >
-              <span>{link.label}</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 text-[#333] group-hover:text-[#DA4E24] transition-colors">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
+      {/* ── Utility bar (hidden in print and screenshot mode) ── */}
+      {showUI && (
+        <div className="fixed top-0 left-0 right-0 z-50 print:hidden bg-black/90 border-b border-[#1a1a1a] backdrop-blur-md">
+          <div className="max-w-[1100px] mx-auto px-4 h-11 flex items-center justify-between">
+            <Link href="/cheatsheets" className="text-[12px] text-[#666] hover:text-white transition-colors flex items-center gap-1.5">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+              Cheatsheets
             </Link>
-          ))}
+            <div className="flex items-center gap-2">
+              <button onClick={() => setShowUI(false)} className="text-[11px] px-2.5 py-1 rounded-md border border-[#DA4E24]/30 text-[#DA4E24] hover:bg-[#DA4E24]/10 transition-all">
+                Screenshot mode
+              </button>
+              <button onClick={() => window.print()} className="text-[11px] px-2.5 py-1 rounded-md border border-[#222] text-[#666] hover:text-white hover:border-[#333] transition-all">
+                Print / PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Escape screenshot mode ── */}
+      {!showUI && (
+        <button
+          onClick={() => setShowUI(true)}
+          className="fixed top-3 right-3 z-50 print:hidden text-[10px] px-2 py-1 rounded bg-[#111] border border-[#222] text-[#555] hover:text-white transition-colors"
+        >
+          Exit screenshot mode
+        </button>
+      )}
+
+      {/* ═══════════════════════════════════════════
+       *  THE INFOGRAPHIC
+       * ═══════════════════════════════════════════ */}
+      <div className={`max-w-[1100px] mx-auto px-6 ${showUI ? "pt-16" : "pt-6"} pb-6 print:pt-0 print:pb-0 print:px-0 print:max-w-none`}>
+        <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-2xl overflow-hidden print:border-0 print:rounded-none" id="infographic">
+
+          {/* ── HEADER ── */}
+          <div className="px-8 pt-7 pb-5 border-b border-[#1a1a1a] text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="w-8 h-8 rounded-lg bg-[#DA4E24]/10 border border-[#DA4E24]/20 flex items-center justify-center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DA4E24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" /></svg>
+              </div>
+            </div>
+            <h1 className="text-[26px] font-bold tracking-tight text-white">
+              Claude: Code vs Cowork vs Projects
+            </h1>
+            <p className="text-[14px] text-[#888] mt-1">
+              Same AI. Three different ways to use it. Here is how to pick.
+            </p>
+          </div>
+
+          {/* ── QUICK OVERVIEW ── */}
+          <div className="px-8 py-5 border-b border-[#1a1a1a]">
+            <div className="grid grid-cols-[100px_1fr_1fr_1fr] gap-0 text-[12px]">
+              {/* Header row */}
+              <div />
+              <div className="px-3 py-2 text-center"><span className="text-[10px] font-bold text-[#DA4E24] uppercase tracking-widest font-terminal">Code</span></div>
+              <div className="px-3 py-2 text-center"><span className="text-[10px] font-bold text-[#DA4E24] uppercase tracking-widest font-terminal">Cowork</span></div>
+              <div className="px-3 py-2 text-center"><span className="text-[10px] font-bold text-[#DA4E24] uppercase tracking-widest font-terminal">Projects</span></div>
+
+              {/* What it is */}
+              <div className="px-3 py-2.5 text-[10px] font-semibold text-[#666] uppercase tracking-wider font-terminal flex items-start">What it is</div>
+              <div className="px-3 py-2.5 text-[#ccc] border-t border-[#111] leading-relaxed">You describe what you want built. Claude Code builds it. Like a technical assistant on your team.</div>
+              <div className="px-3 py-2.5 text-[#ccc] border-t border-[#111] leading-relaxed">Claude sits on your desktop. It reads your files and creates new ones.</div>
+              <div className="px-3 py-2.5 text-[#ccc] border-t border-[#111] leading-relaxed">A saved workspace. You upload your stuff once, Claude remembers it.</div>
+
+              {/* Access */}
+              <div className="px-3 py-2.5 text-[10px] font-semibold text-[#666] uppercase tracking-wider font-terminal flex items-start">Access</div>
+              <div className="px-3 py-2.5 text-[#999] border-t border-[#111]">Browser, desktop app, or code editor</div>
+              <div className="px-3 py-2.5 text-[#999] border-t border-[#111]">Desktop app only (Cowork tab)</div>
+              <div className="px-3 py-2.5 text-[#999] border-t border-[#111]">Browser, phone, or desktop app</div>
+
+              {/* Setup */}
+              <div className="px-3 py-2.5 text-[10px] font-semibold text-[#666] uppercase tracking-wider font-terminal flex items-start">Setup</div>
+              <div className="px-3 py-2.5 text-[#999] border-t border-[#111]">~5 min. Install, log in, start building.</div>
+              <div className="px-3 py-2.5 text-[#999] border-t border-[#111]">~10 min. Download, pick a folder, add files.</div>
+              <div className="px-3 py-2.5 text-[#999] border-t border-[#111]">~5 min. Create a project, upload files.</div>
+            </div>
+          </div>
+
+          {/* ── TWO-COLUMN: The Real Difference + Feature Grid ── */}
+          <div className="grid grid-cols-[280px_1fr] border-b border-[#1a1a1a]">
+
+            {/* Left: The Real Difference */}
+            <div className="border-r border-[#1a1a1a] px-5 py-5">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-0.5 h-4 bg-[#DA4E24] rounded-full" />
+                <span className="text-[10px] font-bold text-[#DA4E24] uppercase tracking-widest font-terminal">The real difference</span>
+              </div>
+
+              {/* Code */}
+              <div className="mb-4 bg-[#111] border border-[#1a1a1a] rounded-lg p-3.5">
+                <p className="text-[12px] font-bold text-white mb-2">Code</p>
+                <div className="space-y-1.5 text-[11px]">
+                  <p><span className="text-[#666]">Skill needed:</span> <span className="text-[#ccc]">describe clearly what you want built</span></p>
+                  <p><span className="text-[#666]">Output:</span> <span className="text-[#ccc]">extremely high. It sees your whole project and runs things itself.</span></p>
+                  <p><span className="text-[#666]">The vibe:</span> <span className="text-[#DA4E24]">a developer who builds what you describe</span></p>
+                </div>
+              </div>
+
+              {/* Cowork */}
+              <div className="mb-4 bg-[#111] border border-[#1a1a1a] rounded-lg p-3.5">
+                <p className="text-[12px] font-bold text-white mb-2">Cowork</p>
+                <div className="space-y-1.5 text-[11px]">
+                  <p><span className="text-[#666]">Skill needed:</span> <span className="text-[#ccc]">clear context files (your style, rules, examples)</span></p>
+                  <p><span className="text-[#666]">Output:</span> <span className="text-[#ccc]">sounds like you. Because it read your files.</span></p>
+                  <p><span className="text-[#666]">The vibe:</span> <span className="text-[#DA4E24]">an assistant who read every brief</span></p>
+                </div>
+              </div>
+
+              {/* Projects */}
+              <div className="bg-[#111] border border-[#1a1a1a] rounded-lg p-3.5">
+                <p className="text-[12px] font-bold text-white mb-2">Projects</p>
+                <div className="space-y-1.5 text-[11px]">
+                  <p><span className="text-[#666]">Skill needed:</span> <span className="text-[#ccc]">picking the right files and clear instructions</span></p>
+                  <p><span className="text-[#666]">Output:</span> <span className="text-[#ccc]">sounds like you. Because it has your guides.</span></p>
+                  <p><span className="text-[#666]">The vibe:</span> <span className="text-[#DA4E24]">a team member who knows your playbook</span></p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Feature Grid */}
+            <div className="px-5 py-5">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-0.5 h-4 bg-[#DA4E24] rounded-full" />
+                <span className="text-[10px] font-bold text-[#DA4E24] uppercase tracking-widest font-terminal">What it can do</span>
+              </div>
+
+              <div className="text-[11px]">
+                <div className="grid grid-cols-[1fr_1fr_1fr_1fr] gap-0">
+                  {/* Header */}
+                  <div className="px-2 py-1.5 font-semibold text-[#555]" />
+                  <div className="px-2 py-1.5 text-[10px] font-bold text-[#DA4E24] uppercase tracking-wider font-terminal">Code</div>
+                  <div className="px-2 py-1.5 text-[10px] font-bold text-[#DA4E24] uppercase tracking-wider font-terminal">Cowork</div>
+                  <div className="px-2 py-1.5 text-[10px] font-bold text-[#DA4E24] uppercase tracking-wider font-terminal">Projects</div>
+
+                  {/* Rows */}
+                  {[
+                    ["Answer questions", "Yes", "Yes", "Yes"],
+                    ["Create real files (Excel, Word, PDF)", "Yes. Saves into your project folder.", "Yes. Files appear in your folders.", "Yes. Files can be saved or downloaded."],
+                    ["Build interactive things", "Not just previews. Builds real apps.", "Yes, via Artifacts.", "Yes, via Artifacts."],
+                    ["Use plugins and add-ons", "Yes. Connect any tool.", "Yes. Install from a library.", "No"],
+                    ["Connect to tools (Slack, Jira, etc.)", "Yes. Jira, GitHub, Slack, and more.", "Yes", "Yes"],
+                    ["Search the internet", "Yes", "Yes", "Yes"],
+                    ["Extended Thinking", "On by default", "On by default", "You turn it on manually"],
+                  ].map(([label, code, cowork, projects], i) => (
+                    <div key={i} className="contents">
+                      <div className={`px-2 py-2 text-[#888] font-medium border-t border-[#111]`}>{label}</div>
+                      <div className={`px-2 py-2 text-[#ccc] border-t border-[#111] ${code === "Yes" ? "text-[#ccc]" : ""}`}>{code}</div>
+                      <div className={`px-2 py-2 text-[#ccc] border-t border-[#111]`}>{cowork}</div>
+                      <div className={`px-2 py-2 border-t border-[#111] ${projects === "No" ? "text-[#555]" : "text-[#ccc]"}`}>{projects}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── WHEN TO USE EACH ── */}
+          <div className="px-8 py-5 border-b border-[#1a1a1a]">
+            <div className="grid grid-cols-3 gap-4">
+              {/* Code */}
+              <div className="bg-[#111] border border-[#1a1a1a] rounded-lg p-4">
+                <p className="text-[11px] font-bold text-[#DA4E24] uppercase tracking-wider font-terminal mb-2.5">Use Code when...</p>
+                <ul className="space-y-1.5 text-[11px] text-[#ccc]">
+                  <li className="flex gap-2"><span className="text-[#DA4E24] flex-shrink-0">&#8226;</span>You want to build software or a website</li>
+                  <li className="flex gap-2"><span className="text-[#DA4E24] flex-shrink-0">&#8226;</span>You want Claude to write and save code</li>
+                  <li className="flex gap-2"><span className="text-[#DA4E24] flex-shrink-0">&#8226;</span>You need changes across many files at once</li>
+                  <li className="flex gap-2"><span className="text-[#DA4E24] flex-shrink-0">&#8226;</span>You want help publishing project updates</li>
+                  <li className="flex gap-2"><span className="text-[#DA4E24] flex-shrink-0">&#8226;</span>You need long, hands-free building sessions</li>
+                </ul>
+              </div>
+
+              {/* Cowork */}
+              <div className="bg-[#111] border border-[#1a1a1a] rounded-lg p-4">
+                <p className="text-[11px] font-bold text-[#DA4E24] uppercase tracking-wider font-terminal mb-2.5">Use Cowork when...</p>
+                <ul className="space-y-1.5 text-[11px] text-[#ccc]">
+                  <li className="flex gap-2"><span className="text-[#DA4E24] flex-shrink-0">&#8226;</span>You are doing real work (analysis, spreadsheets)</li>
+                  <li className="flex gap-2"><span className="text-[#DA4E24] flex-shrink-0">&#8226;</span>You want Claude to create actual files</li>
+                  <li className="flex gap-2"><span className="text-[#DA4E24] flex-shrink-0">&#8226;</span>You want it to sound like you</li>
+                  <li className="flex gap-2"><span className="text-[#DA4E24] flex-shrink-0">&#8226;</span>You need long, deep sessions that do not break</li>
+                </ul>
+              </div>
+
+              {/* Projects */}
+              <div className="bg-[#111] border border-[#1a1a1a] rounded-lg p-4">
+                <p className="text-[11px] font-bold text-[#DA4E24] uppercase tracking-wider font-terminal mb-2.5">Set up a Project when...</p>
+                <ul className="space-y-1.5 text-[11px] text-[#ccc]">
+                  <li className="flex gap-2"><span className="text-[#DA4E24] flex-shrink-0">&#8226;</span>You do the same task every week</li>
+                  <li className="flex gap-2"><span className="text-[#DA4E24] flex-shrink-0">&#8226;</span>You are tired of repeating yourself</li>
+                  <li className="flex gap-2"><span className="text-[#DA4E24] flex-shrink-0">&#8226;</span>You want context saved forever, not just for one session</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* ── CONTEXT TABLE ── */}
+          <div className="px-8 py-5 border-b border-[#1a1a1a]">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-0.5 h-4 bg-[#DA4E24] rounded-full" />
+              <span className="text-[10px] font-bold text-[#DA4E24] uppercase tracking-widest font-terminal">How context works</span>
+            </div>
+
+            <div className="grid grid-cols-[120px_1fr_1fr_1fr] gap-0 text-[11px]">
+              <div />
+              <div className="px-3 py-2 text-[10px] font-bold text-[#DA4E24] uppercase tracking-wider font-terminal">Code</div>
+              <div className="px-3 py-2 text-[10px] font-bold text-[#DA4E24] uppercase tracking-wider font-terminal">Cowork</div>
+              <div className="px-3 py-2 text-[10px] font-bold text-[#DA4E24] uppercase tracking-wider font-terminal">Projects</div>
+
+              <div className="px-3 py-2.5 text-[10px] font-semibold text-[#666] uppercase tracking-wider font-terminal border-t border-[#111]">Your identity</div>
+              <div className="px-3 py-2.5 text-[#ccc] border-t border-[#111] leading-relaxed">Write instructions in your project. Claude reads them every time.</div>
+              <div className="px-3 py-2.5 text-[#ccc] border-t border-[#111] leading-relaxed">Put info about yourself in text files inside your folder.</div>
+              <div className="px-3 py-2.5 text-[#ccc] border-t border-[#111] leading-relaxed">From the files and instructions you added to the project.</div>
+
+              <div className="px-3 py-2.5 text-[10px] font-semibold text-[#666] uppercase tracking-wider font-terminal border-t border-[#111]">Context input</div>
+              <div className="px-3 py-2.5 text-[#ccc] border-t border-[#111] leading-relaxed">Instructions file + your entire project. Reads it all automatically.</div>
+              <div className="px-3 py-2.5 text-[#ccc] border-t border-[#111] leading-relaxed">Write .md or .txt files once. Drop in a folder. Point Claude to it.</div>
+              <div className="px-3 py-2.5 text-[#ccc] border-t border-[#111] leading-relaxed">Upload files and write instructions once. They stick.</div>
+
+              <div className="px-3 py-2.5 text-[10px] font-semibold text-[#666] uppercase tracking-wider font-terminal border-t border-[#111]">Persistence</div>
+              <div className="px-3 py-2.5 text-[#ccc] border-t border-[#111] leading-relaxed">Project instructions stay. Resume where you left off.</div>
+              <div className="px-3 py-2.5 text-[#ccc] border-t border-[#111] leading-relaxed">Yes, as long as you are in the same folder.</div>
+              <div className="px-3 py-2.5 text-[#ccc] border-t border-[#111] leading-relaxed">Every new chat inside the project has it.</div>
+            </div>
+          </div>
+
+          {/* ── BOTTOM BAR: Quick picks + note ── */}
+          <div className="px-8 py-4 flex flex-col sm:flex-row items-center gap-4">
+            {/* Quick picks */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#DA4E24]" />
+                <span className="text-[11px]"><span className="text-[#777]">Building:</span> <span className="text-white font-medium">Code</span></span>
+              </div>
+              <span className="text-[#222]">|</span>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#DA4E24]" />
+                <span className="text-[11px]"><span className="text-[#777]">Deep sessions:</span> <span className="text-white font-medium">Cowork</span></span>
+              </div>
+              <span className="text-[#222]">|</span>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#DA4E24]" />
+                <span className="text-[11px]"><span className="text-[#777]">Recurring work:</span> <span className="text-white font-medium">Projects or Cowork</span></span>
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="h-px sm:h-4 w-full sm:w-px bg-[#1a1a1a]" />
+
+            {/* Note */}
+            <p className="text-[11px] text-[#777] text-center sm:text-left">
+              All three need a <strong className="text-white">Pro Plan ($20/mo)</strong>. Cowork is desktop only. Extended Thinking works everywhere. Always turn it on.
+            </p>
+          </div>
+
+          {/* ── FOOTER ── */}
+          <div className="px-8 py-3 border-t border-[#1a1a1a] flex items-center justify-between">
+            <span className="text-[10px] text-[#333] font-terminal">work.51ultron.com/cheatsheets</span>
+            <span className="text-[10px] text-[#333] font-terminal">Ultron Cheatsheets</span>
+          </div>
+
         </div>
       </div>
     </div>
