@@ -186,10 +186,9 @@ export default function HomePage() {
           {/* Hero copy — LEFT aligned */}
           <div className="max-w-[800px]">
             {/* Desktop heading */}
-            <h1 className="hidden sm:block text-6xl lg:text-[72px] font-semibold leading-[1.1] tracking-tight text-white">
-              100x Founder-Led Growth,
-              <br />
-              without scaling headcount
+            <h1 className="hidden sm:block leading-[1.1] tracking-tight text-white">
+              <span className="block text-[48px] lg:text-[56px] font-light text-[#e0e0e0]">The Growth Engine Behind</span>
+              <span className="block text-6xl lg:text-[72px] font-semibold">100X Founder-Led Businesses</span>
             </h1>
             {/* Mobile heading — different copy, BIG */}
             <h1 className="sm:hidden text-[52px] font-bold leading-[1.08] tracking-tight text-white">

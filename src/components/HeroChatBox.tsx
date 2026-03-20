@@ -16,8 +16,10 @@ const MOBILE_PHRASES = [
 
 const MODELS = [
   { label: "Sonnet 4", logo: "/logo claude.png" },
-  { label: "Code", logo: "/logo claude code.png" },
+  { label: "Claude Code", logo: "/logo claude code.png" },
   { label: "OpenClaw", logo: "/logo openclaw.png" },
+  { label: "Sonnet 3.5", logo: "/logo claude.png" },
+  { label: "Opus 4.6", logo: "/logo claude.png" },
 ];
 
 /* ─── Integrations list (ordered by relevance for sales/marketing) ─── */
