@@ -165,15 +165,17 @@ export default function HomePage() {
 
       {/* ─── HERO ─── */}
       <section className="relative min-h-screen pt-28 sm:pt-32 pb-32 overflow-hidden">
-        {/* Background image — diagonal light streaks */}
+        {/* Background video — diagonal light streaks with glow animation */}
         <div className="absolute inset-0 pointer-events-none">
-          <Image
-            src="/hero-background.png"
-            alt=""
-            fill
-            className="object-cover"
-            priority
-          />
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="/hero-background-video.mp4" type="video/mp4" />
+          </video>
         </div>
 
         {/* Vector color accent — blended onto dark bg to enhance warm glow */}
