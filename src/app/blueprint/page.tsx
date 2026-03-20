@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ShareButtons from "@/components/ShareButtons";
+import Footer from "@/components/Footer";
 import BlueprintDiagram from "./BlueprintDiagram";
 
 export const metadata: Metadata = {
@@ -225,17 +226,24 @@ export default function BlueprintPage() {
         <p className="text-[#999] mb-8">
           No setup required. Connect your tools, describe your business, and your agents start working.
         </p>
-        <Link
-          href="https://app.51ultron.com/signup"
-          className="inline-flex items-center gap-2 btn-gradient glow-accent text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 text-lg"
-        >
-          Try Ultron Free
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
-        </Link>
+        <div className="flex items-center justify-center gap-4">
+          <Link
+            href="https://app.51ultron.com/signup"
+            className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-8 py-3 hover:bg-[#DA4E24]/10 transition-all"
+          >
+            Try for free
+          </Link>
+          <Link
+            href="/pricing"
+            className="text-sm font-semibold text-white border border-[#333] rounded-full px-8 py-3 hover:border-[#555] transition-colors"
+          >
+            View Pricing
+          </Link>
+        </div>
         <p className="mt-3 text-[#666] text-sm">Free plan. No credit card required.</p>
       </div>
+
+      <Footer />
     </div>
   );
 }

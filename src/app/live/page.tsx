@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
-import FounderTerminal from "@/components/FounderTerminal";
+import Footer from "@/components/Footer";
 import {
   getBaseMetrics,
   getSparkline,
@@ -1264,24 +1264,19 @@ export default function LivePage() {
             <p className="text-[#999] mb-8">
               Every chart. Every metric. Every insight. Generated automatically.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="flex items-center justify-center gap-4">
               <a
                 href="https://app.51ultron.com/signup"
-                className="btn-gradient glow-accent text-white font-semibold px-8 py-3.5 rounded-xl text-sm transition-all inline-flex items-center gap-2"
+                className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-8 py-3 hover:bg-[#DA4E24]/10 transition-all"
               >
-                Deploy Ultron and see your own numbers
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
+                Try for free
               </a>
-              <Link href="/demo" className="text-sm text-[#555] hover:text-[#DA4E24] transition-colors">
-                Watch the live demo &rarr;
+              <Link href="/demo" className="text-sm font-semibold text-white border border-[#333] rounded-full px-8 py-3 hover:border-[#555] transition-colors">
+                Watch the demo
               </Link>
             </div>
 
-            <div className="mt-12">
-              <FounderTerminal />
-            </div>
+            <Footer />
           </div>
         </div>
       )}

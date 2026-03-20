@@ -750,7 +750,7 @@ export default function RfpPage() {
                     <button
                       onClick={handleSubmit}
                       disabled={submitting || completion.percent < 100}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 btn-gradient glow-accent text-white font-semibold px-8 py-3.5 rounded-xl transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-8 py-3 hover:bg-[#DA4E24]/10 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                     >
                       {submitting ? (
                         <>

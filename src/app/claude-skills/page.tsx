@@ -603,7 +603,7 @@ function CopyAllSkillsButton() {
   return (
     <button
       onClick={copyAll}
-      className="btn-gradient glow-accent text-white font-semibold px-6 py-3 rounded-xl text-sm transition-all inline-flex items-center gap-2"
+      className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-6 py-2.5 hover:bg-[#DA4E24]/10 transition-all inline-flex items-center gap-2"
     >
       {copied ? (
         <>

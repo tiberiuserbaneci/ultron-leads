@@ -351,7 +351,7 @@ function SendModal({
               <button
                 onClick={handleSend}
                 disabled={sending}
-                className="w-full btn-gradient glow-accent text-white font-semibold py-2.5 rounded-xl text-[13px] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full text-[13px] font-semibold text-white border border-[#DA4E24] rounded-full py-2.5 hover:bg-[#DA4E24]/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {sending ? (
                   "Sending..."

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import FounderTerminal from "@/components/FounderTerminal";
+import Footer from "@/components/Footer";
 import {
   engines,
   agentMeta,
@@ -90,13 +90,12 @@ function Hero({ reelMode }: { reelMode: boolean }) {
       <div className={`flex flex-col sm:flex-row items-center justify-center gap-3 transition-all duration-500 delay-200 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
         <a
           href="https://app.51ultron.com/signup"
-          className="btn-gradient glow-accent text-white font-semibold px-6 py-3 rounded-xl text-sm inline-flex items-center gap-2 transition-all"
+          className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-6 py-2.5 hover:bg-[#DA4E24]/10 transition-all"
         >
-          Deploy this in Ultron
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+          Try for free
         </a>
-        <Link href="/demo" className="text-sm text-[#555] hover:text-[#DA4E24] transition-colors">
-          See Ultron execute in real time &rarr;
+        <Link href="/demo" className="text-sm font-semibold text-white border border-[#333] rounded-full px-6 py-2.5 hover:border-[#555] transition-colors">
+          Watch the demo
         </Link>
       </div>
     </div>
@@ -655,24 +654,19 @@ function FinalCTA({ engine, reelMode }: { engine: Engine; reelMode: boolean }) {
       <p className="text-[#999] max-w-xl mx-auto mb-8 text-sm sm:text-base">
         Ultron turns founder-led growth into a system that runs across research, acquisition, content, pipeline, and monitoring — without adding headcount.
       </p>
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
+      <div className="flex items-center justify-center gap-4 mb-8">
         <a
           href="https://app.51ultron.com/signup"
-          className="btn-gradient glow-accent text-white font-semibold px-8 py-3.5 rounded-xl text-sm inline-flex items-center gap-2 transition-all"
+          className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-8 py-3 hover:bg-[#DA4E24]/10 transition-all"
         >
-          {engine.ctaLine}
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+          Try for free
         </a>
-      </div>
-      <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
-        <Link href="/demo" className="text-[#555] hover:text-[#DA4E24] transition-colors">Watch the live demo &rarr;</Link>
-        <Link href="/blueprint" className="text-[#555] hover:text-[#DA4E24] transition-colors">See the full blueprint &rarr;</Link>
-        <Link href="/72hours" className="text-[#555] hover:text-[#DA4E24] transition-colors">Read 72 hours of real output &rarr;</Link>
+        <Link href="/blueprint" className="text-sm font-semibold text-white border border-[#333] rounded-full px-8 py-3 hover:border-[#555] transition-colors">
+          See the Blueprint
+        </Link>
       </div>
 
-      <div className="mt-12">
-        <FounderTerminal />
-      </div>
+      <Footer />
     </div>
   );
 }

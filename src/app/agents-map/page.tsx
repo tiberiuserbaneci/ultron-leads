@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import FounderTerminal from "@/components/FounderTerminal";
+import Footer from "@/components/Footer";
 import ShareButtons from "@/components/ShareButtons";
 import {
   departments,
@@ -298,35 +298,21 @@ function MappingSection() {
 
       {/* CTA */}
       <div className="text-center mt-12">
-        <a
-          href="https://app.51ultron.com/signup"
-          className="btn-gradient glow-accent text-white font-semibold px-8 py-3.5 rounded-xl text-sm transition-all inline-flex items-center gap-2"
-        >
-          Deploy all {totalAgents} capabilities in 10 minutes
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </a>
-        <p className="text-xs text-[#555] mt-3">Free plan. No credit card required.</p>
-      </div>
-
-      {/* Cross-page links */}
-      <div className="grid sm:grid-cols-2 gap-3 mt-10">
-        {[
-          { label: "See the 5 agents that run all of this", href: "/blueprint" },
-          { label: "Watch them execute in real time", href: "/demo" },
-        ].map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="flex items-center justify-between gap-2 p-4 bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl hover:border-[#333] hover:bg-[#111] transition-all group text-sm text-[#999] hover:text-white"
+        <div className="flex items-center justify-center gap-4">
+          <a
+            href="https://app.51ultron.com/signup"
+            className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-8 py-3 hover:bg-[#DA4E24]/10 transition-all"
           >
-            <span>{link.label}</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 text-[#333] group-hover:text-[#DA4E24] transition-colors">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
+            Try for free
+          </a>
+          <Link
+            href="/blueprint"
+            className="text-sm font-semibold text-white border border-[#333] rounded-full px-8 py-3 hover:border-[#555] transition-colors"
+          >
+            See the Blueprint
           </Link>
-        ))}
+        </div>
+        <p className="text-xs text-[#555] mt-3">Free plan. No credit card required.</p>
       </div>
     </div>
   );
@@ -460,10 +446,7 @@ export default function AgentsMapPage() {
         <ShareButtons page="agents-map" />
       </div>
 
-      {/* Founder Terminal */}
-      <div className="mt-12">
-        <FounderTerminal />
-      </div>
+      <Footer />
     </div>
   );
 }

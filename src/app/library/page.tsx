@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Footer from "@/components/Footer";
 
 const RESOURCES = [
   {
@@ -121,6 +122,8 @@ export default function LibraryPage() {
           ))}
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 }

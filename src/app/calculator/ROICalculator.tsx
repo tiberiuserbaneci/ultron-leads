@@ -263,12 +263,9 @@ export default function ROICalculator() {
         <div className="mt-8 text-center">
           <Link
             href="https://app.51ultron.com/signup"
-            className="inline-flex items-center gap-2 btn-gradient glow-accent text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200"
+            className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-8 py-3 hover:bg-[#DA4E24]/10 transition-all"
           >
-            Deploy 5 agents for $19/mo
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
+            Try for free
           </Link>
         </div>
       </div>

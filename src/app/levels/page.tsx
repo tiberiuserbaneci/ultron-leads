@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ShareButtons from "@/components/ShareButtons";
-import FounderTerminal from "@/components/FounderTerminal";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "The 4 Levels of AI Automation",
@@ -336,12 +336,9 @@ export default function LevelsPage() {
         </p>
         <Link
           href="https://app.51ultron.com/signup"
-          className="inline-flex items-center gap-2 btn-gradient glow-accent text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 text-lg"
+          className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-8 py-3 hover:bg-[#DA4E24]/10 transition-all"
         >
-          Try Ultron Free
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
+          Try for free
         </Link>
         <p className="mt-3 text-[#555] text-sm">Free plan. No credit card required.</p>
       </div>
@@ -377,8 +374,7 @@ export default function LevelsPage() {
         <ShareButtons page="levels" />
       </div>
 
-      {/* Founder Terminal */}
-      <FounderTerminal />
+      <Footer />
     </div>
   );
 }
