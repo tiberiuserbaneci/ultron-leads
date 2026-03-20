@@ -299,7 +299,7 @@ function SummaryCard({ prompt, elapsed, costSaved }: { prompt: PromptData; elaps
 
         <a
           href="https://app.51ultron.com/signup"
-          className="btn-gradient glow-accent text-white font-semibold px-8 py-3.5 rounded-xl text-sm transition-all inline-flex items-center gap-2"
+          className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-8 py-3 hover:bg-[#DA4E24]/10 transition-all inline-flex items-center gap-2"
         >
           Deploy this for your business
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
