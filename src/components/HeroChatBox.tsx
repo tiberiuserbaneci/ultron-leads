@@ -5,6 +5,17 @@ import Image from "next/image";
 
 const HERO_SENTENCE = "Go from zero to autonomous company in one command.";
 
+const SUGGESTION_PILLS = [
+  "What deserves my attention right now?",
+  "Where is money leaking in this business?",
+  "What should I stop doing manually?",
+  "What should I attack this week?",
+  "Which competitor movement matters most?",
+  "Show me where the next 3 deals come from.",
+  "What is slowing growth right now?",
+  "Where do I need to make a decision?",
+];
+
 const MOBILE_PHRASES = [
   "Ultron is thinking...",
   "Activating neural pathways...",
@@ -311,6 +322,7 @@ export default function HeroChatBox({
   const [userText, setUserText] = useState("");
   const [isUserTyping, setIsUserTyping] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
   const [integrationsOpen, setIntegrationsOpen] = useState(false);
   const [selectedIntegrations, setSelectedIntegrations] = useState<Set<string>>(new Set());
@@ -319,6 +331,7 @@ export default function HeroChatBox({
   const charIndex = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const voiceRef = useRef<HTMLDivElement>(null);
   const modelRef = useRef<HTMLDivElement>(null);
   const integrationsRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -368,10 +381,14 @@ export default function HeroChatBox({
         const inInt = integrationsRef.current?.contains(e.target as Node);
         if (!inInt) setIntegrationsOpen(false);
       }
+      if (voiceOpen) {
+        const inVoice = voiceRef.current?.contains(e.target as Node);
+        if (!inVoice) setVoiceOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
-  }, [menuOpen, modelOpen, integrationsOpen]);
+  }, [menuOpen, modelOpen, integrationsOpen, voiceOpen]);
 
   const toggleIntegration = useCallback((id: string) => {
     setSelectedIntegrations((prev) => {
@@ -560,44 +577,76 @@ export default function HeroChatBox({
             )}
           </div>
 
-          {/* Bottom row: + menu + action */}
+          {/* Bottom row: + menu + voice + action */}
           <div className="flex items-center justify-between">
-            {/* + Button with dropdown */}
+            {/* Left: + button */}
             <div className="relative" ref={menuRef}>
               <PlusButton menuOpen={menuOpen} onClick={() => setMenuOpen(!menuOpen)} />
               {menuOpen && <ToolsDropdown onClose={() => setMenuOpen(false)} position="top" />}
             </div>
 
-            {/* Work Mode — pill with animated chevron */}
-            {onSwitchToWorkMode && (
-              <button
-                onClick={onSwitchToWorkMode}
-                className="group flex items-center gap-1.5 text-[13px] font-medium text-[#ddd] bg-[#1a1a1a] rounded-full px-4 py-1.5 border border-[#333] hover:border-[#DA4E24]/50 hover:text-white transition-all min-w-[140px] justify-center"
-              >
-                {demoMode ? (
-                  <>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-0.5 transition-transform">
-                      <polyline points="15 18 9 12 15 6" />
-                    </svg>
-                    <span>Overview</span>
-                  </>
-                ) : (
-                  <>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                    </svg>
-                    <span>View demo</span>
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="9 18 15 12 9 6" />
-                    </svg>
-                  </>
+            {/* Right: voice icon + action */}
+            <div className="flex items-center gap-2">
+              {/* Voice icon — opens suggestion pills dropdown */}
+              <div className="relative hidden md:block" ref={voiceRef}>
+                <button
+                  onClick={() => setVoiceOpen(!voiceOpen)}
+                  className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors flex-shrink-0 ${
+                    voiceOpen ? "text-white bg-[#1a1a1a]" : "text-[#555] hover:text-white hover:bg-[#1a1a1a]"
+                  }`}
+                  title="Suggestions"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="4" y1="8" x2="4" y2="16" />
+                    <line x1="8" y1="5" x2="8" y2="19" />
+                    <line x1="12" y1="3" x2="12" y2="21" />
+                    <line x1="16" y1="5" x2="16" y2="19" />
+                    <line x1="20" y1="8" x2="20" y2="16" />
+                  </svg>
+                </button>
+                {voiceOpen && (
+                  <div className="absolute bottom-full right-0 mb-2 w-[420px] bg-[#111] border border-[#222] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] p-3 animate-fade-up z-50">
+                    <div className="flex flex-wrap gap-2">
+                      {SUGGESTION_PILLS.map((pill) => (
+                        <span
+                          key={pill}
+                          className="text-[11px] text-[#888] border border-[#333] rounded-full px-3 py-1.5 hover:text-white hover:border-[#555] transition-colors cursor-pointer"
+                        >
+                          {pill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 )}
-              </button>
-            )}
+              </div>
 
-            {/* Fallback: send arrow (when not on landing page) */}
-            {!onSwitchToWorkMode && <SendButton />}
+              {/* View demo — no lightning icon */}
+              {onSwitchToWorkMode && (
+                <button
+                  onClick={onSwitchToWorkMode}
+                  className="group flex items-center gap-1.5 text-[13px] font-medium text-[#ddd] bg-[#1a1a1a] rounded-full px-4 py-1.5 border border-[#333] hover:border-[#DA4E24]/50 hover:text-white transition-all min-w-[120px] justify-center"
+                >
+                  {demoMode ? (
+                    <>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-0.5 transition-transform">
+                        <polyline points="15 18 9 12 15 6" />
+                      </svg>
+                      <span>Overview</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>View demo</span>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </>
+                  )}
+                </button>
+              )}
 
+              {/* Fallback: send arrow (when not on landing page) */}
+              {!onSwitchToWorkMode && <SendButton />}
+            </div>
           </div>
         </div>
       </div>
