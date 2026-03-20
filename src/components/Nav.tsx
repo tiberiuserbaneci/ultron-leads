@@ -20,7 +20,7 @@ export default function Nav() {
       <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/landing" className="flex items-center gap-2.5">
+          <Link href="/" className="flex items-center gap-2.5">
             <Image src="/logo.png" alt="Ultron" width={32} height={32} className="rounded-sm" />
             <span className="font-bold text-white text-lg tracking-tight">Ultron</span>
           </Link>
