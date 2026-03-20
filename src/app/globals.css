@@ -459,6 +459,15 @@ input[type="range"]:focus { outline: none; }
 .brain-results > section:nth-child(5) { animation-delay: 0.4s; }
 .brain-results > section:nth-child(6) { animation-delay: 0.5s; }
 
+/* Nav dropdown animation */
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-dropdown-in {
+  animation: dropdownIn 0.15s ease-out;
+}
+
 /* Record mode: tighter spacing, cleaner chrome */
 .brain-record-mode nav { opacity: 0.4; }
 .brain-record-mode .brain-results > section { padding-top: 1rem; padding-bottom: 1rem; }
