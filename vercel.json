@@ -1,5 +1,17 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "out",
-  "framework": null
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "nexitynetwork.org" }],
+      "destination": "/nexity/:path*"
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "nexitynetwork.org" }],
+      "destination": "/nexity/"
+    }
+  ]
 }
