@@ -5,6 +5,16 @@
   "rewrites": [
     {
       "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.nexitynetwork.org" }],
+      "destination": "/nexity/:path*"
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "www.nexitynetwork.org" }],
+      "destination": "/nexity/"
+    },
+    {
+      "source": "/:path*",
       "has": [{ "type": "host", "value": "nexitynetwork.org" }],
       "destination": "/nexity/:path*"
     },
