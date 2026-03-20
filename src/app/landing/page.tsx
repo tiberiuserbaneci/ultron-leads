@@ -590,18 +590,20 @@ export default function LandingPage() {
       </section>
 
       {/* ─── BOTTOM CTA + FOOTER ─── */}
-      <section className="relative mt-24 lg:mt-32">
-        {/* Footer background image — full bleed */}
-        <div className="absolute inset-0 z-0">
+      <section className="relative mt-24 lg:mt-32 overflow-hidden">
+        {/* Footer background image — scaled up to eliminate borders */}
+        <div className="absolute inset-0 z-0 scale-110">
           <Image
             src="/footer-background.png"
             alt=""
             fill
-            className="object-cover object-top"
+            className="object-cover"
             sizes="100vw"
             priority={false}
           />
         </div>
+        {/* Gradient fade from black at top for smooth transition */}
+        <div className="absolute inset-x-0 top-0 h-40 z-[1] bg-gradient-to-b from-black to-transparent" />
 
         {/* CTA content */}
         <div className="relative z-10 pt-24 lg:pt-40 text-center">

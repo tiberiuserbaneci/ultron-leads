@@ -12,7 +12,7 @@ export default function Footer() {
             <div className="col-span-2 lg:col-span-1">
               <div className="flex items-center gap-3 mb-4">
                 <Image src="/logo.png" alt="Ultron" width={40} height={40} className="rounded-sm" />
-                <span className="text-xl font-semibold">Ultron</span>
+                <span className="text-2xl font-bold">Ultron</span>
               </div>
               <p className="text-[#999] text-sm leading-relaxed">
                 The growth engine behind
