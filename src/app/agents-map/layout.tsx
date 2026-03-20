@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "The Complete AI Agent Map",
   description:
     "Every agent a business needs, organized by department. Click any agent to see what it does, what it replaces, and how it connects.",
+  alternates: { canonical: "/agents-map" },
   openGraph: {
     title: "The Complete AI Agent Map — 32 Agents, 7 Departments",
     description:

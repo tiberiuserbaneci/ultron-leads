@@ -23,6 +23,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@51ultron",
   },
+  alternates: { canonical: "/" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -42,6 +43,33 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="bg-black text-white min-h-screen">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Ultron",
+              url: "https://work.51ultron.com",
+              logo: "https://work.51ultron.com/logo.png",
+              description:
+                "5 AI agents that replace a full team. Research, leads, sales, content, and monitoring — running 24/7 for $19/month.",
+              sameAs: ["https://x.com/51ultron"],
+              contactPoint: {
+                "@type": "ContactPoint",
+                contactType: "sales",
+                url: "https://work.51ultron.com/contact",
+              },
+              offers: {
+                "@type": "AggregateOffer",
+                lowPrice: "0",
+                highPrice: "297",
+                priceCurrency: "USD",
+                offerCount: "3",
+              },
+            }),
+          }}
+        />
         <Nav />
         <main className="pt-16">
           {children}

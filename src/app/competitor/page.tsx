@@ -5,6 +5,7 @@ import ShareButtons from "@/components/ShareButtons";
 export const metadata: Metadata = {
   title: "Your Competitor's AI Stack in 2026",
   description: "This is what you're up against. See what an automated competitor looks like vs a manual founder. Pure urgency.",
+  alternates: { canonical: "/competitor" },
   openGraph: {
     title: "Your Competitor's AI Stack in 2026 | Ultron",
     description: "This is what you're up against. The gap is not talent. It's infrastructure.",

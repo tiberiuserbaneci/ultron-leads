@@ -6,6 +6,7 @@ import StackDiagram from "./StackDiagram";
 export const metadata: Metadata = {
   title: "The $10K/Month Stack",
   description: "The exact system architecture behind a fully automated business. Revenue flow from traffic to $10K/month using 5 AI agents.",
+  alternates: { canonical: "/stack" },
   openGraph: {
     title: "The $10K/Month Stack | Ultron",
     description: "The exact system architecture behind a fully automated business generating $10K/month.",

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Terms & Conditions | Ultron",
   description: "Terms of service for the Ultron platform. Covers account registration, billing, acceptable use, data handling, and liability.",
+  alternates: { canonical: "/terms" },
 };
 
 function H2({ children }: { children: React.ReactNode }) {

@@ -6,6 +6,7 @@ import ROICalculator from "./ROICalculator";
 export const metadata: Metadata = {
   title: "AI Team ROI Calculator",
   description: "Calculate how much doing everything manually is costing you. See your savings with 5 AI agents at $19/month.",
+  alternates: { canonical: "/calculator" },
   openGraph: {
     title: "AI Team ROI Calculator | Ultron",
     description: "Calculate how much doing everything manually is costing you. See your savings with 5 AI agents at $19/month.",

@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "Ultron Command Center",
   description:
     "Real-time dashboard showing AI agent performance across sales, content, outreach, research, and monitoring. The CEO view of an AI-native business.",
+  alternates: { canonical: "/live" },
   openGraph: {
     title: "Ultron Command Center — Live Business Intelligence",
     description:

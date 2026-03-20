@@ -6,6 +6,7 @@ import TerminalLog from "./TerminalLog";
 export const metadata: Metadata = {
   title: "72 Hours of Ultron",
   description: "What 5 AI agents produced for a real business in 3 days. No human input. 23 companies researched, 12 leads found, 8 emails drafted.",
+  alternates: { canonical: "/72hours" },
   openGraph: {
     title: "72 Hours of Ultron | Ultron",
     description: "What 5 AI agents produced for a real business in 3 days. No human input.",

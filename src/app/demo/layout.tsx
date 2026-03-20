@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "Ultron Demo - Watch AI Agents Execute in Real Time",
   description:
     "Pick a command. Watch 5 AI agents coordinate across sales, content, outreach, research, and monitoring. Interactive workflow visualization.",
+  alternates: { canonical: "/demo" },
   openGraph: {
     title: "Ultron Demo - Watch AI Agents Execute in Real Time",
     description:

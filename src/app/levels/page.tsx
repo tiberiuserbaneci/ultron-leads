@@ -6,6 +6,7 @@ import FounderTerminal from "@/components/FounderTerminal";
 export const metadata: Metadata = {
   title: "The 4 Levels of AI Automation",
   description: "Most founders are stuck at Level 1. The ones pulling ahead are at Level 4. Find out where you stand and what it costs you to stay there.",
+  alternates: { canonical: "/levels" },
   openGraph: {
     title: "The 4 Levels of AI Automation | Ultron",
     description: "Most founders are stuck at Level 1. The ones pulling ahead are at Level 4. Here's the difference.",

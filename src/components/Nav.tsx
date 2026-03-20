@@ -122,6 +122,7 @@ const NAV_MENUS: NavDropdown[] = [
       {
         items: [
           { label: "Overview", href: "/pricing" },
+          { label: "FAQ", href: "/faq" },
           { label: "Automation Quiz", href: "/assess" },
           { label: "Contact Sales", href: "/contact" },
         ],

@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "Client Engine — Build Your Growth Engine",
   description:
     "Choose a founder-led growth engine. See which agents activate, what roles get replaced, and how the system compounds over time.",
+  alternates: { canonical: "/client-engine" },
   openGraph: {
     title: "Client Engine — Build the Growth Engine Ultron Should Deploy",
     description:

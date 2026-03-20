@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Privacy Policy | Ultron",
   description: "How Ultron collects, uses, and protects your data. BYOK model, encrypted storage, GDPR compliance.",
+  alternates: { canonical: "/privacy-policy" },
 };
 
 function H2({ children }: { children: React.ReactNode }) {

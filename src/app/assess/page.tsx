@@ -4,6 +4,7 @@ import AssessmentQuiz from "./AssessmentQuiz";
 export const metadata: Metadata = {
   title: "Business Automation Assessment",
   description: "10 questions. Find out exactly how automated your business is and where AI agents would make the biggest impact.",
+  alternates: { canonical: "/assess" },
   openGraph: {
     title: "How Automated Is Your Business?",
     description: "10 questions. Find out exactly how automated your business is and where AI agents would make the biggest impact.",

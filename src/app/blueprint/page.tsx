@@ -6,6 +6,7 @@ import BlueprintDiagram from "./BlueprintDiagram";
 export const metadata: Metadata = {
   title: "The 5-Agent Blueprint",
   description: "What a fully automated founder-led business looks like. 5 AI agents replacing a $20,000/month team for $19/month.",
+  alternates: { canonical: "/blueprint" },
   openGraph: {
     title: "The 5-Agent Blueprint | Ultron",
     description: "The 5-agent architecture that replaces a $20,000/month team for $19/month.",

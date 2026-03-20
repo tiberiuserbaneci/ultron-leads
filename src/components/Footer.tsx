@@ -14,17 +14,11 @@ export default function Footer() {
                 <Image src="/logo.png" alt="Ultron" width={40} height={40} className="rounded-sm" />
                 <span className="text-2xl font-bold">Ultron</span>
               </div>
-              <p className="text-[#999] text-sm leading-relaxed mb-5">
+              <p className="text-[#999] text-sm leading-relaxed">
                 The growth engine behind
                 <br />
                 founder-led businesses.
               </p>
-              <Link
-                href="https://app.51ultron.com/signup"
-                className="inline-flex text-xs font-semibold text-white border border-[#DA4E24] rounded-full px-5 py-2 hover:bg-[#DA4E24]/10 transition-colors"
-              >
-                Get started free
-              </Link>
             </div>
 
             {/* Product */}
