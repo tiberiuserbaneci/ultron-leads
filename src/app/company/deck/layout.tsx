@@ -11,12 +11,15 @@ export default function DeckLayout({ children }: { children: React.ReactNode }) 
       <style>{`
         /* Hide parent light footer — we render our own dark one */
         body footer, body > div > footer, [class*="NexityFooter"],
-        body > div > div > footer { display: none !important; }
-        /* Force dark bg on parent wrappers all the way down */
-        body, html { background: #0a0a0a !important; }
-        body > div > div.bg-\\[\\#faf8f5\\] { background: #0a0a0a !important; }
-        body > div > div.bg-\\[\\#faf8f5\\] > main { background: #0a0a0a !important; }
-        body > div > div.bg-\\[\\#faf8f5\\] > main > div { background: #0a0a0a !important; }
+        body > div > div > footer, footer.border-t.bg-white { display: none !important; }
+        /* Force dark bg everywhere — nuke #faf8f5 from every ancestor */
+        html { background: #0a0a0a !important; }
+        body { background: #0a0a0a !important; }
+        #__next, body > div { background: #0a0a0a !important; }
+        body > div > div { background: #0a0a0a !important; }
+        body > div > div > main { background: #0a0a0a !important; }
+        body > div > div > main > * { background: #0a0a0a !important; }
+        .bg-\\[\\#faf8f5\\] { background: #0a0a0a !important; }
         /* Prevent horizontal scrollbar */
         html, body { overflow-x: hidden !important; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }

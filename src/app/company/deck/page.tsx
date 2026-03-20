@@ -101,7 +101,7 @@ export default function DeckPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-72px)] bg-[#0a0a0a] -mt-[72px] pt-[72px] -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw] overflow-x-hidden">
+    <div className="min-h-screen bg-[#0a0a0a] -mt-[72px] pt-[72px] -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw] overflow-x-hidden flex flex-col">
       {/* ── Top bar: Tab switcher + More menu ────────────────── */}
       <div className="max-w-[1920px] mx-auto px-6 sm:px-8 pt-6 sm:pt-8 flex items-center justify-center gap-3">
         {/* Tab switcher */}
@@ -143,7 +143,7 @@ export default function DeckPage() {
           </button>
 
           {requestOpen && (
-            <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-[#141414] border border-white/[0.08] rounded-xl shadow-2xl p-4 z-50 animate-[fadeIn_0.15s_ease-out]">
+            <div className="absolute right-0 top-full mt-2 w-[calc(100vw-48px)] sm:w-80 max-w-80 bg-[#141414] border border-white/[0.08] rounded-xl shadow-2xl p-4 z-50 animate-[fadeIn_0.15s_ease-out]">
               {/* Download option */}
               <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/[0.06] transition-colors mb-1">
                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} className="shrink-0">
@@ -214,7 +214,7 @@ export default function DeckPage() {
       </div>
 
       {/* ── Content area ───────────────────────────────────────── */}
-      <div className="max-w-[1920px] mx-auto px-6 sm:px-8 md:px-12 pt-6 sm:pt-8 pb-8 sm:pb-12">
+      <div className="flex-1 max-w-[1920px] mx-auto w-full px-6 sm:px-8 md:px-12 pt-6 sm:pt-8 pb-8 sm:pb-12">
         {tab === "summary" ? (
           <ExecutiveSummary />
         ) : (
@@ -448,7 +448,7 @@ function ExecutiveSummary() {
 
   useEffect(() => {
     if (!p2.done) return;
-    if (bulletCount >= liveStats.length + 1) {
+    if (bulletCount >= liveStats.length) {
       const t = setTimeout(() => setSectionsVisible(true), 500);
       return () => clearTimeout(t);
     }
@@ -495,25 +495,17 @@ function ExecutiveSummary() {
                 <LoadingDots />
               </div>
             ))}
-            {/* Last static bullet */}
-            <div
-              className="flex items-center gap-3 sm:gap-4 transition-all duration-300"
-              style={{
-                opacity: liveStats.length < bulletCount ? 1 : 0,
-                transform: liveStats.length < bulletCount ? "translateY(0)" : "translateY(6px)",
-              }}
-            >
-              <div className="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0" />
-              <span className="text-white/80 text-sm sm:text-base">
-                A system built for continuous execution, not isolated prompts
-              </span>
-            </div>
           </div>
         </div>
       )}
 
-      {/* ── Collapsible sections (Claude Code style) ─────────── */}
+      {/* ── Subtitle + Collapsible sections ───────────────────── */}
       {sectionsVisible && (
+        <>
+        <p className="text-white/50 text-sm sm:text-base italic mb-8 transition-all duration-500">
+          A system built for continuous execution, not isolated prompts
+        </p>
+
         <div
           className="space-y-1 transition-all duration-500"
           style={{ opacity: sectionsVisible ? 1 : 0 }}
@@ -574,6 +566,7 @@ function ExecutiveSummary() {
             </div>
           </CollapsibleSection>
         </div>
+        </>
       )}
     </div>
   );
@@ -662,7 +655,7 @@ function InvestmentDeck({
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 function DeckFooter() {
   return (
-    <footer className="border-t border-white/[0.06] bg-[#0a0a0a] mt-12">
+    <footer className="border-t border-white/[0.06] bg-[#0a0a0a] mt-auto">
       <div className="max-w-[1200px] mx-auto px-6 lg:px-8 py-12 sm:py-16">
         <div className="grid grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-8 lg:gap-12">
           {/* Brand */}
