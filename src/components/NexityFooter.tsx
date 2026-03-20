@@ -1,0 +1,99 @@
+import Link from "next/link";
+import Image from "next/image";
+
+export default function NexityFooter() {
+  return (
+    <footer className="border-t border-[#e5e5e5] bg-white">
+      <div className="max-w-[1200px] mx-auto px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-8 lg:gap-12">
+          {/* Brand */}
+          <div className="col-span-2 lg:col-span-1">
+            <div className="flex items-center gap-2.5 mb-4">
+              <Image src="/nxt-enterprises.png" alt="NXT" width={32} height={32} />
+              <span className="text-xl font-bold text-[#1a1a1a]">NXT Enterprises</span>
+            </div>
+            <p className="text-[#888] text-sm leading-relaxed">
+              AI and blockchain infrastructure
+              <br />
+              for the autonomous economy.
+            </p>
+          </div>
+
+          {/* Products */}
+          <div>
+            <h4 className="text-sm font-semibold text-[#999] mb-4">Products</h4>
+            <ul className="space-y-3">
+              {[
+                { label: "Ultron", href: "https://51ultron.com" },
+                { label: "NXT — RWA OS", href: "https://nexitynetwork.org" },
+                { label: "DealMaker", href: "https://dealmaker.nexitynetwork.org" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <a href={item.href} target="_blank" rel="noopener noreferrer" className="text-sm text-[#555] hover:text-[#1a1a1a] transition-colors">
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h4 className="text-sm font-semibold text-[#999] mb-4">Company</h4>
+            <ul className="space-y-3">
+              {[
+                { label: "Investor Relations", href: "https://investors.nexitynetwork.org" },
+                { label: "Contact Sales", href: "/contact" },
+                { label: "Playbooks", href: "https://catalinfetean.substack.com/" },
+              ].map((item) => (
+                <li key={item.label}>
+                  {item.href.startsWith("http") ? (
+                    <a href={item.href} target="_blank" rel="noopener noreferrer" className="text-sm text-[#555] hover:text-[#1a1a1a] transition-colors">
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link href={item.href} className="text-sm text-[#555] hover:text-[#1a1a1a] transition-colors">
+                      {item.label}
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h4 className="text-sm font-semibold text-[#999] mb-4">Legal</h4>
+            <ul className="space-y-3">
+              {[
+                { label: "Privacy Policy", href: "/privacy-policy" },
+                { label: "Terms & Conditions", href: "/terms" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <Link href={item.href} className="text-sm text-[#555] hover:text-[#1a1a1a] transition-colors">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div className="border-t border-[#e5e5e5]">
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <span className="text-sm text-[#999]">&copy; 2026 NXT Enterprises</span>
+          <div className="flex items-center gap-6">
+            <Link href="/privacy-policy" className="text-sm text-[#999] hover:text-[#1a1a1a] transition-colors">
+              Privacy
+            </Link>
+            <Link href="/terms" className="text-sm text-[#999] hover:text-[#1a1a1a] transition-colors">
+              Terms
+            </Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
