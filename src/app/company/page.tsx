@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
+import { posts } from "@/data/news";
 
 /* ───────────────────────── Arrow Icon ───────────────────────── */
 function ArrowUpRight({ className = "w-4 h-4" }: { className?: string }) {
@@ -69,7 +71,7 @@ function NewsCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-[#e5e5e5] bg-white p-8 flex flex-col">
+    <div className="rounded-2xl border border-[#e5e5e5] bg-white p-8 flex flex-col h-full hover:border-[#ccc] hover:shadow-lg hover:shadow-black/5 transition-all duration-200">
       <div className="flex items-center gap-3 mb-4">
         <span className="text-xs font-semibold tracking-wide uppercase text-[#888] bg-[#f5f3f0] rounded-full px-3 py-1">
           {category}
@@ -77,7 +79,7 @@ function NewsCard({
         <span className="text-xs text-[#aaa]">{date}</span>
       </div>
       <h3 className="text-lg font-bold text-[#1a1a1a] mb-2">{title}</h3>
-      <p className="text-[#777] text-sm leading-relaxed">{description}</p>
+      <p className="text-[#777] text-sm leading-relaxed line-clamp-3">{description}</p>
     </div>
   );
 }
@@ -237,43 +239,21 @@ export default function NexityPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            <NewsCard
-              category="Product"
-              date="March 2026"
-              title="Ultron Launch"
-              description="5 AI agents that replace a full team. Research, leads, sales, content, and monitoring running 24/7 for founder-led businesses."
-            />
-            <NewsCard
-              category="Infrastructure"
-              date="March 2026"
-              title="Trade OS"
-              description="The operating system for on-chain trade is live. Coordinate contracts, payments, and liquidity on a single programmable layer."
-            />
-            <NewsCard
-              category="Platform"
-              date="March 2026"
-              title="Founder Terminal"
-              description="An open source hub for founders with systems, frameworks and execution models. Built for operators, not observers."
-            />
+            {posts.slice(0, 9).map((post) => (
+              <Link
+                key={post.slug}
+                href={`/company/news/${post.slug}`}
+                className="group"
+              >
+                <NewsCard
+                  category={post.category}
+                  date={new Date(post.date).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                  title={post.title}
+                  description={post.excerpt}
+                />
+              </Link>
+            ))}
           </div>
-        </div>
-      </section>
-
-      {/* ─── ULTRON CTA ─── */}
-      <section className="py-24 lg:py-32 bg-[#faf8f5]">
-        <div className="max-w-[700px] mx-auto px-6 lg:px-8 text-center">
-          <span className="inline-block text-xs font-semibold tracking-[0.12em] uppercase text-[#999] border border-[#ddd] rounded-full px-4 py-1.5 mb-6">
-            Get started
-          </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-bold leading-[1.15] text-[#1a1a1a] mb-5">
-            From zero to autonomous company<br className="hidden sm:block" /> in one platform.
-          </h2>
-          <p className="text-[#888] text-base sm:text-lg leading-relaxed mb-10 max-w-[520px] mx-auto">
-            Ultron deploys AI agents that handle research, outreach, sales, and monitoring so you can focus on building.
-          </p>
-
-          {/* Slim chat bar */}
-          <SlimChatBar />
         </div>
       </section>
     </div>

@@ -78,7 +78,6 @@ The SDR model served its purpose for a decade. But the economics have shifted pe
     category: "Pricing",
     date: "2026-04-19",
     readTime: "9 min read",
-    featured: true,
     body: `## Summary
 
 Most companies compare manual SDR teams and AI agents only on salary vs software. That is too shallow. The real difference shows up in hidden costs like ramp time, inconsistency, missed follow ups, manager overhead, tool sprawl, and pipeline leakage.
@@ -3540,6 +3539,7 @@ Then use Ultron when the work needs to keep moving after the file is created. Th
       "A practical OpenClaw wrappers directory for business users who want safer choices, clearer use cases, and a better path into Ultron workflows.",
     category: "Wrappers",
     date: "2026-03-31",
+    featured: true,
     readTime: "9 min read",
     body: `## Summary
 

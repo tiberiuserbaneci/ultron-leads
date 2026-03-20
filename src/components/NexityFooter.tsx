@@ -19,34 +19,34 @@ export default function NexityFooter() {
             </p>
           </div>
 
-          {/* Products */}
+          {/* Product */}
           <div>
-            <h4 className="text-sm font-semibold text-[#999] mb-4">Products</h4>
+            <h4 className="text-sm font-semibold text-[#999] mb-4">Product</h4>
             <ul className="space-y-3">
               {[
-                { label: "Ultron", href: "https://51ultron.com", external: true },
-                { label: "Interactive Demo", href: "https://51ultron.com/demo", external: true },
-                { label: "Trade OS", href: "https://os.nexitynetwork.org", external: true },
-                { label: "Founder Terminal", href: "https://catalinfetean.substack.com", external: true },
+                { label: "Interactive Demo", href: "/demo" },
+                { label: "Agent Blueprint", href: "/blueprint" },
+                { label: "Dashboard", href: "/live" },
+                { label: "Pricing", href: "/pricing" },
               ].map((item) => (
                 <li key={item.label}>
-                  <a href={item.href} target="_blank" rel="noopener noreferrer" className="text-sm text-[#555] hover:text-[#1a1a1a] transition-colors">
+                  <Link href={item.href} className="text-sm text-[#555] hover:text-[#1a1a1a] transition-colors">
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Company */}
+          {/* Resources */}
           <div>
-            <h4 className="text-sm font-semibold text-[#999] mb-4">Company</h4>
+            <h4 className="text-sm font-semibold text-[#999] mb-4">Resources</h4>
             <ul className="space-y-3">
               {[
-                { label: "Investor Relations", href: "/company/deck" },
-                { label: "Contact Sales", href: "/contact" },
-                { label: "Playbooks", href: "https://catalinfetean.substack.com/", external: true },
-                { label: "DealMaker", href: "https://dealmaker.nexitynetwork.org/", external: true },
+                { label: "Library", href: "/library" },
+                { label: "ROI Calculator", href: "/calculator" },
+                { label: "Documentation", href: "https://docs.51ultron.com/get-started/introduction", external: true },
+                { label: "Automation Quiz", href: "/assess" },
               ].map((item) => (
                 <li key={item.label}>
                   {"external" in item && item.external ? (
@@ -63,18 +63,25 @@ export default function NexityFooter() {
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Company */}
           <div>
-            <h4 className="text-sm font-semibold text-[#999] mb-4">Legal</h4>
+            <h4 className="text-sm font-semibold text-[#999] mb-4">Company</h4>
             <ul className="space-y-3">
               {[
-                { label: "Privacy Policy", href: "/privacy-policy" },
-                { label: "Terms & Conditions", href: "/terms" },
+                { label: "Contact Sales", href: "/contact" },
+                { label: "Playbooks", href: "https://catalinfetean.substack.com/", external: true },
+                { label: "DealMaker", href: "https://dealmaker.nexitynetwork.org/", external: true },
               ].map((item) => (
                 <li key={item.label}>
-                  <Link href={item.href} className="text-sm text-[#555] hover:text-[#1a1a1a] transition-colors">
-                    {item.label}
-                  </Link>
+                  {"external" in item && item.external ? (
+                    <a href={item.href} target="_blank" rel="noopener noreferrer" className="text-sm text-[#555] hover:text-[#1a1a1a] transition-colors">
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link href={item.href} className="text-sm text-[#555] hover:text-[#1a1a1a] transition-colors">
+                      {item.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
