@@ -7,13 +7,13 @@
       "source": "/",
       "has": [{ "type": "host", "value": "nexitynetwork.org" }],
       "destination": "/company",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/",
       "has": [{ "type": "host", "value": "www.nexitynetwork.org" }],
       "destination": "/company",
-      "permanent": false
+      "permanent": true
     }
   ]
 }
