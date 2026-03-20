@@ -423,7 +423,7 @@ export default function Nav() {
               <div className="md:hidden flex items-center gap-2">
                 <div className="relative" ref={mobileStatsRef}>
                   <button
-                    onClick={() => setStatsOpen(!statsOpen)}
+                    onClick={() => { setStatsOpen(!statsOpen); if (mobileMenuOpen) setMobileMenuOpen(false); }}
                     className={`flex items-center gap-1.5 text-[12px] px-2.5 py-1.5 rounded-lg transition-colors ${
                       statsOpen ? "text-white bg-[#1a1a1a]" : "text-[#777] hover:text-white"
                     }`}
