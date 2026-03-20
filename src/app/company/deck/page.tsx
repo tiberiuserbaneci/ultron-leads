@@ -237,43 +237,263 @@ export default function DeckPage() {
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 /* Executive Summary                                            */
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+const INTRO_P1 =
+  "Ultron turns founder-led growth into a system that executes every day. No more waiting on more hires, more tools, or more coordination.";
+
+const INTRO_P2 =
+  "Instead of treating AI like a chat window, Ultron turns it into an execution layer across lead generation, outreach, content, research, and monitoring, working through OpenClaw as the control layer and Claude Code for parallel agent execution.";
+
+const STATS = [
+  "2,646 founders joined",
+  "13.2K agents deployed",
+  "101.9K tasks completed",
+  "885.2K API calls executed",
+  "$330K saved",
+  "A system built for continuous execution, not isolated prompts",
+];
+
+const EXPANDABLE_SECTIONS = [
+  {
+    title: "What Changes with Ultron",
+    rows: [
+      {
+        without: "Growth work stays manual, fragmented, and dependent on constant supervision.",
+        with: "Core execution runs inside one system that keeps work moving across research, outreach, content, and follow-up.",
+      },
+      {
+        without: "AI is used as an assistant. Someone still has to drive every task forward.",
+        with: "AI agents execute work in parallel, with management, visibility, and control built in.",
+      },
+      {
+        without: "Teams jump between tools, prompts, tabs, and workflows that break under pressure.",
+        with: "OpenClaw coordinates the system and Claude Code drives parallel execution, so work moves through one operating model instead of scattered tools.",
+      },
+      {
+        without: "More output usually means more headcount, more software, and more overhead.",
+        with: "More output comes from better execution density across the same team.",
+      },
+      {
+        without: "Important work stalls when no one is pushing it.",
+        with: "Execution continues daily through an agent layer that does not depend on manual follow-through.",
+      },
+      {
+        without: "AI adoption looks interesting in demos but weak in real operations.",
+        with: "AI becomes part of how the company runs.",
+      },
+    ],
+  },
+  {
+    title: "Why Ultron Is Special",
+    paragraphs: [
+      "Ultron is not packaging prompts. It is packaging execution.",
+      "It combines control and output in one product. OpenClaw gives structure, oversight, and coordination. Claude Code enables parallel agent work behind it. The result is a system that feels operational, not experimental.",
+      "It is built around the reality that companies do not need another AI interface. They need work to happen reliably, repeatedly, and at scale.",
+      "The advantage is not a single feature. It is the shift from using AI occasionally to running a larger share of the business through it.",
+      "Ultron also sits in a cleaner position than most AI products. It is not trying to be a chatbot, a lightweight wrapper, or a visual automation toy. It is building the operating layer for agentic companies.",
+      "That makes the product easier to understand, harder to replace, and better aligned with where the market is going.",
+    ],
+  },
+  {
+    title: "What Ultron Is Not",
+    items: [
+      { label: "Not a chatbot", desc: "Ultron is not built around conversation. It is built around execution." },
+      { label: "Not another prompt layer", desc: "The value is not better wording. The value is getting real work done through agents." },
+      { label: "Not a pile of disconnected automations", desc: "Ultron is one system for running execution across functions, not scattered workflows stitched together." },
+      { label: "Not a demo product", desc: "It is designed for recurring use, operational visibility, and daily throughput." },
+      { label: "Not a single-use AI assistant", desc: "Ultron is meant to support a company-level shift in how work gets done." },
+      { label: "Not a replacement for judgment", desc: "Management still sets direction. Ultron increases execution capacity." },
+    ],
+  },
+];
+
+/* ── Streaming text hook ─────────────────────────────────────── */
+function useStreamText(text: string, speed: number, startDelay: number, enabled: boolean) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    if (!enabled) return;
+    let i = 0;
+    let timer: ReturnType<typeof setTimeout>;
+
+    const startTimer = setTimeout(() => {
+      const tick = () => {
+        if (i < text.length) {
+          // Stream 2-4 chars at a time for natural feel
+          const chunk = Math.min(text.length - i, Math.floor(Math.random() * 3) + 2);
+          i += chunk;
+          setDisplayed(text.slice(0, i));
+          timer = setTimeout(tick, speed);
+        } else {
+          setDone(true);
+        }
+      };
+      tick();
+    }, startDelay);
+
+    return () => {
+      clearTimeout(startTimer);
+      clearTimeout(timer);
+    };
+  }, [text, speed, startDelay, enabled]);
+
+  return { displayed, done };
+}
+
 function ExecutiveSummary() {
+  const p1 = useStreamText(INTRO_P1, 18, 300, true);
+  const p2 = useStreamText(INTRO_P2, 14, 0, p1.done);
+
+  const [bulletCount, setBulletCount] = useState(0);
+  const [sectionsVisible, setSectionsVisible] = useState(false);
+  const [openSection, setOpenSection] = useState<number | null>(null);
+
+  // Reveal bullets one by one after p2 finishes
+  useEffect(() => {
+    if (!p2.done) return;
+    if (bulletCount >= STATS.length) {
+      // After all bullets, reveal expandable sections
+      const t = setTimeout(() => setSectionsVisible(true), 400);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => setBulletCount((c) => c + 1), 250);
+    return () => clearTimeout(t);
+  }, [p2.done, bulletCount]);
+
   return (
     <div className="max-w-3xl mx-auto py-8 sm:py-16">
-      <p className="text-white/60 text-lg sm:text-xl leading-relaxed mb-10">
-        NXT Enterprises builds AI and blockchain infrastructure for the
-        autonomous economy. Our flagship product, <span className="text-white">Ultron</span>,
-        is an AI-powered sales automation platform that replaces manual
-        prospecting with autonomous agents, delivering qualified leads,
-        booked meetings, and closed deals at a fraction of the cost.
+      {/* ── Streaming intro ──────────────────────────────────── */}
+      <p className="text-white/70 text-lg sm:text-xl leading-relaxed mb-8 min-h-[2em]">
+        {p1.displayed}
+        {!p1.done && <span className="inline-block w-[2px] h-[1.1em] bg-white/40 ml-0.5 align-text-bottom animate-pulse" />}
       </p>
 
-      <p className="text-white/60 text-base sm:text-lg leading-relaxed mb-12">
-        We are raising to accelerate product development, expand our
-        go-to-market, and scale infrastructure across Europe and the US.
-      </p>
+      {p1.done && (
+        <p className="text-white/50 text-base sm:text-lg leading-relaxed mb-14 min-h-[2em]">
+          {p2.displayed}
+          {!p2.done && <span className="inline-block w-[2px] h-[1.1em] bg-white/40 ml-0.5 align-text-bottom animate-pulse" />}
+        </p>
+      )}
 
-      <div className="h-px bg-white/[0.06] mb-12" />
-
-      <h2 className="text-white text-sm uppercase tracking-widest mb-8 font-medium">
-        Highlights
-      </h2>
-      <div className="space-y-5">
-        {[
-          "700+ Active Companies Onboard",
-          "$150,000 Monthly Recurring Revenue",
-          "221% Net MRR Growth Year to Date",
-          "$3.6M Monthly Trading Volume in goods and services",
-          "15 European Banks natively integrated",
-          "10+ Startup Programs",
-          "50+ Partners and Advisors",
-        ].map((item, i) => (
-          <div key={i} className="flex items-start gap-4">
-            <div className="w-1.5 h-1.5 rounded-full bg-white/30 mt-2.5 shrink-0" />
-            <span className="text-white/80 text-base sm:text-lg">{item}</span>
+      {/* ── Stats bullets ────────────────────────────────────── */}
+      {p2.done && (
+        <div className="mb-16">
+          <div className="h-px bg-white/[0.06] mb-10" />
+          <div className="space-y-4">
+            {STATS.map((stat, i) => (
+              <div
+                key={i}
+                className="flex items-start gap-4 transition-all duration-300"
+                style={{
+                  opacity: i < bulletCount ? 1 : 0,
+                  transform: i < bulletCount ? "translateY(0)" : "translateY(6px)",
+                }}
+              >
+                <div className="w-1.5 h-1.5 rounded-full bg-white/30 mt-2.5 shrink-0" />
+                <span className="text-white/80 text-base sm:text-lg font-mono">{stat}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
+
+      {/* ── Expandable sections ──────────────────────────────── */}
+      {sectionsVisible && (
+        <div
+          className="space-y-3 transition-all duration-500"
+          style={{ opacity: sectionsVisible ? 1 : 0 }}
+        >
+          {EXPANDABLE_SECTIONS.map((section, idx) => (
+            <div
+              key={idx}
+              className="border border-white/[0.08] rounded-xl overflow-hidden"
+            >
+              <button
+                onClick={() => setOpenSection(openSection === idx ? null : idx)}
+                className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/[0.02] transition-colors"
+              >
+                <span className="text-white/90 text-base sm:text-lg font-medium">
+                  {section.title}
+                </span>
+                <svg
+                  width="16"
+                  height="16"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  className={`text-white/30 shrink-0 transition-transform duration-200 ${
+                    openSection === idx ? "rotate-180" : ""
+                  }`}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              <div
+                className="overflow-hidden transition-all duration-300 ease-in-out"
+                style={{
+                  maxHeight: openSection === idx ? "2000px" : "0",
+                  opacity: openSection === idx ? 1 : 0,
+                }}
+              >
+                <div className="px-6 pb-6">
+                  <div className="h-px bg-white/[0.06] mb-6" />
+
+                  {/* Section 1: comparison rows */}
+                  {"rows" in section && section.rows && (
+                    <div className="space-y-5">
+                      {section.rows.map((row, ri) => (
+                        <div key={ri} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="rounded-lg bg-white/[0.02] border border-white/[0.05] p-4">
+                            <span className="text-white/30 text-xs uppercase tracking-wider font-medium block mb-2">
+                              Without Ultron
+                            </span>
+                            <p className="text-white/50 text-sm leading-relaxed">{row.without}</p>
+                          </div>
+                          <div className="rounded-lg bg-white/[0.04] border border-white/[0.08] p-4">
+                            <span className="text-white/60 text-xs uppercase tracking-wider font-medium block mb-2">
+                              With Ultron
+                            </span>
+                            <p className="text-white/80 text-sm leading-relaxed">{row.with}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Section 2: paragraphs */}
+                  {"paragraphs" in section && section.paragraphs && (
+                    <div className="space-y-4">
+                      {section.paragraphs.map((p, pi) => (
+                        <p key={pi} className="text-white/60 text-sm sm:text-base leading-relaxed">
+                          {p}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Section 3: labeled items */}
+                  {"items" in section && section.items && (
+                    <div className="space-y-4">
+                      {section.items.map((item, ii) => (
+                        <div key={ii} className="flex items-start gap-3">
+                          <div className="w-1 h-1 rounded-full bg-white/20 mt-2.5 shrink-0" />
+                          <div>
+                            <span className="text-white/80 text-sm font-medium">{item.label}.</span>{" "}
+                            <span className="text-white/50 text-sm">{item.desc}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
