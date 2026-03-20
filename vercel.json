@@ -2,16 +2,18 @@
   "buildCommand": "npm run build",
   "outputDirectory": "out",
   "framework": null,
-  "rewrites": [
-    {
-      "source": "/:path*",
-      "has": [{ "type": "host", "value": "nexitynetwork.org" }],
-      "destination": "/nexity/:path*"
-    },
+  "redirects": [
     {
       "source": "/",
       "has": [{ "type": "host", "value": "nexitynetwork.org" }],
-      "destination": "/nexity/"
+      "destination": "/company",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "www.nexitynetwork.org" }],
+      "destination": "/company",
+      "permanent": false
     }
   ]
 }

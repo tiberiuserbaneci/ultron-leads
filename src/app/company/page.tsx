@@ -244,7 +244,7 @@ export default function NexityPage() {
             </p>
             <div className="mt-10 flex items-center justify-center gap-4 flex-wrap">
               <a
-                href="/nexity/deck"
+                href="/company/deck"
                 className="inline-flex items-center gap-2 text-[15px] font-semibold text-white bg-[#1a1a1a] rounded-full px-8 py-3 hover:bg-[#333] transition-colors"
               >
                 View Investment Deck

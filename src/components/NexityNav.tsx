@@ -56,7 +56,7 @@ const TRY_ULTRON_GROUPS = [
 /* ───────────────────────── Nav Links ───────────────────────── */
 const NAV_LINKS = [
   { label: "News", href: "#news" },
-  { label: "Investment Deck", href: "/nexity/deck" },
+  { label: "Investment Deck", href: "/company/deck" },
   { label: "Investor Relations", href: "https://investors.nexitynetwork.org", external: true },
   { label: "Contact Sales", href: "/contact" },
 ];
@@ -103,7 +103,7 @@ export default function NexityNav() {
         <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-[72px]">
             {/* Logo */}
-            <Link href="/nexity" className="flex items-center gap-2.5 shrink-0">
+            <Link href="/company" className="flex items-center gap-2.5 shrink-0">
               <Image src="/nxt-enterprises.png" alt="NXT" width={32} height={32} />
               <span className="font-bold text-[#1a1a1a] text-lg tracking-tight">NXT Enterprises</span>
             </Link>
