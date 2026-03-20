@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import HeroStats from "./HeroStats";
+import LivePanelsDropdown from "./LivePanelsDropdown";
 
 const PROMPTS = [
   "Generate weekly sales summary report for Q1",
@@ -326,6 +327,8 @@ export default function HeroChatBox({
   const promptIndex = useRef(0);
   const charIndex = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [branchOpen, setBranchOpen] = useState(false);
+  const branchRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const modelRef = useRef<HTMLDivElement>(null);
   const integrationsRef = useRef<HTMLDivElement>(null);
@@ -368,7 +371,7 @@ export default function HeroChatBox({
 
   // Close menus on outside click
   useEffect(() => {
-    if (!menuOpen && !modelOpen && !integrationsOpen) return;
+    if (!menuOpen && !modelOpen && !integrationsOpen && !branchOpen) return;
     const handleClick = (e: MouseEvent) => {
       if (menuOpen) {
         const inMenu = menuRef.current?.contains(e.target as Node) || mobileMenuRef.current?.contains(e.target as Node);
@@ -382,10 +385,14 @@ export default function HeroChatBox({
         const inInt = integrationsRef.current?.contains(e.target as Node);
         if (!inInt) setIntegrationsOpen(false);
       }
+      if (branchOpen) {
+        const inBranch = branchRef.current?.contains(e.target as Node);
+        if (!inBranch) setBranchOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
-  }, [menuOpen, modelOpen, integrationsOpen]);
+  }, [menuOpen, modelOpen, integrationsOpen, branchOpen]);
 
   const toggleIntegration = useCallback((id: string) => {
     setSelectedIntegrations((prev) => {
@@ -489,21 +496,30 @@ export default function HeroChatBox({
         {/* Single shared container — one border wrapping stats + chat */}
         <div className="relative z-10 bg-[#0c0c0c] rounded-2xl border border-[#1a1a1a]">
           {/* Stats row — top extension with separator */}
-          <div className="flex items-center justify-end gap-5 px-5 py-2.5 border-b border-[#1a1a1a]">
-            {/* Branch icon */}
-            <div className="mr-auto flex items-center gap-2 text-[#888]">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="6" y1="3" x2="6" y2="15" />
-                <circle cx="18" cy="6" r="3" />
-                <circle cx="6" cy="18" r="3" />
-                <path d="M18 9a9 9 0 0 1-9 9" />
-              </svg>
+          <div className="flex items-center justify-end gap-4 px-5 py-2 border-b border-[#1a1a1a]">
+            {/* Branch icon — clickable dropdown */}
+            <div className="mr-auto relative" ref={branchRef}>
+              <button
+                onClick={() => setBranchOpen(!branchOpen)}
+                className="flex items-center gap-2 text-[#555] hover:text-[#999] transition-colors"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="6" y1="3" x2="6" y2="15" />
+                  <circle cx="18" cy="6" r="3" />
+                  <circle cx="6" cy="18" r="3" />
+                  <path d="M18 9a9 9 0 0 1-9 9" />
+                </svg>
+                <svg width="8" height="8" viewBox="0 0 12 12" fill="none" className={`transition-transform ${branchOpen ? "rotate-180" : ""}`}>
+                  <path d="M3 5L6 8L9 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              {branchOpen && <LivePanelsDropdown />}
             </div>
             <HeroStats />
           </div>
 
-          {/* Chat box — shares the container border, no extra borders */}
-          <div className="p-5">
+          {/* Chat box — rounded top corners, inset feel */}
+          <div className="bg-[#080808] rounded-t-xl p-5">
           {/* Top row: model selector + globe */}
           <div className="flex items-center gap-3 mb-4">
             <div className="relative" ref={modelRef}>

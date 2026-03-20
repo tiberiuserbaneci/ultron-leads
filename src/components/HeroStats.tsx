@@ -52,16 +52,15 @@ export default function HeroStats() {
     { value: live.founders, label: "founders", format: (v: number) => v.toLocaleString(), mobileHide: false },
     { value: live.agents, label: "agents", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toLocaleString(), mobileHide: true },
     { value: live.tasks, label: "tasks", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toLocaleString(), mobileHide: false },
-    { value: live.apiCalls, label: "API calls", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toString(), mobileHide: true },
     { value: live.saved, label: "saved", format: (v: number) => `$${v >= 1000 ? `${Math.round(v / 1000)}K` : v}`, mobileHide: true },
   ];
 
   return (
     <>
       {stats.map((stat) => (
-        <span key={stat.label} className={`inline-flex items-center gap-1.5 text-[14px] sm:text-[15px] ${stat.mobileHide ? "hidden sm:inline-flex" : ""}`}>
-          <span className="text-white font-semibold tabular-nums transition-all duration-700">{stat.format(stat.value)}</span>
-          <span className="text-[#e0e0e0]">{stat.label}</span>
+        <span key={stat.label} className={`inline-flex items-center gap-1 text-[11px] sm:text-[12px] ${stat.mobileHide ? "hidden sm:inline-flex" : ""}`}>
+          <span className="text-white font-medium tabular-nums transition-all duration-700">{stat.format(stat.value)}</span>
+          <span className="text-[#777]">{stat.label}</span>
         </span>
       ))}
     </>
