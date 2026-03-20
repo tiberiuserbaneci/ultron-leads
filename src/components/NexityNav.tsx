@@ -55,7 +55,7 @@ const TRY_ULTRON_GROUPS = [
 
 /* ───────────────────────── Nav Links ───────────────────────── */
 const NAV_LINKS = [
-  { label: "News", href: "#news" },
+  { label: "News", href: "/company/news" },
   { label: "Investment Deck", href: "/company/deck" },
   { label: "Investor Relations", href: "https://investors.nexitynetwork.org", external: true },
   { label: "Contact Sales", href: "/contact" },
