@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import Footer from "@/components/Footer";
 
 /* ═══════════════════════════════════════════════════════════════ */
 /*                         DATA                                    */
@@ -499,6 +502,58 @@ export default function ContactPage() {
         {/* Support message — outside card */}
         {isSupport && <SupportMessage />}
       </div>
+
+      {/* ─── BOTTOM CTA + FOOTER ─── */}
+      <section className="relative mt-24 lg:mt-32 overflow-hidden">
+        <div className="absolute inset-0 z-0 scale-[1.4]">
+          <Image
+            src="/footer-background.png"
+            alt=""
+            fill
+            className="object-cover"
+            sizes="100vw"
+          />
+        </div>
+        <div className="absolute inset-x-0 top-0 h-40 z-[1] bg-gradient-to-b from-black to-transparent" />
+
+        <div className="relative z-10 pt-24 lg:pt-40 text-center">
+          <div className="flex justify-center mb-8">
+            <Image
+              src="/logo.png"
+              alt="Ultron"
+              width={64}
+              height={64}
+              className="rounded-lg animate-logo-spin"
+            />
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.15] mb-4">
+            Scale quality of your work
+            <br />
+            not size of your team
+          </h2>
+          <p className="text-[#999] text-lg mb-8">Run your business on autopilot</p>
+
+          <div className="flex items-center justify-center gap-4 mb-16 lg:mb-24">
+            <Link
+              href="https://app.51ultron.com/signup"
+              className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-8 py-3 hover:bg-[#DA4E24]/10 transition-all"
+            >
+              Try for free
+            </Link>
+            <Link
+              href="/pricing"
+              className="text-sm font-semibold text-white border border-[#333] rounded-full px-8 py-3 hover:border-[#555] transition-colors"
+            >
+              View Pricing
+            </Link>
+          </div>
+        </div>
+
+        <div className="relative z-10">
+          <Footer />
+        </div>
+      </section>
     </div>
   );
 }
