@@ -666,7 +666,6 @@ function FinalCTA({ engine, reelMode }: { engine: Engine; reelMode: boolean }) {
         </Link>
       </div>
 
-      <Footer />
     </div>
   );
 }
@@ -817,6 +816,8 @@ function ClientEngineInner() {
         {/* 11. Final CTA */}
         <FinalCTA engine={engine} reelMode={reelMode} />
       </div>
+
+      <Footer />
     </div>
   );
 }

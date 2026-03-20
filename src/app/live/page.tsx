@@ -1275,9 +1275,9 @@ export default function LivePage() {
                 Watch the demo
               </Link>
             </div>
-
-            <Footer />
           </div>
+
+          <Footer />
         </div>
       )}
     </div>
