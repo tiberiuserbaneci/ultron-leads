@@ -41,20 +41,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
-
-        {/* Detect Nexity host before first paint to prevent Ultron flash */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(){
-                var h = window.location.hostname;
-                if (h === 'nexitynetwork.org' || h === 'www.nexitynetwork.org') {
-                  document.documentElement.classList.add('nexity-host');
-                }
-              })();
-            `,
-          }}
-        />
       </head>
       <body className="bg-black text-white min-h-screen">
         <RootShell>{children}</RootShell>

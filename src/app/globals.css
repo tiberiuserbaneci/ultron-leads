@@ -26,15 +26,6 @@ html {
   scroll-behavior: smooth;
 }
 
-/* When served on nexitynetwork.org, hide Ultron shell before React hydrates */
-html.nexity-host body {
-  background: #ffffff;
-  color: #000000;
-}
-html.nexity-host [data-ultron-shell] {
-  display: none !important;
-}
-
 body {
   background: #000000;
   color: #FFFFFF;

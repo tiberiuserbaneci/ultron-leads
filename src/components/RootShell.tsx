@@ -1,23 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Nav from "@/components/Nav";
 
-const NEXITY_HOSTS = ["nexitynetwork.org", "www.nexitynetwork.org"];
-
 export default function RootShell({ children }: { children: React.ReactNode }) {
-  const [isNexity, setIsNexity] = useState(false);
-
-  useEffect(() => {
-    setIsNexity(NEXITY_HOSTS.includes(window.location.hostname));
-  }, []);
+  const pathname = usePathname();
+  const isNexity = pathname.startsWith("/nexity");
 
   if (isNexity) {
     return <>{children}</>;
   }
 
   return (
-    <div data-ultron-shell>
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -59,6 +54,6 @@ export default function RootShell({ children }: { children: React.ReactNode }) {
           `,
         }}
       />
-    </div>
+    </>
   );
 }
