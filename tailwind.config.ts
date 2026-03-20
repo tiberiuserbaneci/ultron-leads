@@ -30,6 +30,7 @@ const config: Config = {
         "glow-spin": "glowSpin 4s linear infinite",
         "logo-spin": "logoSpin 8s linear infinite",
         blink: "blink 1s step-end infinite",
+        "bounce-gentle": "bounceGentle 2s ease-in-out infinite",
       },
       keyframes: {
         blink: {
@@ -51,6 +52,10 @@ const config: Config = {
         logoSpin: {
           from: { transform: "rotate(0deg)" },
           to: { transform: "rotate(360deg)" },
+        },
+        bounceGentle: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(4px)" },
         },
       },
     },

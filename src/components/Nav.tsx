@@ -274,6 +274,7 @@ export default function Nav() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [statsOpen, setStatsOpen] = useState(false);
   const statsRef = useRef<HTMLDivElement>(null);
+  const mobileStatsRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const navRef = useRef<HTMLElement>(null);
   const live = useLiveStats();
@@ -284,8 +285,10 @@ export default function Nav() {
       if (navRef.current && !navRef.current.contains(e.target as Node)) {
         setOpenDropdown(null);
       }
-      if (statsOpen && statsRef.current && !statsRef.current.contains(e.target as Node)) {
-        setStatsOpen(false);
+      if (statsOpen) {
+        const inDesktop = statsRef.current?.contains(e.target as Node);
+        const inMobile = mobileStatsRef.current?.contains(e.target as Node);
+        if (!inDesktop && !inMobile) setStatsOpen(false);
       }
     }
     document.addEventListener("click", handleClick);
@@ -382,7 +385,6 @@ export default function Nav() {
                     <path d="M18 9a9 9 0 0 1-9 9" />
                   </svg>
                   <span className="tabular-nums font-medium text-white">{live.founders.toLocaleString()}</span>
-                  <span className="text-[#555]">Founders</span>
                   <svg width="8" height="8" viewBox="0 0 12 12" fill="none" className={`text-[#555] transition-transform ${statsOpen ? "rotate-180" : ""}`}>
                     <path d="M3 5L6 8L9 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -417,24 +419,65 @@ export default function Nav() {
                 Try Ultron
               </Link>
 
-              {/* Burger / Close — mobile only */}
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden w-9 h-9 flex items-center justify-center text-[#999] hover:text-white transition-colors"
-              >
-                {mobileMenuOpen ? (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
-                ) : (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="3" y1="6" x2="21" y2="6" />
-                    <line x1="3" y1="12" x2="21" y2="12" />
-                    <line x1="3" y1="18" x2="21" y2="18" />
-                  </svg>
-                )}
-              </button>
+              {/* Founder badge + Burger — mobile only */}
+              <div className="md:hidden flex items-center gap-2">
+                <div className="relative" ref={mobileStatsRef}>
+                  <button
+                    onClick={() => setStatsOpen(!statsOpen)}
+                    className={`flex items-center gap-1.5 text-[12px] px-2.5 py-1.5 rounded-lg transition-colors ${
+                      statsOpen ? "text-white bg-[#1a1a1a]" : "text-[#777] hover:text-white"
+                    }`}
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0">
+                      <line x1="6" y1="3" x2="6" y2="15" />
+                      <circle cx="18" cy="6" r="3" />
+                      <circle cx="6" cy="18" r="3" />
+                      <path d="M18 9a9 9 0 0 1-9 9" />
+                    </svg>
+                    <span className="tabular-nums font-medium text-white">{live.founders.toLocaleString()}</span>
+                    <svg width="7" height="7" viewBox="0 0 12 12" fill="none" className={`text-[#555] transition-transform ${statsOpen ? "rotate-180" : ""}`}>
+                      <path d="M3 5L6 8L9 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+
+                  {/* Mobile stats dropdown */}
+                  {statsOpen && (
+                    <div className="absolute right-0 top-full mt-3 bg-[#111] border border-[#222] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.7)] animate-fade-up z-50 select-none">
+                      <div className="flex items-center gap-5 px-5 py-4">
+                        {[
+                          { val: live.founders.toLocaleString(), lbl: "Founders" },
+                          { val: live.agents >= 1000 ? `${(live.agents / 1000).toFixed(1)}K` : live.agents.toLocaleString(), lbl: "Agents" },
+                          { val: live.tasks >= 1000 ? `${(live.tasks / 1000).toFixed(1)}K` : live.tasks.toLocaleString(), lbl: "Tasks" },
+                          { val: `$${live.saved >= 1000 ? `${Math.round(live.saved / 1000)}K` : live.saved}`, lbl: "Saved" },
+                        ].map((s) => (
+                          <div key={s.lbl} className="flex flex-col items-center gap-0.5">
+                            <span className="text-white font-semibold text-[14px] tabular-nums">{s.val}</span>
+                            <span className="text-[#555] text-[10px]">{s.lbl}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="w-9 h-9 flex items-center justify-center text-[#999] hover:text-white transition-colors"
+                >
+                  {mobileMenuOpen ? (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  ) : (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="3" y1="6" x2="21" y2="6" />
+                      <line x1="3" y1="12" x2="21" y2="12" />
+                      <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -456,13 +499,13 @@ export default function Nav() {
 
           {/* Sticky bottom CTA buttons */}
           <div className="shrink-0 px-6 py-6 border-t border-[#1a1a1a] flex gap-3">
-            <a
-              href="https://app.51ultron.com/signup"
+            <Link
+              href="/contact"
               onClick={() => setMobileMenuOpen(false)}
               className="flex-1 text-center text-sm font-semibold text-white border border-[#333] rounded-full py-3 hover:border-[#555] transition-colors"
             >
               Contact Sales
-            </a>
+            </Link>
             <Link
               href="https://app.51ultron.com/signup"
               onClick={() => setMobileMenuOpen(false)}
