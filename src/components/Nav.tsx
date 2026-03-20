@@ -29,8 +29,8 @@ function ExternalIcon() {
 function ChevronDown({ open, className = "" }: { open: boolean; className?: string }) {
   return (
     <svg
-      width="10"
-      height="10"
+      width="12"
+      height="12"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -173,9 +173,9 @@ function DropdownPanel({
           style={cols > 1 ? {} : {}}
         >
           {menu.groups.map((group, gi) => (
-            <div key={gi} className="py-3 px-1" style={{ minWidth: "180px" }}>
+            <div key={gi} className="py-3 px-1" style={{ minWidth: "200px" }}>
               {group.heading && (
-                <p className="text-[11px] font-medium tracking-[0.08em] uppercase text-[#555] px-4 pb-3">
+                <p className="text-[12px] font-medium tracking-[0.08em] uppercase text-[#555] px-4 pb-3">
                   {group.heading}
                 </p>
               )}
@@ -191,7 +191,7 @@ function DropdownPanel({
                     key={item.label}
                     href={item.href}
                     onClick={onClose}
-                    className="flex items-center justify-between gap-3 px-4 py-2 text-[14px] text-[#ccc] hover:text-white hover:bg-[#161616] rounded-lg mx-1 transition-colors duration-100"
+                    className="flex items-center justify-between gap-3 px-4 py-2.5 text-[15px] text-[#ccc] hover:text-white hover:bg-[#161616] rounded-lg mx-1 transition-colors duration-100"
                     {...extraProps}
                   >
                     {item.label}
@@ -318,11 +318,11 @@ export default function Nav() {
       {/* Top bar */}
       <div className={`backdrop-blur-md ${mobileMenuOpen ? "bg-black" : "bg-black/90"}`}>
         <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-[72px]">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2.5 shrink-0">
-              <Image src="/logo.png" alt="Ultron" width={32} height={32} className="rounded-sm" />
-              <span className="font-bold text-white text-lg tracking-tight">Ultron</span>
+              <Image src="/logo.png" alt="Ultron" width={36} height={36} className="rounded-sm" />
+              <span className="font-bold text-white text-xl tracking-tight">Ultron</span>
             </Link>
 
             {/* Center links — desktop */}
@@ -335,7 +335,7 @@ export default function Nav() {
                   onMouseLeave={handleMouseLeave}
                 >
                   <button
-                    className={`flex items-center gap-1.5 text-sm px-3 py-2 rounded-lg transition-colors duration-150 ${
+                    className={`flex items-center gap-1.5 text-[15px] px-3.5 py-2 rounded-lg transition-colors duration-150 ${
                       openDropdown === menu.label
                         ? "text-white"
                         : "text-[#999] hover:text-white"
@@ -362,7 +362,7 @@ export default function Nav() {
               {/* Try Ultron — desktop only */}
               <Link
                 href="https://app.51ultron.com/signup"
-                className="hidden md:inline-flex text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-5 py-1.5 hover:bg-[#DA4E24]/10 transition-colors"
+                className="hidden md:inline-flex text-[15px] font-semibold text-white border border-[#DA4E24] rounded-full px-6 py-2 hover:bg-[#DA4E24]/10 transition-colors"
               >
                 Try Ultron
               </Link>
@@ -392,7 +392,7 @@ export default function Nav() {
 
       {/* Mobile full-screen overlay */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-16 bg-black z-50 flex flex-col">
+        <div className="md:hidden fixed inset-0 top-[72px] bg-black z-50 flex flex-col">
           {/* Scrollable menu area */}
           <div className="flex-1 overflow-y-auto pt-4">
             {NAV_MENUS.map((menu) => (
