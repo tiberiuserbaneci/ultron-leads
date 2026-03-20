@@ -286,7 +286,7 @@ function IntegrationsDropdown({
             {/* Checkbox */}
             <span className={`w-4 h-4 rounded flex-shrink-0 border flex items-center justify-center transition-colors ${
               selected.has(item.id)
-                ? "bg-[#DA4E24] border-[#DA4E24]"
+                ? "bg-[#888] border-[#888]"
                 : "border-[#333] bg-transparent"
             }`}>
               {selected.has(item.id) && (
@@ -517,21 +517,20 @@ export default function HeroChatBox({
             <div className="relative" ref={integrationsRef}>
               <button
                 onClick={() => setIntegrationsOpen(!integrationsOpen)}
-                className={`flex items-center gap-1.5 transition-colors ${
-                  integrationsOpen || selectedIntegrations.size > 0
-                    ? "text-[#ccc] hover:text-white"
-                    : "text-[#444] hover:text-[#888]"
-                }`}
+                className="flex items-center gap-2 border border-[#262626] rounded-full px-3 py-1.5 hover:border-[#444] transition-colors"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-[#ccc]">
                   <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
                   <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10A15.3 15.3 0 0112 2z" stroke="currentColor" strokeWidth="1.5" />
                 </svg>
-                {selectedIntegrations.size > 0 && (
-                  <span className="text-[12px] text-[#999] font-medium">
-                    {selectedIntegrations.size} {selectedIntegrations.size === 1 ? "tool" : "tools"}
-                  </span>
-                )}
+                <span className="text-[13px] font-medium text-[#ccc]">
+                  {selectedIntegrations.size > 0
+                    ? `${selectedIntegrations.size} ${selectedIntegrations.size === 1 ? "tool" : "tools"}`
+                    : "Tools"}
+                </span>
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="none" className={`text-[#555] transition-transform ${integrationsOpen ? "rotate-180" : ""}`}>
+                  <path d="M3 5L6 8L9 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </button>
               {integrationsOpen && (
                 <IntegrationsDropdown
