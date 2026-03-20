@@ -414,12 +414,12 @@ export default function HeroChatBox({
       {/* ═══ MOBILE: ChatGPT-style single line ═══ */}
       <div className="md:hidden relative w-full mx-auto">
         {/* Slim glow */}
-        <div className="absolute -inset-[1px] rounded-full overflow-hidden z-0">
+        <div className="absolute -inset-[1.5px] rounded-full overflow-hidden z-0">
           <div
             className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
             style={{
               background:
-                "conic-gradient(from 0deg, transparent 0%, transparent 60%, rgba(218,78,36,0.3) 72%, rgba(218,78,36,0.5) 78%, rgba(218,78,36,0.3) 84%, transparent 100%)",
+                "conic-gradient(from 0deg, transparent 0%, transparent 55%, rgba(218,78,36,0.35) 68%, rgba(218,78,36,0.6) 76%, rgba(218,78,36,0.35) 84%, transparent 100%)",
             }}
           />
         </div>
@@ -472,12 +472,12 @@ export default function HeroChatBox({
       {/* ═══ DESKTOP: Full multi-row layout ═══ */}
       <div className="hidden md:block relative w-full max-w-[800px] mx-auto">
         {/* Slim animated glow border */}
-        <div className="absolute -inset-[1px] rounded-2xl overflow-hidden z-0">
+        <div className="absolute -inset-[1.5px] rounded-2xl overflow-hidden z-0">
           <div
             className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
             style={{
               background:
-                "conic-gradient(from 0deg, transparent 0%, transparent 60%, rgba(218,78,36,0.35) 72%, rgba(218,78,36,0.6) 78%, rgba(218,78,36,0.35) 84%, transparent 100%)",
+                "conic-gradient(from 0deg, transparent 0%, transparent 55%, rgba(218,78,36,0.4) 68%, rgba(218,78,36,0.7) 76%, rgba(218,78,36,0.4) 84%, transparent 100%)",
             }}
           />
         </div>
@@ -597,7 +597,7 @@ export default function HeroChatBox({
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                     </svg>
-                    <span>Work Mode</span>
+                    <span>View demo</span>
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="9 18 15 12 9 6" />
                     </svg>
