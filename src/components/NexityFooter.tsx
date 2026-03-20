@@ -24,9 +24,10 @@ export default function NexityFooter() {
             <h4 className="text-sm font-semibold text-[#999] mb-4">Products</h4>
             <ul className="space-y-3">
               {[
-                { label: "Ultron", href: "https://51ultron.com" },
-                { label: "Trade OS", href: "https://os.nexitynetwork.org" },
-                { label: "Founder Terminal", href: "https://catalinfetean.substack.com" },
+                { label: "Ultron", href: "https://51ultron.com", external: true },
+                { label: "Interactive Demo", href: "https://51ultron.com/demo", external: true },
+                { label: "Trade OS", href: "https://os.nexitynetwork.org", external: true },
+                { label: "Founder Terminal", href: "https://catalinfetean.substack.com", external: true },
               ].map((item) => (
                 <li key={item.label}>
                   <a href={item.href} target="_blank" rel="noopener noreferrer" className="text-sm text-[#555] hover:text-[#1a1a1a] transition-colors">
@@ -42,12 +43,13 @@ export default function NexityFooter() {
             <h4 className="text-sm font-semibold text-[#999] mb-4">Company</h4>
             <ul className="space-y-3">
               {[
-                { label: "Investor Relations", href: "https://investors.nexitynetwork.org" },
+                { label: "Investor Relations", href: "/company/deck" },
                 { label: "Contact Sales", href: "/contact" },
-                { label: "Playbooks", href: "https://catalinfetean.substack.com/" },
+                { label: "Playbooks", href: "https://catalinfetean.substack.com/", external: true },
+                { label: "DealMaker", href: "https://dealmaker.nexitynetwork.org/", external: true },
               ].map((item) => (
                 <li key={item.label}>
-                  {item.href.startsWith("http") ? (
+                  {"external" in item && item.external ? (
                     <a href={item.href} target="_blank" rel="noopener noreferrer" className="text-sm text-[#555] hover:text-[#1a1a1a] transition-colors">
                       {item.label}
                     </a>

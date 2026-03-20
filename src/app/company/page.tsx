@@ -128,7 +128,7 @@ export default function NexityPage() {
   return (
     <div className="bg-[#faf8f5]">
       {/* ─── HERO ─── */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden -mt-[72px] pt-[72px]">
+      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden -mt-[72px] pt-[72px]">
         {/* Video background — hidden on mobile */}
         <div className="absolute inset-0 hidden md:block">
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
@@ -153,7 +153,7 @@ export default function NexityPage() {
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#faf8f5] to-transparent z-10 pointer-events-none" />
 
         {/* Content */}
-        <div className="relative z-20 max-w-[1200px] mx-auto px-6 lg:px-8 text-center py-32">
+        <div className="relative z-20 max-w-[1200px] mx-auto px-6 lg:px-8 text-center py-16 lg:py-20">
           <Badge>NXT ENTERPRISES</Badge>
           <h1 className="mt-8 text-4xl sm:text-5xl lg:text-[64px] font-bold leading-[1.1] tracking-tight text-[#1a1a1a]">
             AI and Blockchain Infrastructure
@@ -172,9 +172,7 @@ export default function NexityPage() {
               <ArrowUpRight className="w-4 h-4" />
             </a>
             <a
-              href="https://investors.nexitynetwork.org"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/company/deck"
               className="inline-flex items-center gap-2 text-[15px] font-semibold text-[#1a1a1a] border border-[#ddd] rounded-full px-8 py-3 hover:border-[#999] transition-colors"
             >
               Investor Relations
@@ -189,11 +187,8 @@ export default function NexityPage() {
           <div className="text-center mb-16">
             <Badge>PRODUCTS</Badge>
             <h2 className="mt-5 text-3xl sm:text-4xl lg:text-[48px] font-bold leading-[1.1] text-[#1a1a1a]">
-              The Full Stack
+              The Full Stack Ecosystem
             </h2>
-            <p className="mt-4 text-[#888] text-lg max-w-[500px] mx-auto">
-              Three products. One mission. Autonomous business infrastructure.
-            </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">

@@ -55,8 +55,8 @@ const MEET_ULTRON_GROUPS = [
 
 /* ───────────────────────── Investors Dropdown ───────────────────────── */
 const INVESTORS_ITEMS = [
-  { label: "Executive Summary", href: "/company/deck?tab=summary" },
-  { label: "Investment Deck", href: "/company/deck?tab=deck" },
+  { label: "Executive Summary", href: "/company/deck/?tab=summary" },
+  { label: "Investment Deck", href: "/company/deck/?tab=deck" },
 ];
 
 /* ───────────────────────── Nav Links ───────────────────────── */

@@ -98,7 +98,7 @@ export default function DeckPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-72px)] bg-[#0a0a0a] -mt-[72px] pt-[72px] -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw]">
+    <div className="min-h-[calc(100vh-72px)] bg-[#0a0a0a] -mt-[72px] pt-[72px] -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw] overflow-x-hidden">
       {/* ── Top bar: Tab switcher (center) + Actions (right) ─── */}
       <div className="max-w-[1920px] mx-auto px-4 sm:px-8 pt-6 sm:pt-8 flex items-center justify-between">
         {/* Tab switcher — centered */}
