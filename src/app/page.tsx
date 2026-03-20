@@ -679,7 +679,7 @@ export default function HomePage() {
               Try for free
             </Link>
             <Link
-              href="#pricing"
+              href="/pricing"
               className="text-sm font-semibold text-white border border-[#333] rounded-full px-8 py-3 hover:border-[#555] transition-colors"
             >
               View Pricing
