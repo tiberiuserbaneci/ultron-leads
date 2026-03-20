@@ -471,7 +471,7 @@ export default function HeroChatBox({
       </div>
 
       {/* ═══ DESKTOP: Full multi-row layout ═══ */}
-      <div className="hidden md:block relative w-full max-w-[800px] mx-auto">
+      <div className="hidden md:block relative w-full max-w-[920px] mx-auto">
         {/* Slim animated glow border */}
         <div className="absolute -inset-[1.5px] rounded-2xl overflow-hidden z-0">
           <div
@@ -486,15 +486,24 @@ export default function HeroChatBox({
         {/* Outer subtle glow */}
         <div className="absolute -inset-px rounded-2xl shadow-[0_0_40px_rgba(218,78,36,0.08),0_0_80px_rgba(218,78,36,0.04)] z-0" />
 
-        {/* Context panel (behind layer — like Claude Code's repo bar) */}
-        <div className="relative z-10 bg-[#141414] rounded-2xl border border-[#262626] p-2 pt-0">
-          {/* Stats row */}
-          <div className="flex items-center justify-center gap-5 px-4 py-2.5">
+        {/* Single shared container — one border wrapping stats + chat */}
+        <div className="relative z-10 bg-[#0c0c0c] rounded-2xl border border-[#1a1a1a]">
+          {/* Stats row — top extension with separator */}
+          <div className="flex items-center justify-end gap-5 px-5 py-2.5 border-b border-[#1a1a1a]">
+            {/* Branch icon */}
+            <div className="mr-auto flex items-center gap-2 text-[#888]">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="6" y1="3" x2="6" y2="15" />
+                <circle cx="18" cy="6" r="3" />
+                <circle cx="6" cy="18" r="3" />
+                <path d="M18 9a9 9 0 0 1-9 9" />
+              </svg>
+            </div>
             <HeroStats />
           </div>
 
-          {/* Chat box (front layer — inset with its own border, like Claude Code) */}
-          <div className="bg-[#0c0c0c] rounded-xl p-5 border border-[#2a2a2a]">
+          {/* Chat box — shares the container border, no extra borders */}
+          <div className="p-5">
           {/* Top row: model selector + globe */}
           <div className="flex items-center gap-3 mb-4">
             <div className="relative" ref={modelRef}>
