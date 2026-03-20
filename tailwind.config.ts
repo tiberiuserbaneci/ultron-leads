@@ -29,8 +29,13 @@ const config: Config = {
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "glow-spin": "glowSpin 4s linear infinite",
         "logo-spin": "logoSpin 8s linear infinite",
+        blink: "blink 1s step-end infinite",
       },
       keyframes: {
+        blink: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0" },
+        },
         fadeIn: {
           from: { opacity: "0" },
           to: { opacity: "1" },

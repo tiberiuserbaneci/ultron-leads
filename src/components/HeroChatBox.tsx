@@ -3,16 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 
-const PROMPTS = [
-  "Generate weekly sales summary report for Q1",
-  "Create CRM contact from emails",
-  "Build a landing page for our new product launch",
-  "Analyze competitor pricing and create comparison",
-  "Draft outreach emails for 50 potential leads",
-  "Create a social media content calendar for March",
-  "Set up automated follow-up sequence for cold leads",
-  "Design a referral program with tiered rewards",
-];
+const HERO_SENTENCE = "Go from zero to autonomous company in one command.";
 
 const MOBILE_PHRASES = [
   "Ultron is thinking...",
@@ -314,6 +305,7 @@ export default function HeroChatBox({
   demoMode?: boolean;
 }) {
   const [displayText, setDisplayText] = useState("");
+  const [typingDone, setTypingDone] = useState(false);
   const [userText, setUserText] = useState("");
   const [isUserTyping, setIsUserTyping] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -322,7 +314,6 @@ export default function HeroChatBox({
   const [selectedIntegrations, setSelectedIntegrations] = useState<Set<string>>(new Set());
   const [selectedModel, setSelectedModel] = useState(0);
   const [mobilePhrase, setMobilePhrase] = useState(0);
-  const promptIndex = useRef(0);
   const charIndex = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -331,31 +322,25 @@ export default function HeroChatBox({
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const mobileModelRef = useRef<HTMLDivElement>(null);
 
-  // Desktop typewriter
+  // Desktop typewriter — types once, then stays sticky
   const typeNext = useCallback(() => {
-    const currentPrompt = PROMPTS[promptIndex.current];
-    if (charIndex.current < currentPrompt.length) {
-      setDisplayText(currentPrompt.slice(0, charIndex.current + 1));
+    if (charIndex.current < HERO_SENTENCE.length) {
+      setDisplayText(HERO_SENTENCE.slice(0, charIndex.current + 1));
       charIndex.current++;
       timeoutRef.current = setTimeout(typeNext, 40 + Math.random() * 40);
     } else {
-      timeoutRef.current = setTimeout(() => {
-        promptIndex.current = (promptIndex.current + 1) % PROMPTS.length;
-        charIndex.current = 0;
-        setDisplayText("");
-        timeoutRef.current = setTimeout(typeNext, 400);
-      }, 2500);
+      setTypingDone(true);
     }
   }, []);
 
   useEffect(() => {
-    if (!isUserTyping) {
+    if (!isUserTyping && !typingDone) {
       timeoutRef.current = setTimeout(typeNext, 600);
     }
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [isUserTyping, typeNext]);
+  }, [isUserTyping, typingDone, typeNext]);
 
   // Mobile rotating phrases
   useEffect(() => {
@@ -398,14 +383,11 @@ export default function HeroChatBox({
   const handleFocus = () => {
     setIsUserTyping(true);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setDisplayText("");
   };
 
   const handleBlur = () => {
     if (!userText) {
       setIsUserTyping(false);
-      promptIndex.current = (promptIndex.current + 1) % PROMPTS.length;
-      charIndex.current = 0;
     }
   };
 
@@ -547,7 +529,11 @@ export default function HeroChatBox({
             {!isUserTyping && !userText && (
               <p className="text-[#999] text-[15px] leading-relaxed">
                 {displayText}
-                <span className="inline-block w-[2px] h-[16px] bg-[#DA4E24] ml-[1px] align-middle animate-pulse" />
+                <span
+                  className={`inline-block w-[2px] h-[16px] bg-[#DA4E24] ml-[1px] align-middle ${
+                    typingDone ? "animate-blink" : "animate-pulse"
+                  }`}
+                />
               </p>
             )}
             {(isUserTyping || userText) && (

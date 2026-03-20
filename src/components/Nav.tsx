@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLiveStats } from "./HeroStats";
-import LivePanelsDropdown from "./LivePanelsDropdown";
 
 /* ───────────────────────── External Link Icon ───────────────────────── */
 function ExternalIcon() {
@@ -383,7 +382,7 @@ export default function Nav() {
                     <path d="M18 9a9 9 0 0 1-9 9" />
                   </svg>
                   <span className="tabular-nums font-medium text-white">{live.founders.toLocaleString()}</span>
-                  <span className="text-[#555]">founders</span>
+                  <span className="text-[#555]">Founders</span>
                   <svg width="8" height="8" viewBox="0 0 12 12" fill="none" className={`text-[#555] transition-transform ${statsOpen ? "rotate-180" : ""}`}>
                     <path d="M3 5L6 8L9 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -391,25 +390,20 @@ export default function Nav() {
 
                 {/* Stats dropdown */}
                 {statsOpen && (
-                  <div className="absolute right-0 top-full mt-3 w-[560px] bg-[#111] border border-[#222] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.7)] animate-fade-up z-50">
-                    {/* Stats summary row */}
-                    <div className="flex items-center justify-between gap-4 px-5 py-3 border-b border-[#1a1a1a]">
+                  <div className="absolute right-0 top-full mt-3 bg-[#111] border border-[#222] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.7)] animate-fade-up z-50 select-none">
+                    <div className="flex items-center gap-6 px-6 py-4">
                       {[
-                        { val: live.founders.toLocaleString(), lbl: "founders" },
-                        { val: live.agents >= 1000 ? `${(live.agents / 1000).toFixed(1)}K` : live.agents.toLocaleString(), lbl: "agents" },
-                        { val: live.tasks >= 1000 ? `${(live.tasks / 1000).toFixed(1)}K` : live.tasks.toLocaleString(), lbl: "tasks" },
+                        { val: live.founders.toLocaleString(), lbl: "Founders" },
+                        { val: live.agents >= 1000 ? `${(live.agents / 1000).toFixed(1)}K` : live.agents.toLocaleString(), lbl: "Agents" },
+                        { val: live.tasks >= 1000 ? `${(live.tasks / 1000).toFixed(1)}K` : live.tasks.toLocaleString(), lbl: "Tasks" },
                         { val: live.apiCalls >= 1000 ? `${(live.apiCalls / 1000).toFixed(1)}K` : live.apiCalls.toString(), lbl: "API calls" },
-                        { val: `$${live.saved >= 1000 ? `${Math.round(live.saved / 1000)}K` : live.saved}`, lbl: "saved" },
+                        { val: `$${live.saved >= 1000 ? `${Math.round(live.saved / 1000)}K` : live.saved}`, lbl: "Saved" },
                       ].map((s) => (
-                        <span key={s.lbl} className="inline-flex items-center gap-1 text-[11px]">
-                          <span className="text-white font-medium tabular-nums">{s.val}</span>
-                          <span className="text-[#555]">{s.lbl}</span>
-                        </span>
+                        <div key={s.lbl} className="flex flex-col items-center gap-0.5">
+                          <span className="text-white font-semibold text-[16px] tabular-nums">{s.val}</span>
+                          <span className="text-[#555] text-[11px]">{s.lbl}</span>
+                        </div>
                       ))}
-                    </div>
-                    {/* 4 live panels */}
-                    <div className="p-3">
-                      <LivePanelsDropdown inline />
                     </div>
                   </div>
                 )}

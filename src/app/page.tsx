@@ -200,8 +200,8 @@ export default function HomePage() {
               Growth
             </h1>
 
-            {/* Subtitle */}
-            <p className="mt-6 text-[#e0e0e0] text-[15px] sm:text-[18px] leading-relaxed max-w-[540px]">
+            {/* Subtitle — mobile only */}
+            <p className="sm:hidden mt-6 text-[#e0e0e0] text-[15px] leading-relaxed max-w-[540px]">
               Hire AI employees, set goals and go from zero to autonomous company in one command.
             </p>
 
