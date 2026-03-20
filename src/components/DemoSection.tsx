@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { prompts, getPromptBySlug, categories, type PromptData, type Category } from "@/app/demo/workflowData";
-import FounderTerminal from "@/components/FounderTerminal";
+import Footer from "@/components/Footer";
 
 const WorkflowVisualizer = dynamic(() => import("@/app/demo/WorkflowVisualizer"), { ssr: false });
 
@@ -236,15 +236,15 @@ function PromptCard({
 /* ─── Category Tabs ─── */
 function CategoryTabs({ active, onChange }: { active: Category; onChange: (c: Category) => void }) {
   return (
-    <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1 scrollbar-none">
+    <div className="flex flex-wrap justify-center gap-2.5 mb-8">
       {categories.map((cat) => (
         <button
           key={cat.id}
           onClick={() => onChange(cat.id)}
-          className={`px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+          className={`text-[13px] rounded-full px-4 py-1.5 transition-colors whitespace-nowrap ${
             active === cat.id
-              ? "bg-[#DA4E24] text-white"
-              : "bg-[#111] text-[#666] hover:text-[#999] border border-[#1a1a1a] hover:border-[#333]"
+              ? "text-white border border-[#555] bg-[#111]"
+              : "text-[#888] border border-[#333] hover:text-white hover:border-[#555]"
           }`}
         >
           {cat.label}
@@ -439,9 +439,6 @@ export function DemoContent({
 
   return (
     <div className={embedded ? "" : "max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16"}>
-      {/* Live Stats — only on standalone /demo */}
-      {!embedded && <LiveStatsBar />}
-
       {/* Hero — only on standalone /demo */}
       {!embedded && (
         <div
@@ -596,17 +593,8 @@ export function DemoContent({
         </div>
       )}
 
-      {/* Founder Terminal + Footer — only on standalone /demo */}
-      {!embedded && (
-        <>
-          <div className="mt-12">
-            <FounderTerminal />
-          </div>
-          <footer className="mt-16 mb-8 text-center">
-            <p className="text-[#555] text-xs">&copy; 2026 Powered by NXT Enterprises</p>
-          </footer>
-        </>
-      )}
+      {/* Footer — only on standalone /demo */}
+      {!embedded && <Footer />}
 
       {/* Share Modal */}
       {showShareModal && selectedPrompt && (
