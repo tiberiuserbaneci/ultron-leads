@@ -322,7 +322,7 @@ export default function HeroChatBox({
   const [userText, setUserText] = useState("");
   const [isUserTyping, setIsUserTyping] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [voiceOpen, setVoiceOpen] = useState(false);
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
   const [integrationsOpen, setIntegrationsOpen] = useState(false);
   const [selectedIntegrations, setSelectedIntegrations] = useState<Set<string>>(new Set());
@@ -331,7 +331,6 @@ export default function HeroChatBox({
   const charIndex = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const voiceRef = useRef<HTMLDivElement>(null);
   const modelRef = useRef<HTMLDivElement>(null);
   const integrationsRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -381,14 +380,10 @@ export default function HeroChatBox({
         const inInt = integrationsRef.current?.contains(e.target as Node);
         if (!inInt) setIntegrationsOpen(false);
       }
-      if (voiceOpen) {
-        const inVoice = voiceRef.current?.contains(e.target as Node);
-        if (!inVoice) setVoiceOpen(false);
-      }
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
-  }, [menuOpen, modelOpen, integrationsOpen, voiceOpen]);
+  }, [menuOpen, modelOpen, integrationsOpen]);
 
   const toggleIntegration = useCallback((id: string) => {
     setSelectedIntegrations((prev) => {
@@ -577,7 +572,7 @@ export default function HeroChatBox({
             )}
           </div>
 
-          {/* Bottom row: + menu + voice + action */}
+          {/* Bottom row: + menu + action */}
           <div className="flex items-center justify-between">
             {/* Left: + button */}
             <div className="relative" ref={menuRef}>
@@ -585,42 +580,8 @@ export default function HeroChatBox({
               {menuOpen && <ToolsDropdown onClose={() => setMenuOpen(false)} position="top" />}
             </div>
 
-            {/* Right: voice icon + action */}
+            {/* Right: action */}
             <div className="flex items-center gap-2">
-              {/* Voice icon — opens suggestion pills dropdown */}
-              <div className="relative hidden md:block" ref={voiceRef}>
-                <button
-                  onClick={() => setVoiceOpen(!voiceOpen)}
-                  className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors flex-shrink-0 ${
-                    voiceOpen ? "text-white bg-[#1a1a1a]" : "text-[#555] hover:text-white hover:bg-[#1a1a1a]"
-                  }`}
-                  title="Suggestions"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="4" y1="8" x2="4" y2="16" />
-                    <line x1="8" y1="5" x2="8" y2="19" />
-                    <line x1="12" y1="3" x2="12" y2="21" />
-                    <line x1="16" y1="5" x2="16" y2="19" />
-                    <line x1="20" y1="8" x2="20" y2="16" />
-                  </svg>
-                </button>
-                {voiceOpen && (
-                  <div className="absolute bottom-full right-0 mb-2 w-[420px] bg-[#111] border border-[#222] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] p-3 animate-fade-up z-50">
-                    <div className="flex flex-wrap gap-2">
-                      {SUGGESTION_PILLS.map((pill) => (
-                        <span
-                          key={pill}
-                          className="text-[11px] text-[#888] border border-[#333] rounded-full px-3 py-1.5 hover:text-white hover:border-[#555] transition-colors cursor-pointer"
-                        >
-                          {pill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* View demo — no lightning icon */}
               {onSwitchToWorkMode && (
                 <button
                   onClick={onSwitchToWorkMode}
@@ -644,11 +605,47 @@ export default function HeroChatBox({
                 </button>
               )}
 
-              {/* Fallback: send arrow (when not on landing page) */}
               {!onSwitchToWorkMode && <SendButton />}
             </div>
           </div>
         </div>
+
+        {/* Show/Hide suggestions toggle — desktop only */}
+        {onSwitchToWorkMode && (
+          <div className="hidden md:block mt-4">
+            <button
+              onClick={() => setSuggestionsOpen(!suggestionsOpen)}
+              className="mx-auto flex items-center gap-1.5 text-[13px] text-[#666] hover:text-[#999] transition-colors"
+            >
+              <span>{suggestionsOpen ? "Hide suggestions" : "Show suggestions"}</span>
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 12 12"
+                fill="none"
+                className={`transition-transform ${suggestionsOpen ? "rotate-180" : ""}`}
+              >
+                <path d="M3 5L6 8L9 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+
+            {suggestionsOpen && (
+              <div className="mt-3 bg-[#0c0c0c] border border-[#1a1a1a] rounded-xl p-4 animate-fade-in">
+                <div className="flex flex-col gap-0.5">
+                  {SUGGESTION_PILLS.map((pill) => (
+                    <button
+                      key={pill}
+                      onClick={onSwitchToWorkMode}
+                      className="text-left text-[13px] text-[#888] hover:text-white px-3 py-2.5 rounded-lg hover:bg-[#1a1a1a] transition-colors"
+                    >
+                      {pill}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </>
   );

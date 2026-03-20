@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import HeroChatBox from "@/components/HeroChatBox";
 import { DemoContent, LiveStatsBar } from "@/components/DemoSection";
-import { BrainContent } from "@/components/BrainSection";
 import Footer from "@/components/Footer";
 
 /* ───────────────────────── Live Stats ───────────────────────── */
@@ -365,11 +364,6 @@ export default function HomePage() {
                 </FeatureCard>
               </div>
             </div>
-          </section>
-
-          {/* ─── BRAIN: Interactive Command Section ─── */}
-          <section className="py-24 lg:py-32">
-            <BrainContent embedded />
           </section>
 
           {/* ─── YOUR ENTIRE WORK LIFE ─── */}
