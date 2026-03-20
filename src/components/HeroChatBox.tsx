@@ -29,6 +29,24 @@ const MODELS = [
   { label: "OpenClaw", logo: "/logo openclaw.png" },
 ];
 
+/* ─── Integrations list (ordered by relevance for sales/marketing) ─── */
+const INTEGRATIONS = [
+  { id: "hubspot",   label: "HubSpot",   logo: "/hubspot.png" },
+  { id: "gmail",     label: "Gmail",     logo: "/gmail.png" },
+  { id: "apollo",    label: "Apollo",    logo: "/apollo.png" },
+  { id: "notion",    label: "Notion",    logo: "/notion.png" },
+  { id: "airtable",  label: "Airtable",  logo: "/airtable.png" },
+  { id: "clickup",   label: "ClickUp",   logo: "/clickup.png" },
+  { id: "calendly",  label: "Calendly",  logo: "/calendly.png" },
+  { id: "n8n",       label: "n8n",       logo: "/n8n.png" },
+  { id: "apify",     label: "Apify",     logo: "/apify.png" },
+  { id: "brave",     label: "Brave",     logo: "/brave.png" },
+  { id: "instagram", label: "Instagram", logo: "/instagram.png" },
+  { id: "telegram",  label: "Telegram",  logo: "/telegram.png" },
+  { id: "maps",      label: "Maps",      logo: "/maps.png" },
+  { id: "meet",      label: "Meet",      logo: "/meet.png" },
+];
+
 const TOOLS_MENU = [
   {
     label: "Command Center",
@@ -244,6 +262,46 @@ function ModelDropdown({
   );
 }
 
+/* ─── Integrations dropdown (desktop only) ─── */
+function IntegrationsDropdown({
+  selected,
+  onToggle,
+}: {
+  selected: Set<string>;
+  onToggle: (id: string) => void;
+}) {
+  return (
+    <div className="absolute top-full left-0 mt-2 w-52 bg-[#111] border border-[#222] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] animate-fade-up z-50 overflow-hidden">
+      <div className="max-h-[280px] overflow-y-auto">
+        {INTEGRATIONS.map((item, i) => (
+          <button
+            key={item.id}
+            onClick={() => onToggle(item.id)}
+            className={`w-full flex items-center gap-2.5 px-3.5 py-2 text-[13px] transition-colors hover:bg-[#1a1a1a] ${
+              selected.has(item.id) ? "text-white" : "text-[#888]"
+            } ${i < INTEGRATIONS.length - 1 ? "border-b border-[#1a1a1a]/50" : ""}`}
+          >
+            <Image src={item.logo} alt="" width={16} height={16} className="rounded-sm flex-shrink-0" />
+            <span className="flex-1 text-left">{item.label}</span>
+            {/* Checkbox */}
+            <span className={`w-4 h-4 rounded flex-shrink-0 border flex items-center justify-center transition-colors ${
+              selected.has(item.id)
+                ? "bg-[#DA4E24] border-[#DA4E24]"
+                : "border-[#333] bg-transparent"
+            }`}>
+              {selected.has(item.id) && (
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              )}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════════ */
 /*                     MAIN COMPONENT                             */
 /* ═══════════════════════════════════════════════════════════════ */
@@ -260,6 +318,8 @@ export default function HeroChatBox({
   const [isUserTyping, setIsUserTyping] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
+  const [integrationsOpen, setIntegrationsOpen] = useState(false);
+  const [selectedIntegrations, setSelectedIntegrations] = useState<Set<string>>(new Set());
   const [selectedModel, setSelectedModel] = useState(0);
   const [mobilePhrase, setMobilePhrase] = useState(0);
   const promptIndex = useRef(0);
@@ -267,6 +327,7 @@ export default function HeroChatBox({
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const modelRef = useRef<HTMLDivElement>(null);
+  const integrationsRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const mobileModelRef = useRef<HTMLDivElement>(null);
 
@@ -306,7 +367,7 @@ export default function HeroChatBox({
 
   // Close menus on outside click
   useEffect(() => {
-    if (!menuOpen && !modelOpen) return;
+    if (!menuOpen && !modelOpen && !integrationsOpen) return;
     const handleClick = (e: MouseEvent) => {
       if (menuOpen) {
         const inMenu = menuRef.current?.contains(e.target as Node) || mobileMenuRef.current?.contains(e.target as Node);
@@ -316,10 +377,23 @@ export default function HeroChatBox({
         const inModel = modelRef.current?.contains(e.target as Node) || mobileModelRef.current?.contains(e.target as Node);
         if (!inModel) setModelOpen(false);
       }
+      if (integrationsOpen) {
+        const inInt = integrationsRef.current?.contains(e.target as Node);
+        if (!inInt) setIntegrationsOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
-  }, [menuOpen, modelOpen]);
+  }, [menuOpen, modelOpen, integrationsOpen]);
+
+  const toggleIntegration = useCallback((id: string) => {
+    setSelectedIntegrations((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
 
   const handleFocus = () => {
     setIsUserTyping(true);
@@ -439,11 +513,33 @@ export default function HeroChatBox({
                 />
               )}
             </div>
-            {/* Globe icon */}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-[#444]">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10A15.3 15.3 0 0112 2z" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
+            {/* Globe / integrations selector (desktop only) */}
+            <div className="relative" ref={integrationsRef}>
+              <button
+                onClick={() => setIntegrationsOpen(!integrationsOpen)}
+                className={`flex items-center gap-1.5 transition-colors ${
+                  integrationsOpen || selectedIntegrations.size > 0
+                    ? "text-[#ccc] hover:text-white"
+                    : "text-[#444] hover:text-[#888]"
+                }`}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10A15.3 15.3 0 0112 2z" stroke="currentColor" strokeWidth="1.5" />
+                </svg>
+                {selectedIntegrations.size > 0 && (
+                  <span className="text-[12px] text-[#999] font-medium">
+                    {selectedIntegrations.size} {selectedIntegrations.size === 1 ? "tool" : "tools"}
+                  </span>
+                )}
+              </button>
+              {integrationsOpen && (
+                <IntegrationsDropdown
+                  selected={selectedIntegrations}
+                  onToggle={toggleIntegration}
+                />
+              )}
+            </div>
           </div>
 
           {/* Text input area */}
