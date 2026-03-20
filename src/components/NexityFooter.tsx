@@ -25,8 +25,8 @@ export default function NexityFooter() {
             <ul className="space-y-3">
               {[
                 { label: "Ultron", href: "https://51ultron.com" },
-                { label: "NXT — RWA OS", href: "https://nexitynetwork.org" },
-                { label: "DealMaker", href: "https://dealmaker.nexitynetwork.org" },
+                { label: "Trade OS", href: "https://os.nexitynetwork.org" },
+                { label: "Founder Terminal", href: "https://catalinfetean.substack.com" },
               ].map((item) => (
                 <li key={item.label}>
                   <a href={item.href} target="_blank" rel="noopener noreferrer" className="text-sm text-[#555] hover:text-[#1a1a1a] transition-colors">
@@ -82,9 +82,9 @@ export default function NexityFooter() {
 
       {/* Bottom bar */}
       <div className="border-t border-[#e5e5e5]">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-8 py-5 flex items-center justify-between">
           <span className="text-sm text-[#999]">&copy; 2026 NXT Enterprises</span>
-          <div className="flex items-center gap-6">
+          <div className="hidden sm:flex items-center gap-6">
             <Link href="/privacy-policy" className="text-sm text-[#999] hover:text-[#1a1a1a] transition-colors">
               Privacy
             </Link>

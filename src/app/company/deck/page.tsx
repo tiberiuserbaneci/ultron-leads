@@ -20,14 +20,41 @@ const REQUEST_OPTIONS = ["Financial Report", "Data Room", "Updates"] as const;
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 export default function DeckPage() {
   const [tab, setTab] = useState<Tab>("summary");
+
+  /* read tab from URL on mount */
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("tab") === "deck") setTab("deck");
+  }, []);
   const [current, setCurrent] = useState(0);
   const [requestOpen, setRequestOpen] = useState(false);
-  const [requestType, setRequestType] = useState<string>(REQUEST_OPTIONS[0]);
+  const [selectedRequests, setSelectedRequests] = useState<Set<string>>(new Set([REQUEST_OPTIONS[0]]));
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const requestRef = useRef<HTMLDivElement>(null);
   const total = slides.length;
+
+  /* update URL when tab changes */
+  const switchTab = (t: Tab) => {
+    setTab(t);
+    const url = new URL(window.location.href);
+    url.searchParams.set("tab", t);
+    window.history.replaceState({}, "", url.toString());
+  };
+
+  /* toggle request option */
+  const toggleRequest = (opt: string) => {
+    setSelectedRequests((prev) => {
+      const next = new Set(prev);
+      if (next.has(opt)) {
+        if (next.size > 1) next.delete(opt);
+      } else {
+        next.add(opt);
+      }
+      return next;
+    });
+  };
 
   /* slide nav */
   const prev = useCallback(() => setCurrent((c) => (c - 1 + total) % total), [total]);
@@ -57,7 +84,7 @@ export default function DeckPage() {
 
   /* handle send request */
   const handleSend = async () => {
-    if (!email.trim()) return;
+    if (!email.trim() || selectedRequests.size === 0) return;
     setSending(true);
     // TODO: wire up to actual API
     await new Promise((r) => setTimeout(r, 800));
@@ -71,14 +98,14 @@ export default function DeckPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-72px)] bg-[#0a0a0a] -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw]">
+    <div className="min-h-[calc(100vh-72px)] bg-[#0a0a0a] -mt-[72px] pt-[72px] -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw]">
       {/* ── Top bar: Tab switcher (center) + Actions (right) ─── */}
       <div className="max-w-[1920px] mx-auto px-4 sm:px-8 pt-6 sm:pt-8 flex items-center justify-between">
         {/* Tab switcher — centered */}
         <div className="flex-1" />
         <div className="flex items-center bg-white/[0.04] rounded-full p-1 border border-white/[0.06]">
           <button
-            onClick={() => setTab("summary")}
+            onClick={() => switchTab("summary")}
             className={`px-4 sm:px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
               tab === "summary"
                 ? "bg-white text-black"
@@ -88,7 +115,7 @@ export default function DeckPage() {
             Executive Summary
           </button>
           <button
-            onClick={() => setTab("deck")}
+            onClick={() => switchTab("deck")}
             className={`px-4 sm:px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
               tab === "deck"
                 ? "bg-white text-black"
@@ -128,21 +155,30 @@ export default function DeckPage() {
 
             {requestOpen && (
               <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-[#141414] border border-white/[0.08] rounded-xl shadow-2xl p-4 z-50 animate-[fadeIn_0.15s_ease-out]">
-                {/* Type selector */}
+                {/* Multi-select type selector */}
                 <label className="block text-white/40 text-xs uppercase tracking-wider mb-2">
-                  Document
+                  Documents
                 </label>
                 <div className="flex flex-col gap-1 mb-4">
                   {REQUEST_OPTIONS.map((opt) => (
                     <button
                       key={opt}
-                      onClick={() => setRequestType(opt)}
-                      className={`text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                        requestType === opt
+                      onClick={() => toggleRequest(opt)}
+                      className={`flex items-center gap-3 text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                        selectedRequests.has(opt)
                           ? "bg-white/[0.08] text-white"
                           : "text-white/50 hover:text-white/80 hover:bg-white/[0.04]"
                       }`}
                     >
+                      <span className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                        selectedRequests.has(opt) ? "bg-white border-white" : "border-white/20"
+                      }`}>
+                        {selectedRequests.has(opt) && (
+                          <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="#000" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </span>
                       {opt}
                     </button>
                   ))}
@@ -163,7 +199,7 @@ export default function DeckPage() {
                   />
                   <button
                     onClick={handleSend}
-                    disabled={!email.trim() || sending}
+                    disabled={!email.trim() || sending || selectedRequests.size === 0}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       sent
                         ? "bg-green-500/20 text-green-400 border border-green-500/30"
@@ -204,12 +240,11 @@ export default function DeckPage() {
 function ExecutiveSummary() {
   return (
     <div className="max-w-3xl mx-auto py-8 sm:py-16">
-      {/* Intro */}
       <p className="text-white/60 text-lg sm:text-xl leading-relaxed mb-10">
         NXT Enterprises builds AI and blockchain infrastructure for the
         autonomous economy. Our flagship product, <span className="text-white">Ultron</span>,
         is an AI-powered sales automation platform that replaces manual
-        prospecting with autonomous agents — delivering qualified leads,
+        prospecting with autonomous agents, delivering qualified leads,
         booked meetings, and closed deals at a fraction of the cost.
       </p>
 
@@ -218,10 +253,8 @@ function ExecutiveSummary() {
         go-to-market, and scale infrastructure across Europe and the US.
       </p>
 
-      {/* Divider */}
       <div className="h-px bg-white/[0.06] mb-12" />
 
-      {/* Highlights */}
       <h2 className="text-white text-sm uppercase tracking-widest mb-8 font-medium">
         Highlights
       </h2>
@@ -265,7 +298,6 @@ function InvestmentDeck({
 }) {
   return (
     <>
-      {/* 16:9 container */}
       <div className="relative w-full pb-[56.25%]">
         <div className="absolute inset-0 rounded-lg sm:rounded-xl overflow-hidden bg-[#111] border border-white/[0.06] shadow-2xl">
           {slides.map((slide, i) => (
@@ -282,7 +314,6 @@ function InvestmentDeck({
         </div>
       </div>
 
-      {/* Controls */}
       <div className="flex items-center justify-center gap-4 sm:gap-6 mt-4 sm:mt-6">
         <button
           onClick={prev}
