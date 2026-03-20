@@ -3,9 +3,16 @@
 import { useState, useEffect, useRef, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import HeroChatBox from "@/components/HeroChatBox";
-import { DemoContent, LiveStatsBar } from "@/components/DemoSection";
+import dynamic from "next/dynamic";
+import HeroChatBox, { type ViewId } from "@/components/HeroChatBox";
+import { DemoContent } from "@/components/DemoSection";
 import Footer from "@/components/Footer";
+import ROICalculator from "@/app/calculator/ROICalculator";
+
+/* Lazy-loaded embedded views */
+const EmbeddedLive = dynamic(() => import("@/components/EmbeddedLive"), { ssr: false });
+const EmbeddedClientEngine = dynamic(() => import("@/components/EmbeddedClientEngine"), { ssr: false });
+const EmbeddedAgentsMap = dynamic(() => import("@/components/EmbeddedAgentsMap"), { ssr: false });
 
 /* ───────────────────────── Live Stats ───────────────────────── */
 
@@ -114,8 +121,44 @@ function FeatureCard({
 /*                        MAIN PAGE                               */
 /* ═══════════════════════════════════════════════════════════════ */
 
+/* ─── Dynamic titles per view ─── */
+const VIEW_TITLES: Record<string, { line1: string; line2: string }> = {
+  demo:            { line1: "See Ultron In Action",          line2: "Your AI Workforce, Live" },
+  live:            { line1: "Real-Time Control Over",        line2: "Every Moving Part" },
+  "client-engine": { line1: "Turn Strangers Into",           line2: "Revenue On Autopilot" },
+  "agents-map":    { line1: "Five AI Agents Working",        line2: "Around The Clock" },
+  calculator:      { line1: "See How Much You Save",         line2: "When AI Does The Work" },
+};
+
 export default function HomePage() {
-  const [demoMode, setDemoMode] = useState(false);
+  const [activeView, setActiveView] = useState<ViewId>(null);
+  const [isThinking, setIsThinking] = useState(false);
+  const prevView = useRef<ViewId>(null);
+
+  const handleSetView = (view: ViewId) => {
+    if (view === activeView) {
+      // Toggle off — back to homepage
+      setActiveView(null);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    if (view != null) {
+      setIsThinking(true);
+      setActiveView(null); // clear old content
+      setTimeout(() => {
+        setActiveView(view);
+        setIsThinking(false);
+        setTimeout(() => {
+          document.getElementById("view-content")?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }, 600);
+    } else {
+      setActiveView(null);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const title = activeView ? VIEW_TITLES[activeView] : null;
 
   return (
     <div className="bg-black text-white">
@@ -184,10 +227,14 @@ export default function HomePage() {
         <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8">
           {/* Hero copy — LEFT aligned */}
           <div className="max-w-[800px]">
-            {/* Desktop heading */}
-            <h1 className="hidden sm:block leading-[1.1] tracking-tight text-white">
-              <span className="block text-[48px] lg:text-[56px] font-light text-[#e0e0e0]">The Growth Engine Behind</span>
-              <span className="block text-6xl lg:text-[72px] font-semibold">100X Founder-Led Businesses</span>
+            {/* Desktop heading — dynamic per view */}
+            <h1 className="hidden sm:block leading-[1.1] tracking-tight text-white transition-opacity duration-300" key={activeView ?? "home"}>
+              <span className="block text-[48px] lg:text-[56px] font-light text-[#e0e0e0]">
+                {title ? title.line1 : "The Growth Engine Behind"}
+              </span>
+              <span className="block text-6xl lg:text-[72px] font-semibold">
+                {title ? title.line2 : "100X Founder-Led Businesses"}
+              </span>
             </h1>
             {/* Mobile heading — different copy, BIG */}
             <h1 className="sm:hidden text-[52px] font-bold leading-[1.08] tracking-tight text-white">
@@ -214,16 +261,8 @@ export default function HomePage() {
             </div>
             <div className="relative">
               <HeroChatBox
-                onSwitchToWorkMode={() => {
-                  const next = !demoMode;
-                  setDemoMode(next);
-                  if (next) {
-                    setTimeout(() => {
-                      document.getElementById("demo-section")?.scrollIntoView({ behavior: "smooth" });
-                    }, 100);
-                  }
-                }}
-                demoMode={demoMode}
+                activeView={activeView}
+                onSetView={handleSetView}
               />
             </div>
 
@@ -234,31 +273,36 @@ export default function HomePage() {
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none z-10" />
       </section>
 
-      {/* ─── DEMO MODE vs MARKETING SECTIONS ─── */}
-      {demoMode ? (
-        <section id="demo-section" className="py-16 lg:py-24">
+      {/* ─── THINKING ANIMATION ─── */}
+      {isThinking && (
+        <div className="flex items-center justify-center py-16">
+          <div className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#DA4E24] animate-bounce" style={{ animationDelay: "0ms" }} />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#DA4E24] animate-bounce" style={{ animationDelay: "150ms" }} />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#DA4E24] animate-bounce" style={{ animationDelay: "300ms" }} />
+          </div>
+        </div>
+      )}
+
+      {/* ─── ACTIVE VIEW CONTENT ─── */}
+      {activeView != null && !isThinking && (
+        <section id="view-content" className="py-16 lg:py-24">
           <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
-            <div className="text-center mb-10">
-              <div className="inline-flex items-center gap-1.5 bg-[#161616] border border-[#2a2a2a] rounded-full px-3 py-1 mb-5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#DA4E24] pulse-soft" />
-                <span className="text-[#999] text-xs font-medium">Interactive Demo</span>
-              </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4 leading-tight">
-                See Ultron execute in real time.
-              </h2>
-              <p className="text-lg text-[#999] max-w-md mx-auto">
-                Pick a command. Watch every agent work.
-              </p>
-            </div>
-            <Suspense fallback={<div className="text-center text-[#555] py-12">Loading demo...</div>}>
-              <DemoContent embedded onBackToOverview={() => {
-                setDemoMode(false);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }} />
+            <Suspense fallback={<div className="text-center text-[#555] py-12">Loading...</div>}>
+              {activeView === "demo" && (
+                <DemoContent embedded onBackToOverview={() => handleSetView(null)} />
+              )}
+              {activeView === "live" && <EmbeddedLive />}
+              {activeView === "client-engine" && <EmbeddedClientEngine />}
+              {activeView === "agents-map" && <EmbeddedAgentsMap />}
+              {activeView === "calculator" && <ROICalculator />}
             </Suspense>
           </div>
         </section>
-      ) : (
+      )}
+
+      {/* ─── MARKETING SECTIONS (shown when no view active) ─── */}
+      {activeView == null && !isThinking && (
         <>
           {/* ─── FOUNDER-LED GROWTH FEATURES ─── */}
           <section className="py-24 lg:py-32">

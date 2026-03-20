@@ -3,18 +3,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 
-const HERO_SENTENCE = "Go from zero to autonomous company in one command.";
+export type ViewId = "demo" | "live" | "client-engine" | "agents-map" | "calculator" | null;
 
-const SUGGESTION_PILLS = [
-  "What deserves my attention right now?",
-  "Where is money leaking in this business?",
-  "What should I stop doing manually?",
-  "What should I attack this week?",
-  "Which competitor movement matters most?",
-  "Show me where the next 3 deals come from.",
-  "What is slowing growth right now?",
-  "Where do I need to make a decision?",
-];
+const HERO_SENTENCE = "Go from zero to autonomous company in one command.";
 
 const MOBILE_PHRASES = [
   "Ultron is thinking...",
@@ -33,7 +24,7 @@ const MODELS = [
   { label: "Opus 4.6", logo: "/logo claude.png" },
 ];
 
-/* ─── Integrations list (ordered by relevance for sales/marketing) ─── */
+/* ─── Integrations list ─── */
 const INTEGRATIONS = [
   { id: "hubspot",   label: "HubSpot",   logo: "/hubspot.png" },
   { id: "gmail",     label: "Gmail",     logo: "/gmail.png" },
@@ -51,10 +42,18 @@ const INTEGRATIONS = [
   { id: "meet",      label: "Meet",      logo: "/meet.png" },
 ];
 
-const TOOLS_MENU = [
+/* ─── Tools menu items ─── */
+const TOOLS_MENU: {
+  label: string;
+  viewId?: ViewId;
+  href?: string;
+  external?: boolean;
+  isIntercom?: boolean;
+  icon: React.ReactNode;
+}[] = [
   {
     label: "Command Center",
-    href: "https://work.51ultron.com/live/",
+    viewId: "live",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -66,7 +65,7 @@ const TOOLS_MENU = [
   },
   {
     label: "Client Engine",
-    href: "https://work.51ultron.com/client-engine/",
+    viewId: "client-engine",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -78,7 +77,7 @@ const TOOLS_MENU = [
   },
   {
     label: "Agents Map",
-    href: "https://work.51ultron.com/agents-map/",
+    viewId: "agents-map",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="3" />
@@ -88,7 +87,7 @@ const TOOLS_MENU = [
   },
   {
     label: "ROI Calculator",
-    href: "https://work.51ultron.com/calculator/",
+    viewId: "calculator",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="4" y="2" width="16" height="20" rx="2" />
@@ -104,6 +103,7 @@ const TOOLS_MENU = [
   {
     label: "Resources",
     href: "https://catalinfetean.substack.com/",
+    external: true,
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
@@ -114,6 +114,7 @@ const TOOLS_MENU = [
   {
     label: "Support",
     href: "#",
+    external: true,
     isIntercom: true,
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -122,6 +123,26 @@ const TOOLS_MENU = [
     ),
   },
 ];
+
+/* View label map for the active pill */
+const VIEW_LABELS: Record<string, string> = {
+  demo: "Demo",
+  live: "Command Center",
+  "client-engine": "Client Engine",
+  "agents-map": "Agents Map",
+  calculator: "ROI Calculator",
+};
+
+/* External link arrow icon */
+function ExternalArrow() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-auto flex-shrink-0 opacity-40">
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+      <polyline points="15 3 21 3 21 9" />
+      <line x1="10" y1="14" x2="21" y2="3" />
+    </svg>
+  );
+}
 
 /* ─── Shared + button ─── */
 function PlusButton({
@@ -188,12 +209,14 @@ function SendButton({ onClick }: { onClick?: () => void }) {
   );
 }
 
-/* ─── Shared tools dropdown ─── */
+/* ─── Tools dropdown ─── */
 function ToolsDropdown({
   onClose,
+  onSetView,
   position = "bottom",
 }: {
   onClose: () => void;
+  onSetView?: (view: ViewId) => void;
   position?: "top" | "bottom";
 }) {
   const posClass = position === "top"
@@ -202,27 +225,50 @@ function ToolsDropdown({
 
   return (
     <div className={`${posClass} w-52 bg-[#111] border border-[#222] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] overflow-hidden animate-fade-up z-50`}>
-      {TOOLS_MENU.map((item, i) => (
-        <a
-          key={item.label}
-          href={item.href}
-          target={item.isIntercom ? undefined : "_blank"}
-          rel={item.isIntercom ? undefined : "noopener noreferrer"}
-          onClick={(e) => {
-            if (item.isIntercom) {
-              e.preventDefault();
-              try { (window as any).Intercom?.("show"); } catch {}
-            }
-            onClose();
-          }}
-          className={`flex items-center gap-2.5 px-4 py-2.5 text-[13px] text-[#999] hover:bg-[#1a1a1a] hover:text-white transition-colors ${
-            i < TOOLS_MENU.length - 1 ? "border-b border-[#1a1a1a]" : ""
-          }`}
-        >
-          <span className="text-[#555] flex-shrink-0">{item.icon}</span>
-          {item.label}
-        </a>
-      ))}
+      {TOOLS_MENU.map((item, i) => {
+        const isInline = !!item.viewId;
+
+        if (isInline) {
+          return (
+            <button
+              key={item.label}
+              onClick={() => {
+                onSetView?.(item.viewId!);
+                onClose();
+              }}
+              className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-[13px] text-[#999] hover:bg-[#1a1a1a] hover:text-white transition-colors text-left ${
+                i < TOOLS_MENU.length - 1 ? "border-b border-[#1a1a1a]" : ""
+              }`}
+            >
+              <span className="text-[#555] flex-shrink-0">{item.icon}</span>
+              {item.label}
+            </button>
+          );
+        }
+
+        return (
+          <a
+            key={item.label}
+            href={item.href}
+            target={item.isIntercom ? undefined : "_blank"}
+            rel={item.isIntercom ? undefined : "noopener noreferrer"}
+            onClick={(e) => {
+              if (item.isIntercom) {
+                e.preventDefault();
+                try { (window as any).Intercom?.("show"); } catch {}
+              }
+              onClose();
+            }}
+            className={`flex items-center gap-2.5 px-4 py-2.5 text-[13px] text-[#999] hover:bg-[#1a1a1a] hover:text-white transition-colors ${
+              i < TOOLS_MENU.length - 1 ? "border-b border-[#1a1a1a]" : ""
+            }`}
+          >
+            <span className="text-[#555] flex-shrink-0">{item.icon}</span>
+            {item.label}
+            <ExternalArrow />
+          </a>
+        );
+      })}
     </div>
   );
 }
@@ -287,7 +333,6 @@ function IntegrationsDropdown({
           >
             <Image src={item.logo} alt="" width={16} height={16} className="rounded-sm flex-shrink-0" />
             <span className="flex-1 text-left">{item.label}</span>
-            {/* Checkbox */}
             <span className={`w-4 h-4 rounded flex-shrink-0 border flex items-center justify-center transition-colors ${
               selected.has(item.id)
                 ? "bg-[#888] border-[#888]"
@@ -311,18 +356,17 @@ function IntegrationsDropdown({
 /* ═══════════════════════════════════════════════════════════════ */
 
 export default function HeroChatBox({
-  onSwitchToWorkMode,
-  demoMode,
+  activeView,
+  onSetView,
 }: {
-  onSwitchToWorkMode?: () => void;
-  demoMode?: boolean;
+  activeView?: ViewId;
+  onSetView?: (view: ViewId) => void;
 }) {
   const [displayText, setDisplayText] = useState("");
   const [typingDone, setTypingDone] = useState(false);
   const [userText, setUserText] = useState("");
   const [isUserTyping, setIsUserTyping] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
   const [integrationsOpen, setIntegrationsOpen] = useState(false);
   const [selectedIntegrations, setSelectedIntegrations] = useState<Set<string>>(new Set());
@@ -335,6 +379,8 @@ export default function HeroChatBox({
   const integrationsRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const mobileModelRef = useRef<HTMLDivElement>(null);
+
+  const hasView = activeView != null;
 
   // Desktop typewriter — types once, then stays sticky
   const typeNext = useCallback(() => {
@@ -405,6 +451,10 @@ export default function HeroChatBox({
     }
   };
 
+  const handleToggleDemo = () => {
+    onSetView?.(activeView === "demo" ? null : "demo");
+  };
+
   return (
     <>
       {/* ═══ MOBILE: ChatGPT-style single line ═══ */}
@@ -424,10 +474,10 @@ export default function HeroChatBox({
           {/* + button */}
           <div className="relative" ref={mobileMenuRef}>
             <PlusButton menuOpen={menuOpen} onClick={() => setMenuOpen(!menuOpen)} />
-            {menuOpen && <ToolsDropdown onClose={() => setMenuOpen(false)} position="top" />}
+            {menuOpen && <ToolsDropdown onClose={() => setMenuOpen(false)} onSetView={onSetView} position="top" />}
           </div>
 
-          {/* Model logo (tap to expand) — left side for clean dropdown */}
+          {/* Model logo */}
           <div className="relative" ref={mobileModelRef}>
             <button
               onClick={() => setModelOpen(!modelOpen)}
@@ -450,7 +500,7 @@ export default function HeroChatBox({
             )}
           </div>
 
-          {/* Rotating phrase — no typing, just fade */}
+          {/* Rotating phrase */}
           <div className="flex-1 min-w-0">
             <p
               key={mobilePhrase}
@@ -460,8 +510,8 @@ export default function HeroChatBox({
             </p>
           </div>
 
-          {/* Send — triggers Work Mode on landing, links to app otherwise */}
-          <SendButton onClick={onSwitchToWorkMode} />
+          {/* Send */}
+          <SendButton onClick={handleToggleDemo} />
         </div>
       </div>
 
@@ -510,7 +560,7 @@ export default function HeroChatBox({
                 />
               )}
             </div>
-            {/* Globe / integrations selector (desktop only) */}
+            {/* Globe / integrations selector */}
             <div className="relative" ref={integrationsRef}>
               <button
                 onClick={() => setIntegrationsOpen(!integrationsOpen)}
@@ -572,80 +622,58 @@ export default function HeroChatBox({
             )}
           </div>
 
-          {/* Bottom row: + menu + action */}
-          <div className="flex items-center justify-between">
-            {/* Left: + button */}
+          {/* Bottom row: + button + active pill + View demo */}
+          <div className="flex items-center gap-2">
+            {/* + button with dropdown */}
             <div className="relative" ref={menuRef}>
               <PlusButton menuOpen={menuOpen} onClick={() => setMenuOpen(!menuOpen)} />
-              {menuOpen && <ToolsDropdown onClose={() => setMenuOpen(false)} position="top" />}
+              {menuOpen && <ToolsDropdown onClose={() => setMenuOpen(false)} onSetView={onSetView} position="top" />}
             </div>
 
-            {/* Right: action */}
-            <div className="flex items-center gap-2">
-              {onSwitchToWorkMode && (
-                <button
-                  onClick={onSwitchToWorkMode}
-                  className="group flex items-center gap-1.5 text-[13px] font-medium text-[#ddd] bg-[#1a1a1a] rounded-full px-4 py-1.5 border border-[#333] hover:border-[#DA4E24]/50 hover:text-white transition-all min-w-[120px] justify-center"
-                >
-                  {demoMode ? (
-                    <>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-0.5 transition-transform">
-                        <polyline points="15 18 9 12 15 6" />
-                      </svg>
-                      <span>Overview</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>View demo</span>
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="9 18 15 12 9 6" />
-                      </svg>
-                    </>
-                  )}
-                </button>
-              )}
+            {/* Active view pill — shows when a view is loaded */}
+            {hasView && activeView && VIEW_LABELS[activeView] && (
+              <button
+                onClick={() => onSetView?.(null)}
+                className="flex items-center gap-1.5 bg-[#1a1a1a] border border-[#333] rounded-full px-3 py-1 text-[12px] text-[#ccc] hover:border-[#555] hover:text-white transition-colors"
+              >
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+                {VIEW_LABELS[activeView]}
+              </button>
+            )}
 
-              {!onSwitchToWorkMode && <SendButton />}
-            </div>
+            {/* Spacer */}
+            <div className="flex-1" />
+
+            {/* View demo button */}
+            {onSetView && (
+              <button
+                onClick={handleToggleDemo}
+                className="group flex items-center gap-1.5 text-[13px] font-medium text-[#ddd] bg-[#1a1a1a] rounded-full px-4 py-1.5 border border-[#333] hover:border-[#DA4E24]/50 hover:text-white transition-all min-w-[120px] justify-center"
+              >
+                {hasView ? (
+                  <>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-0.5 transition-transform">
+                      <polyline points="15 18 9 12 15 6" />
+                    </svg>
+                    <span>Overview</span>
+                  </>
+                ) : (
+                  <>
+                    <span>View demo</span>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                  </>
+                )}
+              </button>
+            )}
+
+            {!onSetView && <SendButton />}
           </div>
         </div>
-
-        {/* Show/Hide suggestions toggle — desktop only */}
-        {onSwitchToWorkMode && (
-          <div className="hidden md:block mt-4">
-            <button
-              onClick={() => setSuggestionsOpen(!suggestionsOpen)}
-              className="mx-auto flex items-center gap-1.5 text-[13px] text-[#666] hover:text-[#999] transition-colors"
-            >
-              <span>{suggestionsOpen ? "Hide suggestions" : "Show suggestions"}</span>
-              <svg
-                width="10"
-                height="10"
-                viewBox="0 0 12 12"
-                fill="none"
-                className={`transition-transform ${suggestionsOpen ? "rotate-180" : ""}`}
-              >
-                <path d="M3 5L6 8L9 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-
-            {suggestionsOpen && (
-              <div className="mt-3 bg-[#0c0c0c] border border-[#1a1a1a] rounded-xl p-4 animate-fade-in">
-                <div className="flex flex-col gap-0.5">
-                  {SUGGESTION_PILLS.map((pill) => (
-                    <button
-                      key={pill}
-                      onClick={onSwitchToWorkMode}
-                      className="text-left text-[13px] text-[#888] hover:text-white px-3 py-2.5 rounded-lg hover:bg-[#1a1a1a] transition-colors"
-                    >
-                      {pill}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </>
   );
