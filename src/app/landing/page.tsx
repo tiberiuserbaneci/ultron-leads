@@ -6,6 +6,7 @@ import Link from "next/link";
 import HeroChatBox from "@/components/HeroChatBox";
 import { DemoContent, LiveStatsBar } from "@/components/DemoSection";
 import { BrainContent } from "@/components/BrainSection";
+import Footer from "@/components/Footer";
 
 /* ───────────────────────── Hero Stats (count-up) ───────────────────────── */
 function useCountUp(target: number, duration = 2000) {
@@ -589,14 +590,15 @@ export default function LandingPage() {
       </section>
 
       {/* ─── BOTTOM CTA + FOOTER ─── */}
-      <section className="relative mt-24 lg:mt-32 overflow-hidden">
-        {/* Footer background image — full width */}
-        <div className="absolute inset-0 z-0 w-screen left-1/2 -translate-x-1/2">
+      <section className="relative mt-24 lg:mt-32">
+        {/* Footer background image — full bleed */}
+        <div className="absolute inset-0 z-0">
           <Image
             src="/footer-background.png"
             alt=""
             fill
             className="object-cover object-top"
+            sizes="100vw"
             priority={false}
           />
         </div>
@@ -637,6 +639,10 @@ export default function LandingPage() {
           </div>
         </div>
 
+        {/* Footer box — sits on top of the bg image */}
+        <div className="relative z-10">
+          <Footer />
+        </div>
       </section>
 
         </>
