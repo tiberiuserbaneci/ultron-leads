@@ -671,7 +671,7 @@ export default function HomePage() {
           </h2>
           <p className="text-[#999] text-lg mb-8">Run your business on autopilot</p>
 
-          <div className="flex items-center justify-center gap-4 mb-32 lg:mb-48">
+          <div className="flex items-center justify-center gap-4 mb-16 lg:mb-24">
             <Link
               href="https://app.51ultron.com/signup"
               className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-8 py-3 hover:bg-[#DA4E24]/10 transition-all"
