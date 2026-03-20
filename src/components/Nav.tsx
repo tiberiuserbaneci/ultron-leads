@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useLiveStats } from "./HeroStats";
+import LivePanelsDropdown from "./LivePanelsDropdown";
 
 /* ───────────────────────── External Link Icon ───────────────────────── */
 function ExternalIcon() {
@@ -271,8 +273,11 @@ function MobileAccordion({
 export default function Nav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [statsOpen, setStatsOpen] = useState(false);
+  const statsRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const navRef = useRef<HTMLElement>(null);
+  const live = useLiveStats();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -280,10 +285,13 @@ export default function Nav() {
       if (navRef.current && !navRef.current.contains(e.target as Node)) {
         setOpenDropdown(null);
       }
+      if (statsOpen && statsRef.current && !statsRef.current.contains(e.target as Node)) {
+        setStatsOpen(false);
+      }
     }
     document.addEventListener("click", handleClick);
     return () => document.removeEventListener("click", handleClick);
-  }, []);
+  }, [statsOpen]);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -359,6 +367,54 @@ export default function Nav() {
 
             {/* Right side */}
             <div className="flex items-center gap-3 shrink-0">
+              {/* Live stats button — desktop only */}
+              <div className="hidden md:block relative" ref={statsRef}>
+                <button
+                  onClick={() => setStatsOpen(!statsOpen)}
+                  className={`flex items-center gap-2.5 text-[13px] px-3.5 py-2 rounded-lg transition-colors ${
+                    statsOpen ? "text-white bg-[#1a1a1a]" : "text-[#777] hover:text-white"
+                  }`}
+                >
+                  {/* Branch icon */}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0">
+                    <line x1="6" y1="3" x2="6" y2="15" />
+                    <circle cx="18" cy="6" r="3" />
+                    <circle cx="6" cy="18" r="3" />
+                    <path d="M18 9a9 9 0 0 1-9 9" />
+                  </svg>
+                  <span className="tabular-nums font-medium text-white">{live.founders.toLocaleString()}</span>
+                  <span className="text-[#555]">founders</span>
+                  <svg width="8" height="8" viewBox="0 0 12 12" fill="none" className={`text-[#555] transition-transform ${statsOpen ? "rotate-180" : ""}`}>
+                    <path d="M3 5L6 8L9 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+
+                {/* Stats dropdown */}
+                {statsOpen && (
+                  <div className="absolute right-0 top-full mt-3 w-[560px] bg-[#111] border border-[#222] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.7)] animate-fade-up z-50">
+                    {/* Stats summary row */}
+                    <div className="flex items-center justify-between gap-4 px-5 py-3 border-b border-[#1a1a1a]">
+                      {[
+                        { val: live.founders.toLocaleString(), lbl: "founders" },
+                        { val: live.agents >= 1000 ? `${(live.agents / 1000).toFixed(1)}K` : live.agents.toLocaleString(), lbl: "agents" },
+                        { val: live.tasks >= 1000 ? `${(live.tasks / 1000).toFixed(1)}K` : live.tasks.toLocaleString(), lbl: "tasks" },
+                        { val: live.apiCalls >= 1000 ? `${(live.apiCalls / 1000).toFixed(1)}K` : live.apiCalls.toString(), lbl: "API calls" },
+                        { val: `$${live.saved >= 1000 ? `${Math.round(live.saved / 1000)}K` : live.saved}`, lbl: "saved" },
+                      ].map((s) => (
+                        <span key={s.lbl} className="inline-flex items-center gap-1 text-[11px]">
+                          <span className="text-white font-medium tabular-nums">{s.val}</span>
+                          <span className="text-[#555]">{s.lbl}</span>
+                        </span>
+                      ))}
+                    </div>
+                    {/* 4 live panels */}
+                    <div className="p-3">
+                      <LivePanelsDropdown inline />
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Try Ultron — desktop only */}
               <Link
                 href="https://app.51ultron.com/signup"

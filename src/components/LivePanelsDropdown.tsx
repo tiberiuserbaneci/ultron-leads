@@ -208,9 +208,9 @@ function MiniCompetitor() {
 }
 
 /* ═══ Main dropdown ═══ */
-export default function LivePanelsDropdown() {
-  return (
-    <div className="absolute top-full left-0 mt-2 w-[520px] bg-[#111] border border-[#222] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.7)] p-3 animate-fade-up z-50">
+export default function LivePanelsDropdown({ inline }: { inline?: boolean }) {
+  const content = (
+    <>
       <div className="grid grid-cols-2 gap-2">
         <MiniHealth />
         <MiniActivity />
@@ -225,6 +225,14 @@ export default function LivePanelsDropdown() {
       >
         Open full Command Center →
       </a>
+    </>
+  );
+
+  if (inline) return <>{content}</>;
+
+  return (
+    <div className="absolute top-full left-0 mt-2 w-[520px] bg-[#111] border border-[#222] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.7)] p-3 animate-fade-up z-50">
+      {content}
     </div>
   );
 }
