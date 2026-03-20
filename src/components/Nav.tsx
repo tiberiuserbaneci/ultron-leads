@@ -123,7 +123,7 @@ const NAV_MENUS: NavDropdown[] = [
         items: [
           { label: "Overview", href: "#pricing" },
           { label: "Automation Quiz", href: "/assess" },
-          { label: "Contact Sales", href: "https://app.51ultron.com/signup", external: true },
+          { label: "Contact Sales", href: "/contact" },
         ],
       },
     ],
