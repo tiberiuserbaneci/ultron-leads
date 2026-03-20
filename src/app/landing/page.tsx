@@ -10,27 +10,29 @@ import Footer from "@/components/Footer";
 
 /* ───────────────────────── Live Stats ───────────────────────── */
 /*
-  Base numbers (start of current UTC day):
-  - 2,847 founders  — growing ~95/day  (~3.96/hr, ~0.066/min)
-  - 14,235 agents   — growing ~475/day (95 founders × 5 agents)
-  - 38,920 tasks    — growing ~2,850/day (~30 tasks per founder/day)
-  - 412,000 API calls — growing ~47,500/day (~500 per founder/day)
-  - $189,000 saved  — growing ~$14,250/day (~$150 per founder/day)
+  Anchored to March 20 2026 — 2,560 founders, +90/day.
+  Each founder → 5 agents, ~5 tasks/day, ~100 API calls/day, ~$30 saved/day.
+  Daily growth:
+    founders  +90
+    agents    +450        (90 × 5)
+    tasks     +12,800     (2,560 × 5)
+    apiCalls  +256,000    (2,560 × 100)
+    saved     +$76,800    (2,560 × $30)
 */
-const STATS_BASE_DATE = new Date("2025-06-01T00:00:00Z").getTime();
+const STATS_BASE_DATE = new Date("2026-03-20T00:00:00Z").getTime();
 const STATS_BASE = {
-  founders: 2847,
-  agents: 14235,
-  tasks: 38920,
-  apiCalls: 412000,
-  saved: 189000,
+  founders: 2560,
+  agents: 12800,
+  tasks: 89600,
+  apiCalls: 640000,
+  saved: 256000,
 };
 const STATS_PER_MS = {
-  founders: 95 / 86400000,
-  agents: 475 / 86400000,
-  tasks: 2850 / 86400000,
-  apiCalls: 47500 / 86400000,
-  saved: 14250 / 86400000,
+  founders: 90 / 86400000,
+  agents: 450 / 86400000,
+  tasks: 12800 / 86400000,
+  apiCalls: 256000 / 86400000,
+  saved: 76800 / 86400000,
 };
 
 function useLiveStats() {
@@ -92,11 +94,11 @@ function HeroStats() {
   const live = useLiveStats();
 
   const stats = [
-    { value: live.founders, label: "founders", format: (v: number) => v.toLocaleString() + "+", mobileHide: false },
+    { value: live.founders, label: "founders", format: (v: number) => v.toLocaleString(), mobileHide: false },
     { value: live.agents, label: "agents", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toLocaleString(), mobileHide: true },
     { value: live.tasks, label: "tasks", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toLocaleString(), mobileHide: false },
     { value: live.apiCalls, label: "API calls", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toString(), mobileHide: true },
-    { value: live.saved, label: "saved", format: (v: number) => `$${v >= 1000 ? `${Math.round(v / 1000)}K` : v}`, mobileHide: false },
+    { value: live.saved, label: "saved", format: (v: number) => `$${v >= 1000 ? `${Math.round(v / 1000)}K` : v}`, mobileHide: true },
   ];
 
   return (
@@ -253,7 +255,7 @@ export default function LandingPage() {
         <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8">
           {/* Live stats bar — above title, centered between nav and heading */}
           <div className="flex justify-center mb-12 sm:mb-16">
-            <div className="inline-flex flex-wrap items-center justify-center gap-5 sm:gap-7 border border-[#333] rounded-full px-6 py-2.5 bg-black/40 backdrop-blur-sm">
+            <div className="inline-flex items-center justify-center gap-5 sm:gap-7 border border-[#333] rounded-full px-6 py-2.5 bg-black/40 backdrop-blur-sm whitespace-nowrap">
               <HeroStats />
             </div>
           </div>
