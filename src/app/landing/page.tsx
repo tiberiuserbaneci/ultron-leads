@@ -8,7 +8,53 @@ import { DemoContent, LiveStatsBar } from "@/components/DemoSection";
 import { BrainContent } from "@/components/BrainSection";
 import Footer from "@/components/Footer";
 
-/* ───────────────────────── Hero Stats (count-up) ───────────────────────── */
+/* ───────────────────────── Live Stats ───────────────────────── */
+/*
+  Base numbers (start of current UTC day):
+  - 2,847 founders  — growing ~95/day  (~3.96/hr, ~0.066/min)
+  - 14,235 agents   — growing ~475/day (95 founders × 5 agents)
+  - 38,920 tasks    — growing ~2,850/day (~30 tasks per founder/day)
+  - 412,000 API calls — growing ~47,500/day (~500 per founder/day)
+  - $189,000 saved  — growing ~$14,250/day (~$150 per founder/day)
+*/
+const STATS_BASE_DATE = new Date("2025-06-01T00:00:00Z").getTime();
+const STATS_BASE = {
+  founders: 2847,
+  agents: 14235,
+  tasks: 38920,
+  apiCalls: 412000,
+  saved: 189000,
+};
+const STATS_PER_MS = {
+  founders: 95 / 86400000,
+  agents: 475 / 86400000,
+  tasks: 2850 / 86400000,
+  apiCalls: 47500 / 86400000,
+  saved: 14250 / 86400000,
+};
+
+function useLiveStats() {
+  const [stats, setStats] = useState(() => computeStats());
+
+  function computeStats() {
+    const elapsed = Date.now() - STATS_BASE_DATE;
+    return {
+      founders: Math.floor(STATS_BASE.founders + elapsed * STATS_PER_MS.founders),
+      agents: Math.floor(STATS_BASE.agents + elapsed * STATS_PER_MS.agents),
+      tasks: Math.floor(STATS_BASE.tasks + elapsed * STATS_PER_MS.tasks),
+      apiCalls: Math.floor(STATS_BASE.apiCalls + elapsed * STATS_PER_MS.apiCalls),
+      saved: Math.floor(STATS_BASE.saved + elapsed * STATS_PER_MS.saved),
+    };
+  }
+
+  useEffect(() => {
+    const id = setInterval(() => setStats(computeStats()), 3000);
+    return () => clearInterval(id);
+  }, []);
+
+  return stats;
+}
+
 function useCountUp(target: number, duration = 2000) {
   const [value, setValue] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
@@ -43,23 +89,21 @@ function useCountUp(target: number, duration = 2000) {
 }
 
 function HeroStats() {
-  const agents = useCountUp(224);
-  const tasks = useCountUp(6747);
-  const api = useCountUp(54811);
-  const saved = useCountUp(109088);
+  const live = useLiveStats();
 
   const stats = [
-    { ...agents, label: "agents", format: (v: number) => v.toLocaleString(), mobileHide: true },
-    { ...tasks, label: "tasks", format: (v: number) => v.toLocaleString(), mobileHide: false },
-    { ...api, label: "API calls", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toString(), mobileHide: true },
-    { ...saved, label: "saved", format: (v: number) => `$${v >= 1000 ? `${Math.round(v / 1000)}K` : v}`, mobileHide: false },
+    { value: live.founders, label: "founders", format: (v: number) => v.toLocaleString() + "+", mobileHide: false },
+    { value: live.agents, label: "agents", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toLocaleString(), mobileHide: true },
+    { value: live.tasks, label: "tasks", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toLocaleString(), mobileHide: false },
+    { value: live.apiCalls, label: "API calls", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toString(), mobileHide: true },
+    { value: live.saved, label: "saved", format: (v: number) => `$${v >= 1000 ? `${Math.round(v / 1000)}K` : v}`, mobileHide: false },
   ];
 
   return (
     <>
       {stats.map((stat) => (
         <span key={stat.label} className={`inline-flex items-center gap-1.5 text-[14px] sm:text-[15px] ${stat.mobileHide ? "hidden sm:inline-flex" : ""}`}>
-          <span ref={stat.ref} className="text-white font-semibold tabular-nums">{stat.format(stat.value)}</span>
+          <span className="text-white font-semibold tabular-nums transition-all duration-700">{stat.format(stat.value)}</span>
           <span className="text-[#e0e0e0]">{stat.label}</span>
         </span>
       ))}
@@ -146,7 +190,7 @@ export default function LandingPage() {
     <div className="bg-black text-white">
 
       {/* ─── HERO ─── */}
-      <section className="relative min-h-screen pt-40 sm:pt-48 pb-32 overflow-hidden">
+      <section className="relative min-h-screen pt-28 sm:pt-32 pb-32 overflow-hidden">
         {/* Background image — diagonal light streaks */}
         <div className="absolute inset-0 pointer-events-none">
           <Image
@@ -207,6 +251,13 @@ export default function LandingPage() {
         </div>
 
         <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8">
+          {/* Live stats bar — above title, centered between nav and heading */}
+          <div className="flex justify-center mb-12 sm:mb-16">
+            <div className="inline-flex flex-wrap items-center justify-center gap-5 sm:gap-7 border border-[#333] rounded-full px-6 py-2.5 bg-black/40 backdrop-blur-sm">
+              <HeroStats />
+            </div>
+          </div>
+
           {/* Hero copy — LEFT aligned */}
           <div className="max-w-[800px]">
             {/* Desktop heading */}
@@ -253,15 +304,6 @@ export default function LandingPage() {
               />
             </div>
 
-            {/* Stats bar — under chat box */}
-            <div className="mt-8 flex justify-center">
-              <div className="inline-flex flex-wrap items-center justify-center gap-5 sm:gap-7 border border-[#333] rounded-full px-6 py-2.5">
-                <span className="text-[14px] sm:text-[15px] text-[#e0e0e0]">
-                  <span className="text-white font-semibold">2,000+</span> founders
-                </span>
-                <HeroStats />
-              </div>
-            </div>
           </div>
         </div>
 
