@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
+import HeroStats from "./HeroStats";
 
 const PROMPTS = [
   "Generate weekly sales summary report for Q1",
@@ -485,7 +486,15 @@ export default function HeroChatBox({
         {/* Outer subtle glow */}
         <div className="absolute -inset-px rounded-2xl shadow-[0_0_40px_rgba(218,78,36,0.08),0_0_80px_rgba(218,78,36,0.04)] z-0" />
 
-        <div className="relative z-10 bg-[#0c0c0c] rounded-2xl p-5 border border-[#1a1a1a]">
+        {/* Context panel (behind layer — like Claude Code's repo bar) */}
+        <div className="relative z-10 bg-[#141414] rounded-2xl border border-[#262626] p-2 pt-0">
+          {/* Stats row */}
+          <div className="flex items-center justify-center gap-5 px-4 py-2.5">
+            <HeroStats />
+          </div>
+
+          {/* Chat box (front layer — inset with its own border, like Claude Code) */}
+          <div className="bg-[#0c0c0c] rounded-xl p-5 border border-[#2a2a2a]">
           {/* Top row: model selector + globe */}
           <div className="flex items-center gap-3 mb-4">
             <div className="relative" ref={modelRef}>
@@ -610,6 +619,7 @@ export default function HeroChatBox({
             {!onSwitchToWorkMode && <SendButton />}
 
           </div>
+        </div>
         </div>
       </div>
     </>

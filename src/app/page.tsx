@@ -9,53 +9,6 @@ import { BrainContent } from "@/components/BrainSection";
 import Footer from "@/components/Footer";
 
 /* ───────────────────────── Live Stats ───────────────────────── */
-/*
-  Anchored to March 20 2026 — 2,560 founders, +90/day.
-  Each founder → 5 agents, ~5 tasks/day, ~100 API calls/day, ~$30 saved/day.
-  Daily growth:
-    founders  +90
-    agents    +450        (90 × 5)
-    tasks     +12,800     (2,560 × 5)
-    apiCalls  +256,000    (2,560 × 100)
-    saved     +$76,800    (2,560 × $30)
-*/
-const STATS_BASE_DATE = new Date("2026-03-20T00:00:00Z").getTime();
-const STATS_BASE = {
-  founders: 2560,
-  agents: 12800,
-  tasks: 89600,
-  apiCalls: 640000,
-  saved: 256000,
-};
-const STATS_PER_MS = {
-  founders: 90 / 86400000,
-  agents: 450 / 86400000,
-  tasks: 12800 / 86400000,
-  apiCalls: 256000 / 86400000,
-  saved: 76800 / 86400000,
-};
-
-function useLiveStats() {
-  const [stats, setStats] = useState(() => computeStats());
-
-  function computeStats() {
-    const elapsed = Date.now() - STATS_BASE_DATE;
-    return {
-      founders: Math.floor(STATS_BASE.founders + elapsed * STATS_PER_MS.founders),
-      agents: Math.floor(STATS_BASE.agents + elapsed * STATS_PER_MS.agents),
-      tasks: Math.floor(STATS_BASE.tasks + elapsed * STATS_PER_MS.tasks),
-      apiCalls: Math.floor(STATS_BASE.apiCalls + elapsed * STATS_PER_MS.apiCalls),
-      saved: Math.floor(STATS_BASE.saved + elapsed * STATS_PER_MS.saved),
-    };
-  }
-
-  useEffect(() => {
-    const id = setInterval(() => setStats(computeStats()), 3000);
-    return () => clearInterval(id);
-  }, []);
-
-  return stats;
-}
 
 function useCountUp(target: number, duration = 2000) {
   const [value, setValue] = useState(0);
@@ -90,28 +43,6 @@ function useCountUp(target: number, duration = 2000) {
   return { value, ref };
 }
 
-function HeroStats() {
-  const live = useLiveStats();
-
-  const stats = [
-    { value: live.founders, label: "founders", format: (v: number) => v.toLocaleString(), mobileHide: false },
-    { value: live.agents, label: "agents", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toLocaleString(), mobileHide: true },
-    { value: live.tasks, label: "tasks", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toLocaleString(), mobileHide: false },
-    { value: live.apiCalls, label: "API calls", format: (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toString(), mobileHide: true },
-    { value: live.saved, label: "saved", format: (v: number) => `$${v >= 1000 ? `${Math.round(v / 1000)}K` : v}`, mobileHide: true },
-  ];
-
-  return (
-    <>
-      {stats.map((stat) => (
-        <span key={stat.label} className={`inline-flex items-center gap-1.5 text-[14px] sm:text-[15px] ${stat.mobileHide ? "hidden sm:inline-flex" : ""}`}>
-          <span className="text-white font-semibold tabular-nums transition-all duration-700">{stat.format(stat.value)}</span>
-          <span className="text-[#e0e0e0]">{stat.label}</span>
-        </span>
-      ))}
-    </>
-  );
-}
 
 /* ───────────────────────── Sparkle Icon ───────────────────────── */
 function SparkleIcon({ className = "w-4 h-4" }: { className?: string }) {
@@ -252,13 +183,6 @@ export default function HomePage() {
         </div>
 
         <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8">
-          {/* Live stats bar — above title, centered between nav and heading */}
-          <div className="flex justify-center mb-12 sm:mb-16">
-            <div className="inline-flex items-center justify-center gap-5 sm:gap-7 border border-[#333] rounded-full px-6 py-2.5 bg-black/40 backdrop-blur-sm whitespace-nowrap">
-              <HeroStats />
-            </div>
-          </div>
-
           {/* Hero copy — LEFT aligned */}
           <div className="max-w-[800px]">
             {/* Desktop heading */}
