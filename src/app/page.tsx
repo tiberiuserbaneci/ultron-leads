@@ -638,7 +638,7 @@ export default function HomePage() {
       {/* ─── BOTTOM CTA + FOOTER ─── */}
       <section className="relative mt-24 lg:mt-32 overflow-hidden">
         {/* Footer background image — scaled up to eliminate borders */}
-        <div className="absolute inset-0 z-0 scale-110">
+        <div className="absolute inset-0 z-0 scale-[1.4]">
           <Image
             src="/footer-background.png"
             alt=""

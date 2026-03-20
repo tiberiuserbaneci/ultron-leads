@@ -176,7 +176,7 @@ export default function AssessmentQuiz() {
           </p>
           <a
             href="https://app.51ultron.com/signup"
-            className="inline-flex items-center gap-2 btn-gradient glow-accent text-white font-semibold px-6 py-3 rounded-xl text-sm transition-all duration-200"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-black bg-white rounded-full px-8 py-3 hover:bg-[#e0e0e0] transition-colors"
           >
             Try Ultron Free
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

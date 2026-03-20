@@ -124,9 +124,9 @@ function PlanCard({ plan, yearly }: { plan: Plan; yearly: boolean }) {
           {isFree ? (
             <span className="text-4xl font-bold text-white">Free</span>
           ) : (
-            <div className="flex items-baseline gap-1.5">
+            <div>
               <span className="text-4xl font-bold text-white">${price}</span>
-              <span className="text-sm text-[#666]">/{period}, per user</span>
+              <span className="text-sm text-[#666] ml-1">/{period}, per user</span>
             </div>
           )}
         </div>
@@ -195,8 +195,8 @@ export default function PricingPage() {
 
       {/* ─── HERO + PLANS SECTION ─── */}
       <section className="relative overflow-hidden">
-        {/* Background image — behind the cards */}
-        <div className="absolute inset-0 z-0">
+        {/* Background image — scaled way up to kill edge borders */}
+        <div className="absolute inset-0 z-0 scale-[1.4]">
           <Image
             src="/footer-background.png"
             alt=""
@@ -207,9 +207,9 @@ export default function PricingPage() {
           />
         </div>
         {/* Top fade: black → transparent */}
-        <div className="absolute inset-x-0 top-0 h-48 z-[1] bg-gradient-to-b from-black via-black/90 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 top-0 h-72 z-[1] bg-gradient-to-b from-black via-black/80 to-transparent pointer-events-none" />
         {/* Bottom fade: transparent → black */}
-        <div className="absolute inset-x-0 bottom-0 h-64 z-[1] bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-72 z-[1] bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none" />
 
         {/* Content */}
         <div className="relative z-[2] max-w-[1200px] mx-auto px-6 lg:px-8 pt-28 sm:pt-36 pb-24 sm:pb-32">
@@ -284,7 +284,7 @@ export default function PricingPage() {
               </h2>
               <p className="text-[#999] text-[15px] leading-relaxed mb-6">
                 10 questions. Find out exactly where manual work is costing you
-                time and deals — and which Ultron agents close the gap.
+                time and deals, and which Ultron agents close the gap.
               </p>
               <p className="text-[#666] text-sm mb-8">
                 Most founders score 2-4 out of 10. The ones using Ultron Max
@@ -308,7 +308,7 @@ export default function PricingPage() {
 
       {/* ─── BOTTOM CTA + FOOTER ─── */}
       <section className="relative mt-24 lg:mt-32 overflow-hidden">
-        <div className="absolute inset-0 z-0 scale-110">
+        <div className="absolute inset-0 z-0 scale-[1.4]">
           <Image
             src="/footer-background.png"
             alt=""
