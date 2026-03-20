@@ -89,9 +89,9 @@ export default function NexityPage() {
   return (
     <div className="bg-[#faf8f5]">
       {/* ─── HERO ─── */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Video background */}
-        <div className="absolute inset-0">
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden -mt-[72px] pt-[72px]">
+        {/* Video background — hidden on mobile */}
+        <div className="absolute inset-0 hidden md:block">
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
           <video
             autoPlay
@@ -104,11 +104,14 @@ export default function NexityPage() {
           >
             <source src="/hero-background-nxt.mp4" type="video/mp4" />
           </video>
-          {/* White overlay to wash out the video — tune opacity here */}
-          <div className="absolute inset-0 bg-white/75" />
+          {/* White overlay — very washed out, clean feel */}
+          <div className="absolute inset-0 bg-white/85" />
         </div>
 
-        {/* Bottom gradient fade */}
+        {/* Mobile: plain white bg */}
+        <div className="absolute inset-0 bg-white md:hidden" />
+
+        {/* Bottom gradient fade into page bg */}
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#faf8f5] to-transparent z-10 pointer-events-none" />
 
         {/* Content */}
@@ -124,7 +127,7 @@ export default function NexityPage() {
           </p>
           <div className="mt-10 flex items-center justify-center gap-4 flex-wrap">
             <a
-              href="https://app.51ultron.com/signup"
+              href="https://51ultron.com"
               className="inline-flex items-center gap-2 text-[15px] font-semibold text-white bg-[#1a1a1a] rounded-full px-8 py-3 hover:bg-[#333] transition-colors"
             >
               Get Started
@@ -156,7 +159,6 @@ export default function NexityPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {/* Ultron */}
             <ProductCard
               title="Ultron"
               description="AI employees for founder-led growth. Research, leads, sales, content, and monitoring — running 24/7."
@@ -166,8 +168,6 @@ export default function NexityPage() {
                 <Image src="/logo.png" alt="Ultron" width={24} height={24} className="rounded-sm" />
               }
             />
-
-            {/* NXT — RWA OS */}
             <ProductCard
               title="NXT — RWA OS"
               description="The operating system for on-chain trade. Coordinate orders, contracts, payments, and liquidity on a single programmable layer."
@@ -177,8 +177,6 @@ export default function NexityPage() {
                 <Image src="/nxt-enterprises.png" alt="NXT" width={24} height={24} />
               }
             />
-
-            {/* DealMaker */}
             <ProductCard
               title="DealMaker"
               description="Structure milestone-based deals with embedded compliance, payments, and audit trails. From negotiation to settlement."
@@ -230,8 +228,59 @@ export default function NexityPage() {
         </div>
       </section>
 
+      {/* ─── ULTRON CTA ─── */}
+      <section className="py-24 lg:py-32 bg-[#faf8f5]">
+        <div className="max-w-[700px] mx-auto px-6 lg:px-8 text-center">
+          <span className="inline-block text-xs font-semibold tracking-[0.12em] uppercase text-[#999] border border-[#ddd] rounded-full px-4 py-1.5 mb-6">
+            Get started
+          </span>
+          <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-bold leading-[1.15] text-[#1a1a1a] mb-5">
+            From zero to autonomous company<br className="hidden sm:block" /> in one platform.
+          </h2>
+          <p className="text-[#888] text-base sm:text-lg leading-relaxed mb-10 max-w-[520px] mx-auto">
+            Ultron deploys AI agents that handle research, outreach, sales, and monitoring — so you can focus on building.
+          </p>
+
+          {/* Terminal-style bar */}
+          <div className="max-w-[560px] mx-auto rounded-xl bg-[#1a1a1a] overflow-hidden shadow-lg shadow-black/10">
+            <div className="flex items-center gap-1.5 px-4 pt-3.5 pb-0">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#444]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#444]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#444]" />
+            </div>
+            <div className="px-5 py-4 font-mono text-sm sm:text-base text-white/80 flex items-center justify-between">
+              <span>
+                <span className="text-white/40">$ </span>
+                Meet Ultron — AI Sales Agents
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-10 flex items-center justify-center gap-4 flex-wrap">
+            <a
+              href="https://51ultron.com"
+              className="inline-flex items-center gap-2 text-[15px] font-semibold text-white bg-[#1a1a1a] rounded-full px-8 py-3 hover:bg-[#333] transition-colors"
+            >
+              Explore Ultron
+              <ArrowUpRight className="w-4 h-4" />
+            </a>
+            <a
+              href="https://docs.51ultron.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-[15px] font-medium text-[#555] hover:text-[#1a1a1a] transition-colors"
+            >
+              Read the docs
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* ─── INVESTOR CENTER ─── */}
-      <section className="py-24 lg:py-32">
+      <section className="py-24 lg:py-32 bg-white">
         <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
           <div className="max-w-[800px] mx-auto text-center">
             <Badge>INVESTORS</Badge>

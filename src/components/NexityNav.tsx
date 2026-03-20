@@ -33,12 +33,12 @@ function ArrowUpRight({ className = "w-3.5 h-3.5" }: { className?: string }) {
   );
 }
 
-/* ───────────────────────── Try Ultron Dropdown ───────────────────────── */
-const TRY_ULTRON_GROUPS = [
+/* ───────────────────────── Meet Ultron Dropdown ───────────────────────── */
+const MEET_ULTRON_GROUPS = [
   {
     heading: "Products",
     items: [
-      { label: "Ultron Dashboard", href: "https://app.51ultron.com", external: true },
+      { label: "Ultron Dashboard", href: "https://51ultron.com", external: true },
       { label: "Interactive Demo", href: "https://51ultron.com/demo", external: true },
       { label: "Agents Map", href: "https://51ultron.com/agents-map", external: true },
     ],
@@ -53,12 +53,20 @@ const TRY_ULTRON_GROUPS = [
   },
 ];
 
-/* ───────────────────────── Nav Links ───────────────────────── */
-const NAV_LINKS = [
-  { label: "News", href: "/company/news" },
+/* ───────────────────────── Investors Dropdown ───────────────────────── */
+const INVESTORS_ITEMS = [
+  { label: "Executive Summary", href: "/company/deck" },
   { label: "Investment Deck", href: "/company/deck" },
   { label: "Investor Relations", href: "https://investors.nexitynetwork.org", external: true },
-  { label: "Contact Sales", href: "/contact" },
+];
+
+/* ───────────────────────── Nav Links ───────────────────────── */
+type NavLink = { label: string; href: string; external?: boolean; dropdown?: "investors" };
+const NAV_LINKS: NavLink[] = [
+  { label: "News", href: "/company/news" },
+  { label: "Investors", href: "/company/deck", dropdown: "investors" },
+  { label: "Community", href: "https://catalinfetean.substack.com", external: true },
+  { label: "Contact", href: "/contact" },
 ];
 
 /* ═══════════════════════════════════════════════════════════════ */
@@ -67,15 +75,21 @@ const NAV_LINKS = [
 
 export default function NexityNav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [tryUltronOpen, setTryUltronOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [meetUltronOpen, setMeetUltronOpen] = useState(false);
+  const [investorsOpen, setInvestorsOpen] = useState(false);
+  const meetDropdownRef = useRef<HTMLDivElement>(null);
+  const investorsDropdownRef = useRef<HTMLDivElement>(null);
+  const meetTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const investorsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Close dropdown on outside click
+  // Close dropdowns on outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setTryUltronOpen(false);
+      if (meetDropdownRef.current && !meetDropdownRef.current.contains(e.target as Node)) {
+        setMeetUltronOpen(false);
+      }
+      if (investorsDropdownRef.current && !investorsDropdownRef.current.contains(e.target as Node)) {
+        setInvestorsOpen(false);
       }
     }
     document.addEventListener("click", handleClick);
@@ -111,7 +125,65 @@ export default function NexityNav() {
             {/* Center links — desktop */}
             <div className="hidden md:flex items-center gap-1">
               {NAV_LINKS.map((link) => {
-                const isExternal = "external" in link && link.external;
+                /* Investors dropdown */
+                if (link.dropdown === "investors") {
+                  return (
+                    <div
+                      key={link.label}
+                      ref={investorsDropdownRef}
+                      className="relative"
+                      onMouseEnter={() => {
+                        if (investorsTimeoutRef.current) clearTimeout(investorsTimeoutRef.current);
+                        setInvestorsOpen(true);
+                      }}
+                      onMouseLeave={() => {
+                        investorsTimeoutRef.current = setTimeout(() => setInvestorsOpen(false), 150);
+                      }}
+                    >
+                      <button
+                        onClick={() => setInvestorsOpen(!investorsOpen)}
+                        className="flex items-center gap-1.5 text-[15px] text-[#666] hover:text-[#1a1a1a] px-3.5 py-2 rounded-lg transition-colors"
+                      >
+                        {link.label}
+                        <ChevronDown open={investorsOpen} />
+                      </button>
+
+                      {investorsOpen && (
+                        <div className="absolute left-0 top-full pt-2">
+                          <div className="bg-white border border-[#e5e5e5] rounded-xl shadow-lg shadow-black/10 overflow-hidden animate-dropdown-in py-2 px-1" style={{ minWidth: "220px" }}>
+                            {INVESTORS_ITEMS.map((item) => {
+                              const isExt = "external" in item && item.external;
+                              return isExt ? (
+                                <a
+                                  key={item.label}
+                                  href={item.href}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={() => setInvestorsOpen(false)}
+                                  className="flex items-center justify-between gap-3 px-4 py-2.5 text-[15px] text-[#555] hover:text-[#1a1a1a] hover:bg-[#f8f8f8] rounded-lg mx-1 transition-colors"
+                                >
+                                  {item.label}
+                                  <ArrowUpRight className="w-3 h-3 opacity-40" />
+                                </a>
+                              ) : (
+                                <Link
+                                  key={item.label}
+                                  href={item.href}
+                                  onClick={() => setInvestorsOpen(false)}
+                                  className="flex items-center gap-3 px-4 py-2.5 text-[15px] text-[#555] hover:text-[#1a1a1a] hover:bg-[#f8f8f8] rounded-lg mx-1 transition-colors"
+                                >
+                                  {item.label}
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                const isExternal = link.external;
                 return isExternal ? (
                   <a
                     key={link.label}
@@ -136,31 +208,31 @@ export default function NexityNav() {
 
             {/* Right side */}
             <div className="flex items-center gap-3 shrink-0">
-              {/* Try Ultron dropdown — desktop */}
+              {/* Meet Ultron dropdown — desktop */}
               <div
                 className="hidden md:block relative"
-                ref={dropdownRef}
+                ref={meetDropdownRef}
                 onMouseEnter={() => {
-                  if (timeoutRef.current) clearTimeout(timeoutRef.current);
-                  setTryUltronOpen(true);
+                  if (meetTimeoutRef.current) clearTimeout(meetTimeoutRef.current);
+                  setMeetUltronOpen(true);
                 }}
                 onMouseLeave={() => {
-                  timeoutRef.current = setTimeout(() => setTryUltronOpen(false), 150);
+                  meetTimeoutRef.current = setTimeout(() => setMeetUltronOpen(false), 150);
                 }}
               >
                 <button
-                  onClick={() => setTryUltronOpen(!tryUltronOpen)}
+                  onClick={() => setMeetUltronOpen(!meetUltronOpen)}
                   className="flex items-center gap-2 text-[15px] font-semibold text-white bg-[#1a1a1a] rounded-full px-6 py-2.5 hover:bg-[#333] transition-colors"
                 >
-                  Try Ultron
-                  <ChevronDown open={tryUltronOpen} />
+                  Meet Ultron
+                  <ChevronDown open={meetUltronOpen} />
                 </button>
 
-                {tryUltronOpen && (
+                {meetUltronOpen && (
                   <div className="absolute right-0 top-full pt-2">
                     <div className="bg-white border border-[#e5e5e5] rounded-xl shadow-lg shadow-black/10 overflow-hidden animate-dropdown-in">
                       <div className="flex divide-x divide-[#f0f0f0]">
-                        {TRY_ULTRON_GROUPS.map((group, gi) => (
+                        {MEET_ULTRON_GROUPS.map((group, gi) => (
                           <div key={gi} className="py-3 px-1" style={{ minWidth: "200px" }}>
                             <p className="text-[12px] font-medium tracking-[0.08em] uppercase text-[#999] px-4 pb-3">
                               {group.heading}
@@ -173,7 +245,7 @@ export default function NexityNav() {
                                   href={item.href}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  onClick={() => setTryUltronOpen(false)}
+                                  onClick={() => setMeetUltronOpen(false)}
                                   className="flex items-center justify-between gap-3 px-4 py-2.5 text-[15px] text-[#555] hover:text-[#1a1a1a] hover:bg-[#f8f8f8] rounded-lg mx-1 transition-colors"
                                 >
                                   {item.label}
@@ -183,7 +255,7 @@ export default function NexityNav() {
                                 <Link
                                   key={item.label}
                                   href={item.href}
-                                  onClick={() => setTryUltronOpen(false)}
+                                  onClick={() => setMeetUltronOpen(false)}
                                   className="flex items-center gap-3 px-4 py-2.5 text-[15px] text-[#555] hover:text-[#1a1a1a] hover:bg-[#f8f8f8] rounded-lg mx-1 transition-colors"
                                 >
                                   {item.label}
@@ -226,7 +298,44 @@ export default function NexityNav() {
         <div className="md:hidden fixed inset-0 top-[72px] bg-white z-50 flex flex-col">
           <div className="flex-1 overflow-y-auto pt-4">
             {NAV_LINKS.map((link) => {
-              const isExternal = "external" in link && link.external;
+              const isExternal = link.external;
+
+              /* Investors — expand inline on mobile */
+              if (link.dropdown === "investors") {
+                return (
+                  <div key={link.label}>
+                    <div className="px-6 py-5 text-[16px] font-medium text-[#1a1a1a] border-b border-[#f0f0f0]">
+                      {link.label}
+                    </div>
+                    {INVESTORS_ITEMS.map((item) => {
+                      const isExt = "external" in item && item.external;
+                      return isExt ? (
+                        <a
+                          key={item.label}
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center justify-between px-10 py-3.5 text-[15px] text-[#555] hover:text-[#1a1a1a] border-b border-[#f0f0f0] transition-colors"
+                        >
+                          {item.label}
+                          <ArrowUpRight className="w-3.5 h-3.5 opacity-40" />
+                        </a>
+                      ) : (
+                        <Link
+                          key={item.label}
+                          href={item.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="block px-10 py-3.5 text-[15px] text-[#555] hover:text-[#1a1a1a] border-b border-[#f0f0f0] transition-colors"
+                        >
+                          {item.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                );
+              }
+
               return isExternal ? (
                 <a
                   key={link.label}
@@ -251,10 +360,10 @@ export default function NexityNav() {
               );
             })}
 
-            {/* Try Ultron section in mobile */}
+            {/* Meet Ultron section in mobile */}
             <div className="px-6 pt-6">
               <p className="text-[12px] font-medium tracking-[0.08em] uppercase text-[#999] mb-3">Products</p>
-              {TRY_ULTRON_GROUPS[0].items.map((item) => (
+              {MEET_ULTRON_GROUPS[0].items.map((item) => (
                 <a
                   key={item.label}
                   href={item.href}
@@ -277,14 +386,14 @@ export default function NexityNav() {
               onClick={() => setMobileMenuOpen(false)}
               className="flex-1 text-center text-sm font-semibold text-[#1a1a1a] border border-[#ddd] rounded-full py-3 hover:border-[#999] transition-colors"
             >
-              Contact Sales
+              Contact
             </Link>
             <a
-              href="https://app.51ultron.com/signup"
+              href="https://51ultron.com"
               onClick={() => setMobileMenuOpen(false)}
               className="flex-1 text-center text-sm font-semibold text-white bg-[#1a1a1a] rounded-full py-3 hover:bg-[#333] transition-colors"
             >
-              Try Ultron
+              Meet Ultron
             </a>
           </div>
         </div>
