@@ -2,6 +2,8 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useLiveStats } from "@/components/HeroStats";
+import Link from "next/link";
+import Image from "next/image";
 
 /* ── Tab type ──────────────────────────────────────────────── */
 type Tab = "summary" | "deck";
@@ -100,10 +102,9 @@ export default function DeckPage() {
 
   return (
     <div className="min-h-[calc(100vh-72px)] bg-[#0a0a0a] -mt-[72px] pt-[72px] -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw] overflow-x-hidden">
-      {/* ── Top bar: Tab switcher (center) + Actions (right) ─── */}
-      <div className="max-w-[1920px] mx-auto px-4 sm:px-8 pt-6 sm:pt-8 flex flex-col sm:flex-row items-center gap-4 sm:gap-0 sm:justify-between">
-        {/* Tab switcher — centered */}
-        <div className="hidden sm:block flex-1" />
+      {/* ── Top bar: Tab switcher + More menu ────────────────── */}
+      <div className="max-w-[1920px] mx-auto px-6 sm:px-8 pt-6 sm:pt-8 flex items-center justify-center gap-3">
+        {/* Tab switcher */}
         <div className="flex items-center bg-white/[0.04] rounded-full p-1 border border-white/[0.06]">
           <button
             onClick={() => switchTab("summary")}
@@ -127,97 +128,93 @@ export default function DeckPage() {
           </button>
         </div>
 
-        {/* Action buttons — right */}
-        <div className="sm:flex-1 flex items-center justify-end gap-2 sm:gap-3">
-          {/* Download */}
+        {/* More (3-dot) dropdown — Download + Request */}
+        <div ref={requestRef} className="relative">
           <button
-            className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-white/[0.06] border border-white/[0.08] text-white/60 hover:text-white hover:bg-white/[0.1] transition-colors text-sm"
+            onClick={() => setRequestOpen(!requestOpen)}
+            className="w-9 h-9 rounded-full bg-white/[0.06] border border-white/[0.06] flex items-center justify-center text-white/50 hover:text-white hover:bg-white/[0.1] transition-colors"
+            aria-label="More options"
           >
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="5" r="1.5" />
+              <circle cx="12" cy="12" r="1.5" />
+              <circle cx="12" cy="19" r="1.5" />
             </svg>
-            <span className="hidden sm:inline">Download</span>
           </button>
 
-          {/* Request dropdown */}
-          <div ref={requestRef} className="relative">
-            <button
-              onClick={() => setRequestOpen(!requestOpen)}
-              className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-white/[0.06] border border-white/[0.08] text-white/60 hover:text-white hover:bg-white/[0.1] transition-colors text-sm"
-            >
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-              </svg>
-              <span className="hidden sm:inline">Request</span>
-              <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className={`transition-transform duration-200 ${requestOpen ? "rotate-180" : ""}`}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
+          {requestOpen && (
+            <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-[#141414] border border-white/[0.08] rounded-xl shadow-2xl p-4 z-50 animate-[fadeIn_0.15s_ease-out]">
+              {/* Download option */}
+              <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/[0.06] transition-colors mb-1">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} className="shrink-0">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+                Download Deck
+              </button>
 
-            {requestOpen && (
-              <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-[#141414] border border-white/[0.08] rounded-xl shadow-2xl p-4 z-50 animate-[fadeIn_0.15s_ease-out]">
-                {/* Multi-select type selector */}
-                <label className="block text-white/40 text-xs uppercase tracking-wider mb-2">
-                  Documents
-                </label>
-                <div className="flex flex-col gap-1 mb-4">
-                  {REQUEST_OPTIONS.map((opt) => (
-                    <button
-                      key={opt}
-                      onClick={() => toggleRequest(opt)}
-                      className={`flex items-center gap-3 text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                        selectedRequests.has(opt)
-                          ? "bg-white/[0.08] text-white"
-                          : "text-white/50 hover:text-white/80 hover:bg-white/[0.04]"
-                      }`}
-                    >
-                      <span className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                        selectedRequests.has(opt) ? "bg-white border-white" : "border-white/20"
-                      }`}>
-                        {selectedRequests.has(opt) && (
-                          <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="#000" strokeWidth={3}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                      </span>
-                      {opt}
-                    </button>
-                  ))}
-                </div>
+              <div className="h-px bg-white/[0.06] my-2" />
 
-                {/* Email input + send */}
-                <label className="block text-white/40 text-xs uppercase tracking-wider mb-2">
-                  Email
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                    placeholder="investor@email.com"
-                    className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 outline-none focus:border-white/20 transition-colors"
-                  />
+              {/* Request documents */}
+              <label className="block text-white/30 text-xs uppercase tracking-wider mb-2 px-3">
+                Request Documents
+              </label>
+              <div className="flex flex-col gap-1 mb-4">
+                {REQUEST_OPTIONS.map((opt) => (
                   <button
-                    onClick={handleSend}
-                    disabled={!email.trim() || sending || selectedRequests.size === 0}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      sent
-                        ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                        : "bg-white text-black hover:bg-white/90 disabled:opacity-30 disabled:cursor-not-allowed"
+                    key={opt}
+                    onClick={() => toggleRequest(opt)}
+                    className={`flex items-center gap-3 text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                      selectedRequests.has(opt)
+                        ? "bg-white/[0.08] text-white"
+                        : "text-white/50 hover:text-white/80 hover:bg-white/[0.04]"
                     }`}
                   >
-                    {sent ? "Sent" : sending ? "..." : "Send"}
+                    <span className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                      selectedRequests.has(opt) ? "bg-white border-white" : "border-white/20"
+                    }`}>
+                      {selectedRequests.has(opt) && (
+                        <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="#000" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </span>
+                    {opt}
                   </button>
-                </div>
+                ))}
               </div>
-            )}
-          </div>
+
+              {/* Email input + send */}
+              <label className="block text-white/30 text-xs uppercase tracking-wider mb-2 px-3">
+                Email
+              </label>
+              <div className="flex gap-2 px-3">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                  placeholder="investor@email.com"
+                  className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 outline-none focus:border-white/20 transition-colors"
+                />
+                <button
+                  onClick={handleSend}
+                  disabled={!email.trim() || sending || selectedRequests.size === 0}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    sent
+                      ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                      : "bg-white text-black hover:bg-white/90 disabled:opacity-30 disabled:cursor-not-allowed"
+                  }`}
+                >
+                  {sent ? "Sent" : sending ? "..." : "Send"}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
       {/* ── Content area ───────────────────────────────────────── */}
-      <div className="max-w-[1920px] mx-auto px-2 sm:px-4 md:px-8 pt-6 sm:pt-8 pb-8 sm:pb-12">
+      <div className="max-w-[1920px] mx-auto px-6 sm:px-8 md:px-12 pt-6 sm:pt-8 pb-8 sm:pb-12">
         {tab === "summary" ? (
           <ExecutiveSummary />
         ) : (
@@ -231,6 +228,9 @@ export default function DeckPage() {
           />
         )}
       </div>
+
+      {/* ── Dark Footer ──────────────────────────────────────── */}
+      <DeckFooter />
     </div>
   );
 }
@@ -344,6 +344,25 @@ function LoadingDots() {
   );
 }
 
+/* ── Section icons (clean white SVGs) ─────────────────────────── */
+const SECTION_ICONS: Record<string, React.ReactNode> = {
+  "What Changes with Ultron": (
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={1.5} className="shrink-0">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+    </svg>
+  ),
+  "Why Ultron Is Special": (
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={1.5} className="shrink-0">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+    </svg>
+  ),
+  "What Ultron Is Not": (
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={1.5} className="shrink-0">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+    </svg>
+  ),
+};
+
 /* ── Collapsible section (Claude Code style) ─────────────────── */
 function CollapsibleSection({
   title,
@@ -356,15 +375,26 @@ function CollapsibleSection({
   onToggle: () => void;
   children: React.ReactNode;
 }) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    if (open && contentRef.current) {
+      setHeight(contentRef.current.scrollHeight);
+    } else {
+      setHeight(0);
+    }
+  }, [open]);
+
   return (
     <div className="border-l-2 border-white/10">
       <button
         onClick={onToggle}
-        className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-white/[0.03] transition-colors group"
+        className="w-full flex items-center gap-2.5 px-4 py-3 text-left hover:bg-white/[0.03] transition-colors group"
       >
         <svg
-          width="12"
-          height="12"
+          width="10"
+          height="10"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -375,15 +405,17 @@ function CollapsibleSection({
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
         </svg>
+        {SECTION_ICONS[title]}
         <span className="text-white text-sm sm:text-base font-medium">
           {title}
         </span>
       </button>
 
       <div
-        className="overflow-hidden transition-all duration-250 ease-in-out"
+        ref={contentRef}
+        className="overflow-hidden transition-[height,opacity] duration-300 ease-in-out"
         style={{
-          maxHeight: open ? "3000px" : "0",
+          height: `${height}px`,
           opacity: open ? 1 : 0,
         }}
       >
@@ -622,5 +654,114 @@ function InvestmentDeck({
         {current + 1} / {total}
       </div>
     </>
+  );
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* Dark Footer (matches deck aesthetic)                         */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function DeckFooter() {
+  return (
+    <footer className="border-t border-white/[0.06] bg-[#0a0a0a] mt-12">
+      <div className="max-w-[1200px] mx-auto px-6 lg:px-8 py-12 sm:py-16">
+        <div className="grid grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-8 lg:gap-12">
+          {/* Brand */}
+          <div className="col-span-2 lg:col-span-1">
+            <div className="flex items-center gap-2.5 mb-4">
+              <Image src="/nxt-enterprises.png" alt="NXT" width={32} height={32} />
+              <span className="text-xl font-bold text-white">NXT Enterprises</span>
+            </div>
+            <p className="text-white/40 text-sm leading-relaxed">
+              AI and blockchain infrastructure
+              <br />
+              for the autonomous economy.
+            </p>
+          </div>
+
+          {/* Product */}
+          <div>
+            <h4 className="text-sm font-semibold text-white/30 mb-4">Product</h4>
+            <ul className="space-y-3">
+              {[
+                { label: "Interactive Demo", href: "/demo" },
+                { label: "Agent Blueprint", href: "/blueprint" },
+                { label: "Dashboard", href: "/live" },
+                { label: "Pricing", href: "/pricing" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <Link href={item.href} className="text-sm text-white/50 hover:text-white transition-colors">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Resources */}
+          <div>
+            <h4 className="text-sm font-semibold text-white/30 mb-4">Resources</h4>
+            <ul className="space-y-3">
+              {[
+                { label: "Library", href: "/library" },
+                { label: "ROI Calculator", href: "/calculator" },
+                { label: "Documentation", href: "https://docs.51ultron.com/get-started/introduction", external: true },
+                { label: "Automation Quiz", href: "/assess" },
+              ].map((item) => (
+                <li key={item.label}>
+                  {"external" in item && item.external ? (
+                    <a href={item.href} target="_blank" rel="noopener noreferrer" className="text-sm text-white/50 hover:text-white transition-colors">
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link href={item.href} className="text-sm text-white/50 hover:text-white transition-colors">
+                      {item.label}
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h4 className="text-sm font-semibold text-white/30 mb-4">Company</h4>
+            <ul className="space-y-3">
+              {[
+                { label: "Contact Sales", href: "/contact" },
+                { label: "Playbooks", href: "https://catalinfetean.substack.com/", external: true },
+                { label: "DealMaker", href: "https://dealmaker.nexitynetwork.org/", external: true },
+              ].map((item) => (
+                <li key={item.label}>
+                  {"external" in item && item.external ? (
+                    <a href={item.href} target="_blank" rel="noopener noreferrer" className="text-sm text-white/50 hover:text-white transition-colors">
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link href={item.href} className="text-sm text-white/50 hover:text-white transition-colors">
+                      {item.label}
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div className="border-t border-white/[0.06]">
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-8 py-5 flex items-center justify-between">
+          <span className="text-sm text-white/30">&copy; 2026 NXT Enterprises</span>
+          <div className="flex items-center gap-6">
+            <Link href="/privacy-policy" className="text-sm text-white/30 hover:text-white transition-colors">
+              Privacy
+            </Link>
+            <Link href="/terms" className="text-sm text-white/30 hover:text-white transition-colors">
+              Terms
+            </Link>
+          </div>
+        </div>
+      </div>
+    </footer>
   );
 }
