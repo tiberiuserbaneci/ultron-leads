@@ -330,7 +330,10 @@ export default function LandingPage() {
               </p>
             </div>
             <Suspense fallback={<div className="text-center text-[#555] py-12">Loading demo...</div>}>
-              <DemoContent embedded />
+              <DemoContent embedded onBackToOverview={() => {
+                setDemoMode(false);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }} />
             </Suspense>
           </div>
         </section>

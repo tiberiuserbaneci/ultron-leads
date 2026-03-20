@@ -312,11 +312,14 @@ export function LiveStatsBar() {
 export function DemoContent({
   embedded = false,
   initialSlug,
+  onBackToOverview,
 }: {
   /** When true, skips its own hero header and footer */
   embedded?: boolean;
   /** Pre-select a prompt by slug */
   initialSlug?: string | null;
+  /** Called when user wants to exit work mode and return to marketing view */
+  onBackToOverview?: () => void;
 }) {
   const searchParams = useSearchParams();
   const [selectedPrompt, setSelectedPrompt] = useState<PromptData | null>(null);
@@ -510,25 +513,20 @@ export function DemoContent({
             ))}
           </div>
 
-          {/* Back to overview — bottom of prompt list */}
-          <div className="flex justify-center mt-8">
-            <button
-              onClick={() => {
-                const section = document.getElementById("demo-section");
-                if (section) {
-                  section.scrollIntoView({ behavior: "smooth", block: "start" });
-                } else {
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }
-              }}
-              className="inline-flex items-center gap-2 text-sm text-[#555] hover:text-white border border-[#222] hover:border-[#444] rounded-full px-6 py-2.5 transition-all"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 19V5M5 12l7-7 7 7"/>
-              </svg>
-              Back to overview
-            </button>
-          </div>
+          {/* Back to overview — exit work mode, return to marketing site */}
+          {onBackToOverview && (
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={onBackToOverview}
+                className="inline-flex items-center gap-2 text-sm text-[#555] hover:text-white border border-[#222] hover:border-[#444] rounded-full px-6 py-2.5 transition-all"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 12H5M12 5l-7 7 7 7"/>
+                </svg>
+                Back to overview
+              </button>
+            </div>
+          )}
 
           {!embedded && (
             <p className="text-center text-[10px] text-[#333] mt-4">Press 1-0 to quick-select prompts. Shift+1-0 for 11-20.</p>
