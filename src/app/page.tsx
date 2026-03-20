@@ -269,13 +269,13 @@ export default function HomePage() {
             </div>
 
             {/* Mobile scroll-down arrow — centered below chatbox */}
-            <div className="sm:hidden flex justify-center mt-12">
+            <div className="sm:hidden flex justify-center mt-20">
               <button
                 onClick={() => window.scrollBy({ top: window.innerHeight * 0.4, behavior: "smooth" })}
                 aria-label="Scroll down"
-                className="w-9 h-9 rounded-full border border-[#333] bg-black/40 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform duration-150"
+                className="p-2 active:scale-90 transition-transform duration-150"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#666]">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#555]">
                   <path d="M12 5v14" />
                   <path d="M19 12l-7 7-7-7" />
                 </svg>
