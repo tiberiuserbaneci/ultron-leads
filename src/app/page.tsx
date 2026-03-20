@@ -167,12 +167,15 @@ export default function HomePage() {
       <section className="relative min-h-screen pt-28 sm:pt-32 pb-32 overflow-hidden">
         {/* Background video — diagonal light streaks with glow animation */}
         <div className="absolute inset-0 pointer-events-none">
+          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
           <video
             autoPlay
             muted
             loop
             playsInline
-            className="absolute inset-0 w-full h-full object-cover"
+            controls={false}
+            disablePictureInPicture
+            className="absolute inset-0 w-full h-full object-cover [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden [&::-webkit-media-controls-panel]:hidden"
           >
             <source src="/hero-background-video.mp4" type="video/mp4" />
           </video>
