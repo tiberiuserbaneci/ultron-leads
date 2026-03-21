@@ -387,11 +387,11 @@ const TRANSCRIPT_STATUS = [
 
 /* ── Architecture data ─────────────────────────── */
 
-const CLAUDE_AGENTS = [
-  { label: "Research" },
-  { label: "Enrichment" },
-  { label: "Outreach" },
-  { label: "Content" },
+const AGENT_FLEET_CARDS = [
+  { title: "Research", body: "Scans public data, news, and firmographics to build deep prospect profiles automatically." },
+  { title: "Enrichment", body: "Cross-references Apollo, HubSpot, and internal data to score and qualify every lead." },
+  { title: "Outreach", body: "Generates personalized sequences and follows up based on engagement signals." },
+  { title: "Content", body: "Creates targeted posts and lead magnets that feed the viral distribution loop." },
 ];
 
 /* ── Workflow panel (left box) ─────────────────── */
@@ -443,37 +443,17 @@ function WorkflowPanel() {
   );
 }
 
-/* ── Agent Fleet panel (right box — desktop only) ── */
+/* ── Agent Fleet panel (right box — stacked cards) ── */
 
 function AgentFleetPanel() {
   return (
-    <div className="flex flex-col border border-white/[0.12] rounded-xl bg-white/[0.03] overflow-hidden h-full">
-      <div className="px-5 py-3 border-b border-white/[0.10]">
-        <span className="text-[10px] font-semibold text-white/70 tracking-[0.15em] uppercase">Agent Fleet</span>
-      </div>
-
-      <div className="flex-1 flex flex-col px-5 py-4">
-        {/* Description lines */}
-        <div className="space-y-2 mb-auto">
-          <div className="flex items-center gap-2.5">
-            <Image src="/logo openclaw.png" alt="OpenClaw" width={16} height={16} className="rounded-sm shrink-0" />
-            <span className="text-[14px] text-white/85">OpenClaw as the control layer</span>
-          </div>
-          <div className="flex items-center gap-2.5">
-            <Image src="/logo claude.png" alt="Claude" width={16} height={16} className="rounded-sm shrink-0" />
-            <span className="text-[14px] text-white/85">Claude Code for parallel execution</span>
-          </div>
+    <div className="flex flex-col gap-2.5 h-full">
+      {AGENT_FLEET_CARDS.map((card) => (
+        <div key={card.title} className="border border-white/[0.08] rounded-xl px-4 py-3">
+          <h3 className="text-[13px] font-semibold text-white mb-1">{card.title}</h3>
+          <p className="text-[12px] text-white/50 leading-relaxed">{card.body}</p>
         </div>
-
-        {/* Agent list — large, clean, fills the remaining space */}
-        <div className="grid grid-cols-2 gap-x-6 gap-y-3">
-          {["Research", "Enrichment", "Outreach", "Content"].map((name) => (
-            <span key={name} className="text-[18px] text-white/90 font-medium">
-              {name}
-            </span>
-          ))}
-        </div>
-      </div>
+      ))}
     </div>
   );
 }
