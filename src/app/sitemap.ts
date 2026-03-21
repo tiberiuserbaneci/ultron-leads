@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
+import { posts } from "@/data/news";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://work.51ultron.com";
   const now = new Date().toISOString();
 
-  const routes: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] }[] = [
+  const routes: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]; lastModified?: string }[] = [
     { path: "/", priority: 1.0, changeFrequency: "weekly" },
     { path: "/blueprint", priority: 0.9, changeFrequency: "monthly" },
     { path: "/pricing", priority: 0.9, changeFrequency: "monthly" },
@@ -30,10 +31,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/terms", priority: 0.3, changeFrequency: "yearly" },
   ];
 
-  return routes.map((route) => ({
+  const staticEntries = routes.map((route) => ({
     url: `${base}${route.path}`,
     lastModified: now,
     changeFrequency: route.changeFrequency,
     priority: route.priority,
   }));
+
+  /* ── News listing page ─────────────────────────────────────── */
+  const newsListEntry: MetadataRoute.Sitemap[number] = {
+    url: `${base}/company/news`,
+    lastModified: posts.length > 0 ? new Date(posts[0].date).toISOString() : now,
+    changeFrequency: "weekly",
+    priority: 0.8,
+  };
+
+  /* ── Individual blog posts ─────────────────────────────────── */
+  const blogEntries: MetadataRoute.Sitemap = posts.map((post) => ({
+    url: `${base}/company/news/${post.slug}`,
+    lastModified: new Date(post.date).toISOString(),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  return [...staticEntries, newsListEntry, ...blogEntries];
 }

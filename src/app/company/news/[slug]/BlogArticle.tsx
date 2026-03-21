@@ -40,7 +40,7 @@ export default function BlogArticle({
             {post.category}
           </span>
           <span className="w-1 h-1 rounded-full bg-[#ddd]" />
-          <span>{formatDate(post.date)}</span>
+          <time dateTime={post.date}>{formatDate(post.date)}</time>
         </div>
       </div>
 
@@ -80,9 +80,9 @@ export default function BlogArticle({
                   <span className="text-xs uppercase tracking-wider font-medium text-[#999]">
                     {r.category}
                   </span>
-                  <span className="text-xs text-[#bbb]">
+                  <time dateTime={r.date} className="text-xs text-[#bbb]">
                     {formatDate(r.date)}
-                  </span>
+                  </time>
                 </div>
                 <h3 className="text-sm font-semibold text-[#1a1a1a] group-hover:text-[#555] transition-colors leading-snug">
                   {r.title}

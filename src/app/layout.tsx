@@ -5,10 +5,11 @@ import Nav from "@/components/Nav";
 export const metadata: Metadata = {
   metadataBase: new URL("https://work.51ultron.com"),
   title: {
-    default: "Ultron - AI Agents for Founders",
+    default: "Ultron — AI Agents for Founders | Agentic AI for Business",
     template: "%s | Ultron",
   },
-  description: "5 AI agents that replace a full team. Research, leads, sales, content, and monitoring - running 24/7 for $19/month.",
+  description:
+    "5 AI agents that replace a full team. Research, leads, sales, content, and monitoring — running 24/7 for $19/month. The agentic AI platform built for founders.",
   icons: {
     icon: [{ url: "/logo.png", type: "image/png" }],
     apple: [{ url: "/logo.png" }],
@@ -17,13 +18,26 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Ultron",
     locale: "en_US",
-    images: [{ url: "/og/home.png", width: 1200, height: 630 }],
+    title: "Ultron — AI Agents for Founders",
+    description:
+      "5 AI agents that replace a full team. Research, leads, sales, content, and monitoring — running 24/7 for $19/month.",
+    url: "https://work.51ultron.com",
+    images: [{ url: "/og/home.png", width: 1200, height: 630, alt: "Ultron — AI Agents for Founders" }],
   },
   twitter: {
     card: "summary_large_image",
     site: "@51ultron",
+    title: "Ultron — AI Agents for Founders",
+    description:
+      "5 AI agents that replace a full team. Research, leads, sales, content, and monitoring — running 24/7 for $19/month.",
+    images: ["/og/home.png"],
   },
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    types: {
+      "application/rss+xml": "/feed.xml",
+    },
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
