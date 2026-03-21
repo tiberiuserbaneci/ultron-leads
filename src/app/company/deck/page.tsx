@@ -233,7 +233,7 @@ export default function DeckPage() {
       </div>
 
       {/* ── Content area ───────────────────────────────────────── */}
-      <div className={`flex-1 min-h-0 max-w-[1920px] mx-auto w-full ${tab === "deck" ? "px-0 sm:px-8 md:px-12 pt-0 sm:pt-4 pb-0 sm:pb-6" : "px-4 sm:px-8 md:px-12 pt-3 sm:pt-4 pb-4 sm:pb-6"}`}>
+      <div className={`flex-1 min-h-0 ${tab === "deck" ? "max-w-[1400px]" : "max-w-[1920px]"} mx-auto w-full ${tab === "deck" ? "px-0 sm:px-8 md:px-12 pt-0 sm:pt-4 pb-0 sm:pb-6" : "px-4 sm:px-8 md:px-12 pt-3 sm:pt-4 pb-4 sm:pb-6"}`}>
         {tab === "summary" ? (
           <ExecutiveSummary />
         ) : (
@@ -633,10 +633,10 @@ function InvestmentDeck({
     <div className="flex flex-col h-full">
       {/* Slide area — fills remaining space */}
       <div className="flex-1 min-h-0 flex items-center justify-center">
-        {/* Desktop: 16:9 aspect, Mobile: full width no border */}
+        {/* Desktop: 16:9 aspect, capped at 1280px for presentation feel */}
         <div
           ref={slideRef}
-          className="relative w-full sm:rounded-xl overflow-hidden bg-black sm:border sm:border-white/[0.06] sm:shadow-2xl sm:aspect-video h-full sm:h-auto sm:max-h-full"
+          className="relative w-full max-w-[1280px] sm:rounded-xl overflow-hidden bg-black sm:border sm:border-white/[0.06] sm:shadow-2xl sm:aspect-video h-full sm:h-auto sm:max-h-full"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
