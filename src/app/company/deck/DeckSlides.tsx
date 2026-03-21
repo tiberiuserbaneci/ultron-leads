@@ -638,15 +638,15 @@ const COMP_STAGGER = 400;
 const COMP_HOLD = 2400;
 const COMP_RESET = 800;
 
-/* ── Desktop comparison row ─────────────────── */
+/* ── Desktop comparison row — orange checkbox left, left-aligned ── */
 
 function ComparisonRowDesktop({ old, neo, scratched }: { old: string; neo: string; scratched: boolean }) {
   return (
     <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 lg:gap-6 py-[7px]">
-      {/* Left — old model, gets scratch treatment */}
-      <div className="text-right">
+      {/* Left — old model with orange checkbox, left-aligned text */}
+      <div className="flex items-center gap-2.5 justify-end">
         <span
-          className="relative inline text-[14px] lg:text-[15px] text-white/60 select-none"
+          className="relative inline text-[14px] lg:text-[15px] text-white/60 select-none text-left"
           style={{ opacity: scratched ? 0.35 : 1, transition: "opacity 0.4s ease" }}
         >
           {old}
@@ -655,6 +655,7 @@ function ComparisonRowDesktop({ old, neo, scratched }: { old: string; neo: strin
             style={{ width: scratched ? "100%" : "0%", transition: "width 0.4s ease" }}
           />
         </span>
+        <TaskCheckbox checked={scratched} />
       </div>
       {/* Arrow */}
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={1.5} className="shrink-0 opacity-30">
@@ -666,81 +667,67 @@ function ComparisonRowDesktop({ old, neo, scratched }: { old: string; neo: strin
   );
 }
 
-/* ── Matrix dropdown (desktop only) ─────────── */
+/* ── Matrix overlay (desktop only, full slide) ─────────── */
 
-function CompMatrixDropdown() {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
+function CompMatrixOverlay({ open, onClose }: { open: boolean; onClose: () => void }) {
+  if (!open) return null;
   return (
-    <div ref={ref} className="relative inline-flex">
-      <button
-        onClick={() => setOpen(!open)}
-        className="text-[13px] text-white/40 hover:text-white/60 transition-colors flex items-center gap-1.5"
+    <div
+      className="absolute inset-0 z-50 bg-black/95 flex items-center justify-center px-10 py-8"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-4xl"
+        onClick={(e) => e.stopPropagation()}
       >
-        <span>See competitive matrix</span>
-        <svg
-          width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}
-          className="transition-transform duration-200"
-          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-        </svg>
-      </button>
-
-      {open && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-[680px] bg-[#111] border border-white/[0.08] rounded-xl shadow-2xl p-4 z-50 animate-[fadeIn_0.15s_ease-out]">
-          {/* Matrix table */}
-          <div className="border border-white/[0.08] rounded-lg overflow-hidden mb-3">
-            <div className="grid grid-cols-5 bg-white/[0.03]">
-              <div className="p-2.5" />
-              {["Ultron", "n8n", "Zapier", "Gumloop"].map((name) => (
-                <div key={name} className={`p-2.5 border-l border-white/[0.06] ${name === "Ultron" ? "bg-white/[0.04]" : ""}`}>
-                  <span className={`text-xs font-semibold ${name === "Ultron" ? "text-white" : "text-white/50"}`}>{name}</span>
-                </div>
-              ))}
+        {/* Matrix table */}
+        <div className="border border-white/[0.10] rounded-xl overflow-hidden mb-5">
+          <div className="grid grid-cols-5 bg-white/[0.03]">
+            <div className="p-4" />
+            {["Ultron", "n8n", "Zapier", "Gumloop"].map((name) => (
+              <div key={name} className={`p-4 border-l border-white/[0.08] ${name === "Ultron" ? "bg-white/[0.05]" : ""}`}>
+                <span className={`text-sm font-semibold ${name === "Ultron" ? "text-white" : "text-white/60"}`}>{name}</span>
+              </div>
+            ))}
+          </div>
+          {COMP_ROWS.map((row) => (
+            <div key={row.label} className="grid grid-cols-5 border-t border-white/[0.08]">
+              <div className="p-4">
+                <span className="text-[10px] text-white/50 uppercase tracking-wider font-medium">{row.label}</span>
+              </div>
+              <div className="p-4 border-l border-white/[0.08] bg-white/[0.05]">
+                <span className="text-sm text-white">{row.ultron}</span>
+              </div>
+              <div className="p-4 border-l border-white/[0.08]">
+                <span className="text-sm text-white/70">{row.n8n}</span>
+              </div>
+              <div className="p-4 border-l border-white/[0.08]">
+                <span className="text-sm text-white/70">{row.zapier}</span>
+              </div>
+              <div className="p-4 border-l border-white/[0.08]">
+                <span className="text-sm text-white/70">{row.gumloop}</span>
+              </div>
             </div>
-            {COMP_ROWS.map((row) => (
-              <div key={row.label} className="grid grid-cols-5 border-t border-white/[0.06]">
-                <div className="p-2.5">
-                  <span className="text-[9px] text-white/40 uppercase tracking-wider font-medium">{row.label}</span>
-                </div>
-                <div className="p-2.5 border-l border-white/[0.06] bg-white/[0.04]">
-                  <span className="text-[11px] text-white">{row.ultron}</span>
-                </div>
-                <div className="p-2.5 border-l border-white/[0.06]">
-                  <span className="text-[11px] text-white/50">{row.n8n}</span>
-                </div>
-                <div className="p-2.5 border-l border-white/[0.06]">
-                  <span className="text-[11px] text-white/50">{row.zapier}</span>
-                </div>
-                <div className="p-2.5 border-l border-white/[0.06]">
-                  <span className="text-[11px] text-white/50">{row.gumloop}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-          {/* Edge statements */}
-          <div className="grid grid-cols-4 gap-1.5">
-            {COMP_EDGES.map((edge) => (
-              <div key={edge} className="flex items-start gap-1.5 p-2">
-                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2} className="shrink-0 mt-0.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-[10px] text-white/50">{edge}</span>
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
-      )}
+        {/* Edge statements */}
+        <div className="grid grid-cols-4 gap-3">
+          {COMP_EDGES.map((edge) => (
+            <div key={edge} className="flex items-start gap-2 p-3">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2} className="shrink-0 mt-0.5 opacity-60">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="text-xs text-white/60">{edge}</span>
+            </div>
+          ))}
+        </div>
+        {/* Close hint */}
+        <div className="text-center mt-4">
+          <button onClick={onClose} className="text-[13px] text-white/40 hover:text-white/60 transition-colors">
+            Close matrix
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -750,10 +737,14 @@ function CompMatrixDropdown() {
 function Slide6() {
   const [scratched, setScratched] = useState(0);
   const [visible, setVisible] = useState(false);
+  const [matrixOpen, setMatrixOpen] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // Mobile state: current pair index, phase: "old" | "scratch" | "new"
-  const [mobilePair, setMobilePair] = useState(0);
-  const [mobilePhase, setMobilePhase] = useState<"old" | "scratch" | "new">("old");
+
+  // Mobile state — same pattern as Slide 2
+  // Phase 1: show all old lines, scratch them one by one
+  // Phase 2: hold scratched state, then show new lines
+  const [mobileCompleted, setMobileCompleted] = useState(0);
+  const [mobileShowNew, setMobileShowNew] = useState(false);
   const mobileTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const runDesktopLoop = useCallback(() => {
@@ -773,33 +764,33 @@ function Slide6() {
     timerRef.current = setTimeout(tick, COMP_STAGGER);
   }, []);
 
+  // Mobile: scratch old lines one by one, then reveal new lines, then loop
   const runMobileLoop = useCallback(() => {
-    let pair = 0;
-    const nextPair = () => {
-      pair = pair % COMPARISON_PAIRS.length;
-      setMobilePair(pair);
-      setMobilePhase("old");
-      // Show old line → scratch it → show new line → hold → next
-      mobileTimerRef.current = setTimeout(() => {
-        setMobilePhase("scratch");
+    let count = 0;
+    setMobileCompleted(0);
+    setMobileShowNew(false);
+
+    const tick = () => {
+      count++;
+      setMobileCompleted(count);
+
+      if (count < COMPARISON_PAIRS.length) {
+        mobileTimerRef.current = setTimeout(tick, STAGGER_MS);
+      } else {
+        // All scratched — reveal new lines
         mobileTimerRef.current = setTimeout(() => {
-          setMobilePhase("new");
+          setMobileShowNew(true);
+          // Hold the new lines, then reset and loop
           mobileTimerRef.current = setTimeout(() => {
-            pair++;
-            if (pair >= COMPARISON_PAIRS.length) {
-              // Full cycle done — hold then restart
-              mobileTimerRef.current = setTimeout(() => {
-                pair = 0;
-                nextPair();
-              }, COMP_RESET);
-            } else {
-              nextPair();
-            }
-          }, COMP_HOLD / 2);
+            setMobileCompleted(0);
+            setMobileShowNew(false);
+            mobileTimerRef.current = setTimeout(runMobileLoop, COMP_RESET);
+          }, COMP_HOLD);
         }, 400);
-      }, 600);
+      }
     };
-    nextPair();
+
+    mobileTimerRef.current = setTimeout(tick, STAGGER_MS);
   }, []);
 
   useEffect(() => {
@@ -816,7 +807,7 @@ function Slide6() {
   }, [runDesktopLoop, runMobileLoop]);
 
   return (
-    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full justify-center overflow-hidden">
+    <div className="relative flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full justify-center overflow-hidden">
       {/* Title */}
       <div className="text-center mb-8 sm:mb-10">
         <h2 className="sm:hidden text-[24px] font-bold text-white leading-[1.25] tracking-tight">
@@ -846,40 +837,52 @@ function Slide6() {
             ))}
           </div>
 
-          {/* Mobile: one pair at a time */}
-          <div className="md:hidden flex justify-center">
-            <div className="text-center space-y-3 min-h-[80px]">
-              {/* Old line */}
-              <div style={{ opacity: mobilePhase === "new" ? 0 : 1, transition: "opacity 0.3s ease" }}>
-                <span
-                  className="relative inline text-[16px] text-white/60"
-                  style={{ opacity: mobilePhase === "scratch" ? 0.35 : 1, transition: "opacity 0.4s ease" }}
-                >
-                  {COMPARISON_PAIRS[mobilePair].old}
-                  <span
-                    className="absolute left-0 top-1/2 h-[1px] bg-white/40 origin-left"
-                    style={{ width: mobilePhase === "scratch" ? "100%" : "0%", transition: "width 0.4s ease" }}
-                  />
-                </span>
-              </div>
-              {/* New line */}
-              <div style={{ opacity: mobilePhase === "new" ? 1 : 0, transition: "opacity 0.3s ease" }}>
-                <span className="text-[16px] text-white/90 font-medium">
-                  {COMPARISON_PAIRS[mobilePair].neo}
-                </span>
-              </div>
+          {/* Mobile: all old lines with scratch animation, then new lines */}
+          <div className="md:hidden">
+            <div className="space-y-[2px]">
+              {COMPARISON_PAIRS.map((pair, i) => {
+                const isScratched = i < mobileCompleted;
+                return (
+                  <div key={i} className="flex items-center gap-2.5 py-[5px]">
+                    <TaskCheckbox checked={isScratched} />
+                    <span
+                      className="relative text-[14px] text-white/60 select-none"
+                      style={{ opacity: isScratched ? 0.35 : 1, transition: "opacity 0.4s ease" }}
+                    >
+                      {mobileShowNew ? pair.neo : pair.old}
+                      {!mobileShowNew && (
+                        <span
+                          className="absolute left-0 top-1/2 h-[1px] bg-white/40 origin-left"
+                          style={{ width: isScratched ? "100%" : "0%", transition: "width 0.4s ease" }}
+                        />
+                      )}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bottom area — matrix dropdown (desktop only) */}
+      {/* Bottom area — matrix trigger (desktop only) */}
       <div
         className="hidden md:flex justify-center mt-8 sm:mt-10"
         style={{ opacity: visible ? 1 : 0, transition: "opacity 0.8s ease" }}
       >
-        <CompMatrixDropdown />
+        <button
+          onClick={() => setMatrixOpen(true)}
+          className="text-[13px] text-white/40 hover:text-white/60 transition-colors flex items-center gap-1.5"
+        >
+          <span>See competitive matrix</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+          </svg>
+        </button>
       </div>
+
+      {/* Matrix overlay */}
+      <CompMatrixOverlay open={matrixOpen} onClose={() => setMatrixOpen(false)} />
     </div>
   );
 }
