@@ -673,7 +673,7 @@ function CompMatrixOverlay({ open, onClose }: { open: boolean; onClose: () => vo
   if (!open) return null;
   return (
     <div
-      className="absolute inset-0 z-50 bg-black/95 flex items-center justify-center px-10 py-8"
+      className="absolute inset-0 z-50 bg-black flex items-center justify-center px-10 py-8"
       onClick={onClose}
     >
       <div
@@ -838,7 +838,7 @@ function Slide6() {
           </div>
 
           {/* Mobile: all old lines with scratch animation, then new lines */}
-          <div className="md:hidden">
+          <div className="md:hidden flex justify-center">
             <div className="space-y-[2px]">
               {COMPARISON_PAIRS.map((pair, i) => {
                 const isScratched = i < mobileCompleted;
