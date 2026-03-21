@@ -139,10 +139,10 @@ function TaskCheckbox({ checked }: { checked: boolean }) {
   return (
     <span
       className="inline-flex items-center justify-center shrink-0 rounded transition-colors duration-300"
-      style={{ width: 20, height: 20, border: checked ? "none" : "1.5px solid rgba(255,255,255,0.15)", background: checked ? "#DA4E24" : "transparent" }}
+      style={{ width: 16, height: 16, border: checked ? "none" : "1.5px solid rgba(255,255,255,0.12)", background: checked ? "#DA4E24" : "transparent" }}
     >
       {checked && (
-        <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={3}>
+        <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={3}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
       )}
@@ -154,12 +154,12 @@ function TaskCheckbox({ checked }: { checked: boolean }) {
 
 function TaskRow({ label, checked }: { label: string; checked: boolean }) {
   return (
-    <div className="flex items-center gap-3 py-[7px] sm:py-2">
+    <div className="flex items-center gap-2.5 py-[5px] sm:py-[6px]">
       <TaskCheckbox checked={checked} />
-      <span className="relative text-[15px] sm:text-base lg:text-lg text-white/70 select-none" style={{ opacity: checked ? 0.45 : 1, transition: "opacity 0.4s ease" }}>
+      <span className="relative text-[14px] sm:text-[15px] text-white/60 select-none whitespace-nowrap" style={{ opacity: checked ? 0.4 : 1, transition: "opacity 0.4s ease" }}>
         {label}
         <span
-          className="absolute left-0 top-1/2 h-[1.5px] bg-white/40 origin-left"
+          className="absolute left-0 top-1/2 h-[1px] bg-white/35 origin-left"
           style={{
             width: checked ? "100%" : "0%",
             transition: "width 0.4s ease",
@@ -180,7 +180,7 @@ function TaskGridDesktop({ completed }: { completed: number }) {
   };
 
   return (
-    <div className="hidden md:grid grid-cols-3 gap-x-12 lg:gap-x-20 gap-y-0">
+    <div className="hidden md:grid grid-cols-3 gap-x-8 lg:gap-x-12">
       {TASK_COLUMNS.map((tasks, colIdx) => (
         <div key={colIdx}>
           {tasks.map((task, rowIdx) => (
@@ -197,10 +197,12 @@ function TaskGridDesktop({ completed }: { completed: number }) {
 function TaskGridMobile({ completed, blockIndex }: { completed: number; blockIndex: number }) {
   const block = TASK_COLUMNS[blockIndex % 3];
   return (
-    <div className="md:hidden flex flex-col items-center">
-      {block.map((task, i) => (
-        <TaskRow key={`${blockIndex}-${task}`} label={task} checked={i < completed} />
-      ))}
+    <div className="md:hidden flex justify-center">
+      <div>
+        {block.map((task, i) => (
+          <TaskRow key={`${blockIndex}-${task}`} label={task} checked={i < completed} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -291,53 +293,55 @@ function Slide2() {
   }, [runDesktopLoop, runMobileLoop]);
 
   return (
-    <div className="flex flex-col h-full px-5 sm:px-10 lg:px-14 max-w-6xl mx-auto w-full justify-center overflow-hidden">
-      {/* Title — centered, large, static */}
-      <div className="text-center mb-8 sm:mb-12 lg:mb-14">
+    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full justify-center overflow-hidden">
+      {/* Title — centered, controlled size */}
+      <div className="text-center mb-8 sm:mb-10">
         {/* Mobile: 3 lines */}
-        <h2 className="sm:hidden text-[28px] font-bold text-white leading-[1.2] tracking-tight">
+        <h2 className="sm:hidden text-[26px] font-bold text-white leading-[1.25] tracking-tight">
           Most growing businesses
           <br />
           are buried in work
           <br />
           humans shouldn&apos;t do anymore.
         </h2>
-        {/* Desktop: 2 lines */}
-        <h2 className="hidden sm:block text-3xl lg:text-[44px] xl:text-[52px] font-bold text-white leading-[1.15] tracking-tight">
+        {/* Desktop: 2 lines, sized to not wrap awkwardly */}
+        <h2 className="hidden sm:block text-[28px] lg:text-[36px] xl:text-[40px] font-bold text-white leading-[1.2] tracking-tight">
           Most growing businesses are buried in work
           <br />
           humans shouldn&apos;t do anymore.
         </h2>
       </div>
 
-      {/* Task grid — fades in */}
+      {/* Task grid — centered block, columns left-aligned inside */}
       <div
-        className="max-w-4xl mx-auto w-full"
+        className="flex justify-center"
         style={{
           opacity: gridVisible ? 1 : 0,
           transition: "opacity 0.6s ease",
         }}
       >
-        <TaskGridDesktop completed={completed} />
-        <TaskGridMobile completed={mobileCompleted} blockIndex={mobileBlock} />
+        <div className="w-full max-w-3xl">
+          <TaskGridDesktop completed={completed} />
+          <TaskGridMobile completed={mobileCompleted} blockIndex={mobileBlock} />
+        </div>
       </div>
 
       {/* Bottom line */}
       <div
-        className="text-center mt-8 sm:mt-12 lg:mt-14"
+        className="text-center mt-8 sm:mt-10"
         style={{
           opacity: bottomVisible ? 1 : 0,
           transition: "opacity 0.8s ease",
         }}
       >
         {/* Mobile: 2 lines */}
-        <p className="sm:hidden text-lg font-semibold text-white/70 leading-snug">
+        <p className="sm:hidden text-[15px] font-medium text-white/50 leading-snug">
           Founders can delegate 90% of it
           <br />
           to Ultron within 24 hours&nbsp;&rarr;
         </p>
         {/* Desktop: 1 line */}
-        <p className="hidden sm:block text-xl lg:text-2xl font-semibold text-white/70">
+        <p className="hidden sm:block text-base lg:text-lg font-medium text-white/50">
           Founders can delegate 90% of it to Ultron within 24 hours&nbsp;&rarr;
         </p>
       </div>
