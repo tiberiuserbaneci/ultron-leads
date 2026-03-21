@@ -355,24 +355,24 @@ function Slide2() {
 
 /* ── Workflow transcript data ──────────────────── */
 
-const TRANSCRIPT_LINES: { type: "action" | "sub" | "gap"; text: string; accent?: boolean }[] = [
+const TRANSCRIPT_LINES: { type: "action" | "sub" | "gap"; text: string; accent?: boolean; logo?: string }[] = [
   { type: "action", text: "Identifying the tools needed for this workflow" },
   { type: "action", text: "Checking Apollo, HubSpot, and scoring capabilities" },
   { type: "action", text: "Creating Lead Enrichment & Router" },
-  { type: "sub", text: "Agent created successfully" },
+  { type: "sub", text: "Agent created successfully", logo: "/logo.png" },
   { type: "gap", text: "" },
   { type: "action", text: "Attaching workflow tools" },
-  { type: "sub", text: "Apollo enrichment attached" },
+  { type: "sub", text: "Apollo enrichment attached", logo: "/apollo.png" },
   { type: "sub", text: "ICP scoring attached" },
-  { type: "sub", text: "HubSpot routing attached" },
+  { type: "sub", text: "HubSpot routing attached", logo: "/hubspot.png" },
   { type: "gap", text: "" },
   { type: "action", text: "Configuring trigger" },
-  { type: "sub", text: "New HubSpot contact" },
+  { type: "sub", text: "New HubSpot contact", logo: "/hubspot.png" },
   { type: "gap", text: "" },
   { type: "action", text: "Testing the workflow" },
-  { type: "sub", text: "Apollo enrichment" },
+  { type: "sub", text: "Apollo enrichment", logo: "/apollo.png" },
   { type: "sub", text: "ICP scoring" },
-  { type: "sub", text: "HubSpot routing" },
+  { type: "sub", text: "HubSpot routing", logo: "/hubspot.png" },
   { type: "sub", text: "All tests passed", accent: true },
   { type: "gap", text: "" },
   { type: "action", text: "Publishing workflow" },
@@ -388,10 +388,10 @@ const TRANSCRIPT_STATUS = [
 /* ── Architecture data ─────────────────────────── */
 
 const AGENT_FLEET_CARDS = [
-  { title: "Research", body: "Scans public data, news, and firmographics to build deep prospect profiles automatically." },
-  { title: "Enrichment", body: "Cross-references Apollo, HubSpot, and internal data to score and qualify every lead." },
-  { title: "Outreach", body: "Generates personalized sequences and follows up based on engagement signals." },
-  { title: "Content", body: "Creates targeted posts and lead magnets that feed the viral distribution loop." },
+  { title: "Research", body: "Scans public data, news, and firmographics to build deep prospect profiles automatically.", logos: ["/logo openclaw.png", "/logo claude.png"] },
+  { title: "Enrichment", body: "Cross-references Apollo, HubSpot, and internal data to score and qualify every lead.", logos: ["/logo openclaw.png", "/logo claude.png"] },
+  { title: "Outreach", body: "Generates personalized sequences and follows up based on engagement signals.", logos: ["/logo openclaw.png", "/logo claude.png"] },
+  { title: "Content", body: "Creates targeted posts and lead magnets that feed the viral distribution loop.", logos: ["/logo openclaw.png", "/logo claude.png"] },
 ];
 
 /* ── Workflow panel (left box) ─────────────────── */
@@ -408,8 +408,9 @@ function WorkflowPanel() {
             if (line.type === "gap") return <div key={i} className="h-3" />;
             if (line.type === "sub") {
               return (
-                <div key={i} className="flex items-start gap-1.5 pl-5">
+                <div key={i} className="flex items-center gap-1.5 pl-5">
                   <span className="text-white/35 text-[13px] leading-[22px] select-none">└</span>
+                  {line.logo && <Image src={line.logo} alt="" width={12} height={12} className="rounded-sm shrink-0" />}
                   <span className={`text-[13px] leading-[22px] ${line.accent ? "text-green-400" : "text-white/70"}`}>
                     {line.text}
                   </span>
@@ -450,7 +451,12 @@ function AgentFleetPanel() {
     <div className="flex flex-col gap-2.5 h-full">
       {AGENT_FLEET_CARDS.map((card) => (
         <div key={card.title} className="border border-white/[0.08] rounded-xl px-4 py-3">
-          <h3 className="text-[13px] font-semibold text-white mb-1">{card.title}</h3>
+          <div className="flex items-center gap-1.5 mb-1">
+            <h3 className="text-[13px] font-semibold text-white">{card.title}</h3>
+            {card.logos.map((logo, i) => (
+              <Image key={i} src={logo} alt="" width={13} height={13} className="rounded-sm" />
+            ))}
+          </div>
           <p className="text-[12px] text-white/50 leading-relaxed">{card.body}</p>
         </div>
       ))}
@@ -516,7 +522,7 @@ function Slide3() {
 /*  SLIDE 4: TRACTION AND GTM                                     */
 /* ═══════════════════════════════════════════════════════════════ */
 
-const FLOW_STEPS = ["Viral post", "Comment CTA", "Lead magnet", "Free trial"];
+const FLOW_STEPS = ["Viral post", "Comment CTA", "Lead magnet", "Free trial", "Paying customer"];
 
 const ENTERPRISE_POINTS = [
   { title: "Higher ACV entry point", body: "Custom automation projects start at higher contract values, creating a stronger revenue base from fewer accounts." },
@@ -535,7 +541,7 @@ function Slide4() {
   ];
 
   return (
-    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full justify-center overflow-hidden">
+    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full overflow-hidden pt-[8%] sm:pt-[7%]">
       {/* Main line */}
       <div className="text-center mb-4 sm:mb-6">
         <h2 className="text-[24px] sm:text-[28px] lg:text-[36px] xl:text-[40px] font-bold text-white leading-[1.2] tracking-tight">
@@ -578,7 +584,7 @@ function Slide4() {
                       </span>
                       <span className="text-[13px] text-white/90">{step}</span>
                     </div>
-                    {i < 3 && <div className="w-px h-1.5 bg-white/15 ml-[9px]" />}
+                    {i < FLOW_STEPS.length - 1 && <div className="w-px h-1.5 bg-white/15 ml-[9px]" />}
                   </div>
                 ))}
               </div>
