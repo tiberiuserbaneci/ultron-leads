@@ -13,7 +13,7 @@ type Tab = "summary" | "deck";
 const slides = DECK_SLIDES;
 
 /* ── Request dropdown options ──────────────────────────────── */
-const REQUEST_OPTIONS = ["Financial Report", "Data Room", "Updates"] as const;
+const REQUEST_OPTIONS = ["Updates", "Financial Report", "Data Room"] as const;
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 export default function DeckPage() {
@@ -26,7 +26,7 @@ export default function DeckPage() {
   }, []);
   const [current, setCurrent] = useState(0);
   const [requestOpen, setRequestOpen] = useState(false);
-  const [selectedRequests, setSelectedRequests] = useState<Set<string>>(new Set([REQUEST_OPTIONS[0]]));
+  const [selectedRequests, setSelectedRequests] = useState<Set<string>>(new Set());
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -45,11 +45,8 @@ export default function DeckPage() {
   const toggleRequest = (opt: string) => {
     setSelectedRequests((prev) => {
       const next = new Set(prev);
-      if (next.has(opt)) {
-        if (next.size > 1) next.delete(opt);
-      } else {
-        next.add(opt);
-      }
+      if (next.has(opt)) next.delete(opt);
+      else next.add(opt);
       return next;
     });
   };
