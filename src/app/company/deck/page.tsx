@@ -4,18 +4,13 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { useLiveStats } from "@/components/HeroStats";
 import Link from "next/link";
 import Image from "next/image";
+import { DECK_SLIDES } from "./DeckSlides";
 
 /* ── Tab type ──────────────────────────────────────────────── */
 type Tab = "summary" | "deck";
 
-/* ── Slide data (test placeholders) ────────────────────────── */
-const slides = [
-  { id: 1, content: "Test" },
-  { id: 2, content: "Test" },
-  { id: 3, content: "Test" },
-  { id: 4, content: "Test" },
-  { id: 5, content: "Test" },
-];
+/* ── Slides from DeckSlides ────────────────────────────────── */
+const slides = DECK_SLIDES;
 
 /* ── Request dropdown options ──────────────────────────────── */
 const REQUEST_OPTIONS = ["Financial Report", "Data Room", "Updates"] as const;
@@ -595,7 +590,7 @@ function InvestmentDeck({
   prev,
   next,
 }: {
-  slides: { id: number; content: string }[];
+  slides: typeof DECK_SLIDES;
   current: number;
   setCurrent: (i: number) => void;
   total: number;
@@ -607,17 +602,18 @@ function InvestmentDeck({
       {/* Slide area — fills remaining space */}
       <div className="flex-1 min-h-0 relative">
         <div className="absolute inset-0 rounded-lg sm:rounded-xl overflow-hidden bg-[#111] border border-white/[0.06] shadow-2xl">
-          {slides.map((slide, i) => (
-            <div
-              key={slide.id}
-              className="absolute inset-0 flex items-center justify-center transition-opacity duration-300"
-              style={{ opacity: i === current ? 1 : 0, pointerEvents: i === current ? "auto" : "none" }}
-            >
-              <span className="text-white/20 text-lg sm:text-2xl md:text-4xl font-medium select-none">
-                {slide.content}
-              </span>
-            </div>
-          ))}
+          {slides.map((slide, i) => {
+            const SlideComponent = slide.component;
+            return (
+              <div
+                key={slide.id}
+                className="absolute inset-0 transition-opacity duration-300"
+                style={{ opacity: i === current ? 1 : 0, pointerEvents: i === current ? "auto" : "none" }}
+              >
+                <SlideComponent />
+              </div>
+            );
+          })}
         </div>
       </div>
 
