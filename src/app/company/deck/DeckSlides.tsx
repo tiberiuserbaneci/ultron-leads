@@ -398,9 +398,9 @@ const CLAUDE_AGENTS = [
 
 function WorkflowPanel() {
   return (
-    <div className="flex flex-col border border-white/[0.10] rounded-xl bg-white/[0.02] overflow-hidden h-full">
-      <div className="px-5 py-3 border-b border-white/[0.08]">
-        <span className="text-[10px] font-semibold text-white/60 tracking-[0.15em] uppercase">Workflow</span>
+    <div className="flex flex-col border border-white/[0.12] rounded-xl bg-white/[0.03] overflow-hidden h-full">
+      <div className="px-5 py-3 border-b border-white/[0.10]">
+        <span className="text-[10px] font-semibold text-white/70 tracking-[0.15em] uppercase">Workflow</span>
       </div>
       <div className="flex-1 overflow-y-auto px-5 py-4 min-h-0">
         <div className="space-y-[3px]">
@@ -409,8 +409,8 @@ function WorkflowPanel() {
             if (line.type === "sub") {
               return (
                 <div key={i} className="flex items-start gap-1.5 pl-5">
-                  <span className="text-white/30 text-[12px] leading-[20px] select-none">└</span>
-                  <span className={`text-[12px] leading-[20px] font-mono ${line.accent ? "text-green-400" : "text-white/60"}`}>
+                  <span className="text-white/35 text-[13px] leading-[22px] select-none">└</span>
+                  <span className={`text-[13px] leading-[22px] font-mono ${line.accent ? "text-green-400" : "text-white/70"}`}>
                     {line.text}
                   </span>
                 </div>
@@ -418,24 +418,24 @@ function WorkflowPanel() {
             }
             return (
               <div key={i} className="flex items-start gap-2.5">
-                <span className="w-[5px] h-[5px] rounded-full bg-white/50 mt-[8px] shrink-0" />
-                <span className="text-[12px] leading-[20px] font-mono text-white/80">{line.text}</span>
+                <span className="w-[5px] h-[5px] rounded-full bg-white/60 mt-[9px] shrink-0" />
+                <span className="text-[13px] leading-[22px] font-mono text-white/90">{line.text}</span>
               </div>
             );
           })}
         </div>
 
         {/* Status table */}
-        <div className="mt-4 border border-white/[0.10] rounded-lg overflow-hidden">
+        <div className="mt-4 border border-white/[0.12] rounded-lg overflow-hidden">
           {TRANSCRIPT_STATUS.map((row) => (
             <div key={row.label} className="flex border-b border-white/[0.08] last:border-b-0">
-              <span className="text-[11px] font-semibold text-white/60 px-3 py-2 w-[72px] shrink-0">{row.label}</span>
-              <span className={`text-[11px] px-3 py-2 ${row.accent ? "text-green-400 font-semibold" : "text-white/75"}`}>{row.value}</span>
+              <span className="text-[12px] font-semibold text-white/70 px-3 py-2 w-[72px] shrink-0">{row.label}</span>
+              <span className={`text-[12px] px-3 py-2 ${row.accent ? "text-green-400 font-semibold" : "text-white/80"}`}>{row.value}</span>
             </div>
           ))}
         </div>
 
-        <p className="text-[11px] text-white/50 mt-3 leading-relaxed">
+        <p className="text-[12px] text-white/55 mt-3 leading-relaxed">
           New leads are automatically enriched, scored, and routed to the right rep.
         </p>
       </div>
@@ -443,19 +443,19 @@ function WorkflowPanel() {
   );
 }
 
-/* ── Agent Fleet panel (right box) ─────────────── */
+/* ── Agent Fleet panel (right box — desktop only) ── */
 
 function AgentFleetPanel() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex flex-col border border-white/[0.10] rounded-xl bg-white/[0.02] overflow-hidden h-full">
+    <div className="flex flex-col border border-white/[0.12] rounded-xl bg-white/[0.03] overflow-hidden h-full">
       {/* Header — clickable dropdown trigger */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center justify-between px-5 py-3 border-b border-white/[0.08] cursor-pointer hover:bg-white/[0.02] transition-colors w-full text-left"
+        className="flex items-center justify-between px-5 py-3 border-b border-white/[0.10] cursor-pointer hover:bg-white/[0.03] transition-colors w-full text-left"
       >
-        <span className="text-[10px] font-semibold text-white/60 tracking-[0.15em] uppercase">Agent Fleet</span>
+        <span className="text-[10px] font-semibold text-white/70 tracking-[0.15em] uppercase">Agent Fleet</span>
         <svg
           width="10"
           height="10"
@@ -465,63 +465,80 @@ function AgentFleetPanel() {
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className={`opacity-40 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          className={`opacity-50 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
         >
           <polyline points="6 9 12 15 18 9" />
         </svg>
       </button>
 
-      {/* Dropdown content — smooth open/close */}
+      {/* Dropdown content */}
       <div
-        className="overflow-hidden transition-all duration-300 ease-out border-b border-white/[0.06]"
+        className="overflow-hidden transition-all duration-300 ease-out"
         style={{ maxHeight: open ? 80 : 0, opacity: open ? 1 : 0 }}
       >
-        <div className="px-5 py-2.5 space-y-1">
+        <div className="px-5 py-2.5 space-y-1.5 border-b border-white/[0.08]">
           <div className="flex items-center gap-2">
             <Image src="/logo openclaw.png" alt="OpenClaw" width={14} height={14} className="rounded-sm shrink-0" />
-            <span className="text-[12px] text-white/70">OpenClaw as the control layer</span>
+            <span className="text-[13px] text-white/80">OpenClaw as the control layer</span>
           </div>
           <div className="flex items-center gap-2">
             <Image src="/logo claude code.png" alt="Claude Code" width={14} height={14} className="rounded-sm shrink-0" />
-            <span className="text-[12px] text-white/70">Claude Code for parallel execution</span>
+            <span className="text-[13px] text-white/80">Claude Code for parallel execution</span>
           </div>
         </div>
       </div>
 
-      {/* Agent fleet — clean vertical list, no boxes */}
-      <div className="flex-1 flex flex-col items-center justify-center px-5 py-5 gap-4">
-        {/* OpenClaw — control layer */}
-        <div className="flex items-center gap-2.5">
-          <Image src="/logo openclaw.png" alt="OpenClaw" width={18} height={18} className="rounded-sm shrink-0" />
-          <div>
-            <p className="text-[13px] font-semibold text-white leading-none">OpenClaw</p>
-            <p className="text-[10px] text-white/50 mt-0.5">Control layer</p>
-          </div>
-        </div>
-
-        {/* Connector */}
-        <div className="w-px h-4 bg-white/15" />
-
-        {/* Claude agents — clean horizontal row, no boxes */}
-        <div className="flex items-center gap-5">
-          {CLAUDE_AGENTS.map((agent) => (
-            <div key={agent.label} className="flex items-center gap-1.5">
-              <Image src="/logo claude.png" alt="Claude" width={14} height={14} className="rounded-sm shrink-0" />
-              <span className="text-[12px] text-white/70">{agent.label}</span>
+      {/* Agent fleet visualization — L-shape layout with OpenClaw center */}
+      <div className="flex-1 flex items-center justify-center px-5 py-4">
+        <div className="flex items-start gap-0">
+          {/* Left column: Research + Enrichment stacked vertically */}
+          <div className="flex flex-col items-end gap-3">
+            <div className="flex items-center gap-2">
+              <Image src="/logo claude.png" alt="Claude" width={20} height={20} className="rounded-sm shrink-0" />
+              <span className="text-[15px] text-white/90 font-medium">Research</span>
             </div>
-          ))}
+            <div className="flex items-center gap-2">
+              <Image src="/logo claude.png" alt="Claude" width={20} height={20} className="rounded-sm shrink-0" />
+              <span className="text-[15px] text-white/90 font-medium">Enrichment</span>
+            </div>
+          </div>
+
+          {/* Center: connecting lines + OpenClaw logo */}
+          <div className="flex flex-col items-center mx-4 gap-0">
+            {/* Horizontal line from left agents */}
+            <div className="flex items-center">
+              <div className="w-4 h-px bg-white/20" />
+              <div className="relative">
+                <Image src="/logo openclaw.png" alt="OpenClaw" width={32} height={32} className="rounded-md shrink-0" />
+              </div>
+              <div className="w-4 h-px bg-white/20" />
+            </div>
+            <p className="text-[9px] text-white/40 mt-1 tracking-wide uppercase">Control</p>
+          </div>
+
+          {/* Right column: Outreach + Content stacked vertically */}
+          <div className="flex flex-col items-start gap-3">
+            <div className="flex items-center gap-2">
+              <Image src="/logo claude.png" alt="Claude" width={20} height={20} className="rounded-sm shrink-0" />
+              <span className="text-[15px] text-white/90 font-medium">Outreach</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Image src="/logo claude.png" alt="Claude" width={20} height={20} className="rounded-sm shrink-0" />
+              <span className="text-[15px] text-white/90 font-medium">Content</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-/* ── Slide 3 — uses same layout structure as Slide 2 ── */
+/* ── Slide 3 — EXACT same layout shell as Slide 2 (Problem) ── */
 
 function Slide3() {
   return (
     <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full justify-center overflow-hidden">
-      {/* Title — centered, same position as problem slide */}
+      {/* Title — centered, SAME as Problem slide */}
       <div className="text-center mb-8 sm:mb-10">
         <h2 className="sm:hidden text-[26px] font-bold text-white leading-[1.25] tracking-tight">
           Built for companies that want
@@ -535,7 +552,7 @@ function Slide3() {
         </h2>
       </div>
 
-      {/* Two-panel layout on desktop, workflow only + agent fleet selector on mobile */}
+      {/* Content area — centered, max-w-3xl like Problem slide grid */}
       <div className="flex justify-center">
         <div className="w-full max-w-3xl">
           {/* Desktop: two panels side by side */}
@@ -544,76 +561,29 @@ function Slide3() {
             <AgentFleetPanel />
           </div>
 
-          {/* Mobile: workflow panel + agent fleet dropdown only */}
-          <div className="md:hidden space-y-4">
-            <div style={{ height: 260 }}>
+          {/* Mobile: workflow + always-open agent fleet info */}
+          <div className="md:hidden space-y-3">
+            <div style={{ height: 240 }}>
               <WorkflowPanel />
             </div>
-            {/* Compact agent fleet on mobile — just the dropdown */}
-            <div className="border border-white/[0.10] rounded-xl bg-white/[0.02] overflow-hidden">
-              <AgentFleetMobile />
+            {/* Agent Fleet — always open, no dropdown, just the two lines */}
+            <div className="border border-white/[0.12] rounded-xl bg-white/[0.03] px-5 py-3">
+              <p className="text-[10px] font-semibold text-white/70 tracking-[0.15em] uppercase mb-2">Agent Fleet</p>
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <Image src="/logo openclaw.png" alt="OpenClaw" width={14} height={14} className="rounded-sm shrink-0" />
+                  <span className="text-[13px] text-white/80">OpenClaw as the control layer</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Image src="/logo claude code.png" alt="Claude Code" width={14} height={14} className="rounded-sm shrink-0" />
+                  <span className="text-[13px] text-white/80">Claude Code for parallel execution</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
-}
-
-/* ── Mobile-only Agent Fleet (compact) ──────────── */
-
-function AgentFleetMobile() {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center justify-between px-5 py-3 w-full text-left"
-      >
-        <span className="text-[10px] font-semibold text-white/60 tracking-[0.15em] uppercase">Agent Fleet</span>
-        <svg
-          width="10"
-          height="10"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="white"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={`opacity-40 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </button>
-      <div
-        className="overflow-hidden transition-all duration-300 ease-out"
-        style={{ maxHeight: open ? 200 : 0, opacity: open ? 1 : 0 }}
-      >
-        <div className="px-5 pb-4 space-y-3">
-          {/* OpenClaw + Claude Code descriptions */}
-          <div className="space-y-1.5 pb-3 border-b border-white/[0.06]">
-            <div className="flex items-center gap-2">
-              <Image src="/logo openclaw.png" alt="OpenClaw" width={14} height={14} className="rounded-sm shrink-0" />
-              <span className="text-[12px] text-white/70">OpenClaw as the control layer</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Image src="/logo claude code.png" alt="Claude Code" width={14} height={14} className="rounded-sm shrink-0" />
-              <span className="text-[12px] text-white/70">Claude Code for parallel execution</span>
-            </div>
-          </div>
-          {/* Agent list */}
-          <div className="flex flex-wrap gap-x-5 gap-y-2">
-            {CLAUDE_AGENTS.map((agent) => (
-              <div key={agent.label} className="flex items-center gap-1.5">
-                <Image src="/logo claude.png" alt="Claude" width={14} height={14} className="rounded-sm shrink-0" />
-                <span className="text-[12px] text-white/70">{agent.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </>
   );
 }
 
