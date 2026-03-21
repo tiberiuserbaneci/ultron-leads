@@ -353,134 +353,212 @@ function Slide2() {
 /*  SLIDE 3: THE SOLUTION                                          */
 /* ═══════════════════════════════════════════════════════════════ */
 
-const AGENTS = [
-  { name: "Research", desc: "Market and competitor intelligence" },
-  { name: "Outreach", desc: "Sequenced email and LinkedIn" },
-  { name: "Content", desc: "Articles, posts, and distribution" },
-  { name: "Monitoring", desc: "Alerts, signals, and tracking" },
-  { name: "Enrichment", desc: "Lead scoring and data routing" },
+/* ── Workflow transcript data ──────────────────── */
+
+const TRANSCRIPT_LINES: { type: "action" | "sub" | "gap"; text: string; accent?: boolean }[] = [
+  { type: "action", text: "Identifying the tools needed for this workflow" },
+  { type: "action", text: "Checking Apollo, HubSpot, and scoring capabilities" },
+  { type: "action", text: "Creating Lead Enrichment & Router" },
+  { type: "sub", text: "Agent created successfully" },
+  { type: "gap", text: "" },
+  { type: "action", text: "Attaching workflow tools" },
+  { type: "sub", text: "Apollo enrichment attached" },
+  { type: "sub", text: "ICP scoring attached" },
+  { type: "sub", text: "HubSpot routing attached" },
+  { type: "gap", text: "" },
+  { type: "action", text: "Configuring trigger" },
+  { type: "sub", text: "New HubSpot contact" },
+  { type: "gap", text: "" },
+  { type: "action", text: "Testing the workflow" },
+  { type: "sub", text: "Apollo enrichment" },
+  { type: "sub", text: "ICP scoring" },
+  { type: "sub", text: "HubSpot routing" },
+  { type: "sub", text: "All tests passed", accent: true },
+  { type: "gap", text: "" },
+  { type: "action", text: "Publishing workflow" },
+  { type: "sub", text: "Lead Enrichment & Router is now live", accent: true },
 ];
 
-const INTEGRATIONS_GRID = [
+const TRANSCRIPT_STATUS = [
+  { label: "Name", value: "Lead Enrichment & Router" },
+  { label: "Status", value: "Live", accent: true },
+  { label: "Trigger", value: "New HubSpot contact" },
+];
+
+/* ── Architecture data ─────────────────────────── */
+
+const CLAUDE_AGENTS = [
+  { label: "Research" },
+  { label: "Enrichment" },
+  { label: "Outreach" },
+  { label: "Content" },
+];
+
+const ARCH_TOOLS = [
   { name: "Apollo", logo: "/apollo.png" },
   { name: "HubSpot", logo: "/hubspot.png" },
   { name: "Gmail", logo: "/gmail.png" },
   { name: "Notion", logo: "/notion.png" },
-  { name: "Calendly", logo: "/calendly.png" },
   { name: "Apify", logo: "/apify.png" },
   { name: "Airtable", logo: "/airtable.png" },
-  { name: "ClickUp", logo: "/clickup.png" },
-  { name: "Instagram", logo: "/instagram.png" },
-  { name: "Brave", logo: "/brave.png" },
-  { name: "Google Meet", logo: "/meet.png" },
-  { name: "Google Maps", logo: "/maps.png" },
 ];
 
-const EXECUTION_BLOCKS = [
-  { title: "Runs in parallel", body: "Multiple agents execute simultaneously across different functions." },
-  { title: "Works across your stack", body: "Reads, writes, and acts inside the tools you already use." },
-  { title: "Keeps output moving daily", body: "Work continues through an agent layer that does not wait for manual follow-through." },
-  { title: "Replaces manual coordination", body: "No more chasing updates. The system moves work forward on its own." },
-];
+/* ── Workflow panel ────────────────────────────── */
 
-function SolutionTab1() {
+function WorkflowPanel() {
   return (
-    <>
-      <div className="grid sm:grid-cols-2 gap-x-8 lg:gap-x-14 gap-y-4 mb-5">
-        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white leading-tight">
-          Deploy OpenClaw and Claude Code agent fleets in minutes
-        </h3>
-        <p className="text-sm text-white/50 leading-relaxed self-end">
-          OpenClaw coordinates the system. Claude Code handles parallel execution. Together they deploy agents, wire integrations, test pipelines, fix issues, and keep work moving without constant manual supervision.
+    <div className="flex flex-col border border-white/[0.08] rounded-xl bg-white/[0.02] overflow-hidden h-full">
+      <div className="px-4 py-3 border-b border-white/[0.06]">
+        <span className="text-[10px] font-semibold text-white/40 tracking-[0.15em] uppercase">Workflow</span>
+      </div>
+      <div className="flex-1 overflow-y-auto px-4 py-3 min-h-0 custom-scrollbar" style={{ maxHeight: 320 }}>
+        {/* Transcript lines */}
+        <div className="space-y-[2px]">
+          {TRANSCRIPT_LINES.map((line, i) => {
+            if (line.type === "gap") return <div key={i} className="h-2" />;
+            if (line.type === "sub") {
+              return (
+                <div key={i} className="flex items-start gap-1.5 pl-4">
+                  <span className="text-white/20 text-[11px] leading-[18px] select-none">└</span>
+                  <span className={`text-[11px] leading-[18px] font-mono ${line.accent ? "text-green-400/80" : "text-white/35"}`}>
+                    {line.text}
+                  </span>
+                </div>
+              );
+            }
+            return (
+              <div key={i} className="flex items-start gap-2">
+                <span className="w-[5px] h-[5px] rounded-full bg-white/30 mt-[7px] shrink-0" />
+                <span className="text-[11px] leading-[18px] font-mono text-white/55">{line.text}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Status table */}
+        <div className="mt-3 border border-white/[0.06] rounded-lg overflow-hidden">
+          {TRANSCRIPT_STATUS.map((row) => (
+            <div key={row.label} className="flex border-b border-white/[0.06] last:border-b-0">
+              <span className="text-[10px] font-semibold text-white/40 px-3 py-1.5 w-16 shrink-0">{row.label}</span>
+              <span className={`text-[10px] px-3 py-1.5 ${row.accent ? "text-green-400/80 font-semibold" : "text-white/55"}`}>{row.value}</span>
+            </div>
+          ))}
+        </div>
+
+        <p className="text-[10px] text-white/30 mt-3 leading-relaxed">
+          New leads are automatically enriched, scored, and routed to the right rep.
         </p>
       </div>
+    </div>
+  );
+}
 
-      <div className="border border-white/[0.08] rounded-xl p-4 sm:p-5">
-        <div className="flex items-center gap-3 mb-3 pb-3 border-b border-white/[0.06]">
-          <Image src="/logo openclaw.png" alt="OpenClaw" width={18} height={18} className="rounded" />
-          <span className="text-[10px] font-semibold text-white/60 tracking-wider uppercase">Control Layer</span>
-          <div className="flex-1 h-px bg-white/[0.06]" />
-          <Image src="/logo claude code.png" alt="Claude Code" width={18} height={18} className="rounded" />
-          <span className="text-[10px] font-semibold text-white/60 tracking-wider uppercase">Execution</span>
+/* ── Architecture panel ────────────────────────── */
+
+function ArchitecturePanel() {
+  return (
+    <div className="flex flex-col border border-white/[0.08] rounded-xl bg-white/[0.02] overflow-hidden h-full">
+      <div className="px-4 py-3 border-b border-white/[0.06]">
+        <span className="text-[10px] font-semibold text-white/40 tracking-[0.15em] uppercase">Ultron&apos;s Architecture</span>
+      </div>
+      <div className="flex-1 flex flex-col items-center justify-between px-4 py-4 gap-3 min-h-0">
+        {/* OpenClaw — control layer */}
+        <div className="flex items-center gap-2 bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-2.5">
+          <Image src="/logo openclaw.png" alt="OpenClaw" width={16} height={16} className="rounded-sm shrink-0" />
+          <div>
+            <p className="text-[12px] font-semibold text-white leading-none">OpenClaw</p>
+            <p className="text-[9px] text-white/35 mt-0.5">Control layer</p>
+          </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-          {AGENTS.map((a) => (
-            <div key={a.name} className="bg-white/[0.03] border border-white/[0.06] rounded-lg p-3">
-              <p className="text-xs sm:text-sm font-medium text-white mb-0.5">{a.name}</p>
-              <p className="text-[10px] text-white/40">{a.desc}</p>
+
+        {/* Connector lines down */}
+        <div className="flex items-center justify-center gap-6 sm:gap-8 w-full">
+          {CLAUDE_AGENTS.map((_, i) => (
+            <div key={i} className="flex flex-col items-center">
+              <div className="w-px h-3 bg-white/10" />
+              <div className="w-1 h-1 rounded-full bg-white/15" />
+            </div>
+          ))}
+        </div>
+
+        {/* Claude Code agents — parallel execution */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full">
+          {CLAUDE_AGENTS.map((agent) => (
+            <div key={agent.label} className="flex items-center gap-1.5 bg-white/[0.03] border border-white/[0.06] rounded-lg px-2.5 py-2">
+              <Image src="/logo claude code.png" alt="Claude Code" width={12} height={12} className="rounded-sm shrink-0" />
+              <div>
+                <p className="text-[10px] text-white/60 leading-none">{agent.label}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Connector lines down */}
+        <div className="flex items-center justify-center w-full">
+          <div className="w-px h-3 bg-white/10" />
+        </div>
+
+        {/* Connected tools */}
+        <div className="flex flex-wrap justify-center gap-1.5">
+          {ARCH_TOOLS.map((tool) => (
+            <div key={tool.name} className="flex items-center gap-1.5 bg-white/[0.02] border border-white/[0.06] rounded-md px-2 py-1.5">
+              <Image src={tool.logo} alt={tool.name} width={12} height={12} className="rounded-sm shrink-0" />
+              <span className="text-[9px] text-white/45">{tool.name}</span>
             </div>
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
-function SolutionTab2() {
-  return (
-    <>
-      <div className="grid sm:grid-cols-2 gap-x-8 lg:gap-x-14 gap-y-4 mb-5">
-        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white leading-tight">
-          100+ GTM integrations. One subscription, access to the apps you need.
-        </h3>
-        <p className="text-sm text-white/50 leading-relaxed self-end">
-          CRMs, email, calendars, enrichment tools, scraping tools, and outbound systems. Ultron agents can read, write, and act across the GTM stack while we handle vendor complexity, billing, and testing.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-        {INTEGRATIONS_GRID.map((item) => (
-          <div key={item.name} className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.06] rounded-lg p-2.5">
-            <Image src={item.logo} alt={item.name} width={22} height={22} className="rounded shrink-0" />
-            <span className="text-xs text-white/70 truncate">{item.name}</span>
-          </div>
-        ))}
-      </div>
-    </>
-  );
-}
-
-function SolutionTab3() {
-  return (
-    <>
-      <div className="grid sm:grid-cols-2 gap-x-8 lg:gap-x-14 gap-y-4 mb-5">
-        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white leading-tight">
-          From prompt-driven work to system-driven execution
-        </h3>
-        <p className="text-sm text-white/50 leading-relaxed self-end">
-          Most AI products stop at assistance. Ultron is built for repeatable execution across research, lead generation, outreach, content, and follow-up, inside one operating layer.
-        </p>
-      </div>
-
-      <div className="grid sm:grid-cols-2 gap-3">
-        {EXECUTION_BLOCKS.map((b) => (
-          <div key={b.title} className="border border-white/[0.08] rounded-xl p-5">
-            <h4 className="text-sm font-semibold text-white mb-1.5">{b.title}</h4>
-            <p className="text-xs sm:text-sm text-white/50 leading-relaxed">{b.body}</p>
-          </div>
-        ))}
-      </div>
-    </>
-  );
-}
+/* ── Slide 3 ───────────────────────────────────── */
 
 function Slide3() {
-  const [solutionTab, setSolutionTab] = useState(0);
-  const tabs = ["Agent Fleet", "Integrations", "Execution"];
-
   return (
-    <SlideLayout
-      pill="The Solution"
-      title="Built for 100x founder-led businesses"
-    >
-      <div className="mb-5">
-        <SlideTabSwitcher tabs={tabs} active={solutionTab} onChange={setSolutionTab} />
+    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full pt-5 sm:pt-6 pb-3 sm:pb-5 overflow-hidden">
+      {/* Eyebrow */}
+      <div className="mb-3 sm:mb-4">
+        <span className="inline-block text-[11px] sm:text-sm font-semibold tracking-[0.2em] uppercase text-white/40">
+          The Solution
+        </span>
       </div>
 
-      {solutionTab === 0 && <SolutionTab1 />}
-      {solutionTab === 1 && <SolutionTab2 />}
-      {solutionTab === 2 && <SolutionTab3 />}
-    </SlideLayout>
+      {/* Main line */}
+      <h2 className="text-[22px] sm:text-[28px] lg:text-[36px] font-bold text-white leading-[1.2] tracking-tight mb-4 sm:mb-5 max-w-2xl">
+        Built for companies that want to scale results,
+        <br />
+        not headcount
+      </h2>
+
+      {/* Agent Fleet selector — always open */}
+      <div className="mb-5 sm:mb-6 inline-block self-start">
+        {/* Pill trigger */}
+        <div className="inline-flex items-center gap-1.5 bg-white/[0.06] border border-white/[0.10] rounded-t-xl px-4 py-2 cursor-default">
+          <span className="text-[13px] font-medium text-white">Agent Fleet</span>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-40 rotate-180">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </div>
+        {/* Expanded dropdown */}
+        <div className="bg-[#111] border border-white/[0.08] border-t-0 rounded-b-xl px-1 py-1 w-72">
+          <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg">
+            <Image src="/logo openclaw.png" alt="OpenClaw" width={14} height={14} className="rounded-sm shrink-0" />
+            <span className="text-[12px] text-white/60">OpenClaw as the control layer</span>
+          </div>
+          <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg">
+            <Image src="/logo claude code.png" alt="Claude Code" width={14} height={14} className="rounded-sm shrink-0" />
+            <span className="text-[12px] text-white/60">Claude Code for parallel execution</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Two-panel layout */}
+      <div className="flex-1 min-h-0 grid md:grid-cols-2 gap-4">
+        <WorkflowPanel />
+        <ArchitecturePanel />
+      </div>
+    </div>
   );
 }
 
