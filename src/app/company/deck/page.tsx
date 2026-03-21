@@ -113,9 +113,9 @@ export default function DeckPage() {
   };
 
   return (
-    <div className={`bg-[#0a0a0a] -mt-[72px] -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw] overflow-x-hidden flex flex-col ${tab === "deck" ? "h-[100dvh] overflow-hidden" : "min-h-screen pt-[72px]"}`}>
+    <div className={`bg-[#0a0a0a] -mt-16 -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw] flex flex-col ${tab === "deck" ? "h-[calc(100dvh-64px)] overflow-hidden" : "min-h-screen"}`}>
       {/* ── Top bar: Tab switcher + More menu ────────────────── */}
-      <div className={`max-w-[1920px] mx-auto px-6 sm:px-8 pb-2 flex items-center justify-center gap-3 ${tab === "deck" ? "pt-[calc(72px+8px)]" : "pt-2"}`}>
+      <div className="shrink-0 max-w-[1920px] mx-auto px-6 sm:px-8 pt-2 pb-2 flex items-center justify-center gap-3">
         {/* Tab switcher */}
         <div className="flex items-center bg-white/[0.04] rounded-full p-1 border border-white/[0.06]">
           <button
