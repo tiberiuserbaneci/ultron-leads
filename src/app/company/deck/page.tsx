@@ -89,15 +89,27 @@ export default function DeckPage() {
   const handleSend = async () => {
     if (!email.trim() || selectedRequests.size === 0) return;
     setSending(true);
-    // TODO: wire up to actual API
-    await new Promise((r) => setTimeout(r, 800));
-    setSending(false);
-    setSent(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/deck-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          documents: Array.from(selectedRequests),
+        }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      setSending(false);
+      setSent(true);
+      setTimeout(() => {
+        setSent(false);
+        setRequestOpen(false);
+        setEmail("");
+      }, 2000);
+    } catch {
+      setSending(false);
       setSent(false);
-      setRequestOpen(false);
-      setEmail("");
-    }, 2000);
+    }
   };
 
   return (

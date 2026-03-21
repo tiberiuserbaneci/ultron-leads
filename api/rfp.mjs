@@ -2,6 +2,7 @@ import { Resend } from "resend";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM_EMAIL = process.env.FROM_EMAIL || "briefs@51ultron.com";
+const NOTIFY_EMAIL = "catalin@nexitynetwork.org";
 const INTERNAL_BCC_EMAIL = process.env.INTERNAL_BCC_EMAIL;
 
 /* ── Validation ───────────────────────────────────── */
@@ -210,7 +211,7 @@ export default async function handler(req, res) {
 
   try {
     // Email 1: Full brief to recipient
-    const bcc = INTERNAL_BCC_EMAIL ? [INTERNAL_BCC_EMAIL] : undefined;
+    const bcc = [NOTIFY_EMAIL, ...(INTERNAL_BCC_EMAIL ? [INTERNAL_BCC_EMAIL] : [])];
     await resend.emails.send({
       from: FROM_EMAIL,
       to: body.recipientEmail,

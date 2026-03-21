@@ -237,8 +237,58 @@ function SalesForm() {
     heardFrom: "",
   });
 
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+
   const set = (key: keyof typeof form) => (v: string) =>
     setForm((prev) => ({ ...prev, [key]: v }));
+
+  const handleSubmit = async () => {
+    setError("");
+    const required: (keyof typeof form)[] = ["firstName", "lastName", "email", "phone", "company", "website", "jobTitle", "industry", "country", "product", "journey", "message"];
+    const missing = required.filter((f) => !form[f].trim());
+    if (missing.length > 0) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, formType: "sales" }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Something went wrong");
+      }
+      setSubmitted(true);
+    } catch (err: any) {
+      setError(err.message || "Failed to submit. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div className="text-center py-8">
+        <div className="w-12 h-12 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-4">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#22c55e" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <p className="text-white font-semibold mb-1">Message sent</p>
+        <p className="text-[#888] text-sm">Our team will get back to you shortly.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5">
@@ -322,8 +372,14 @@ function SalesForm() {
         <Select options={HEARD_OPTIONS} value={form.heardFrom} onChange={set("heardFrom")} />
       </div>
 
-      <button className="mt-2 text-sm font-semibold text-black bg-white rounded-full px-8 py-3 hover:bg-[#e0e0e0] transition-colors">
-        Submit
+      {error && <p className="text-red-400 text-sm">{error}</p>}
+
+      <button
+        onClick={handleSubmit}
+        disabled={submitting}
+        className="mt-2 text-sm font-semibold text-black bg-white rounded-full px-8 py-3 hover:bg-[#e0e0e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {submitting ? "Submitting…" : "Submit"}
       </button>
     </div>
   );
@@ -346,8 +402,58 @@ function AgreementForm({ helpType }: { helpType: HelpType }) {
     apiOnly: false,
   });
 
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+
   const set = (key: keyof typeof form) => (v: string) =>
     setForm((prev) => ({ ...prev, [key]: v }));
+
+  const handleSubmit = async () => {
+    setError("");
+    const required: (keyof typeof form)[] = ["signerFirst", "signerLast", "email", "legalName", "product", "orgId", "euUk", "useCase"];
+    const missing = required.filter((f) => !String(form[f]).trim());
+    if (missing.length > 0) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, formType: "agreement", helpType }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Something went wrong");
+      }
+      setSubmitted(true);
+    } catch (err: any) {
+      setError(err.message || "Failed to submit. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div className="text-center py-8">
+        <div className="w-12 h-12 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-4">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#22c55e" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <p className="text-white font-semibold mb-1">Request submitted</p>
+        <p className="text-[#888] text-sm">Our team will get back to you shortly.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5">
@@ -413,8 +519,14 @@ function AgreementForm({ helpType }: { helpType: HelpType }) {
         </span>
       </label>
 
-      <button className="mt-2 text-sm font-semibold text-black bg-white rounded-full px-8 py-3 hover:bg-[#e0e0e0] transition-colors">
-        Submit
+      {error && <p className="text-red-400 text-sm">{error}</p>}
+
+      <button
+        onClick={handleSubmit}
+        disabled={submitting}
+        className="mt-2 text-sm font-semibold text-black bg-white rounded-full px-8 py-3 hover:bg-[#e0e0e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {submitting ? "Submitting…" : "Submit"}
       </button>
     </div>
   );
