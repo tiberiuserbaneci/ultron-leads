@@ -536,94 +536,87 @@ function Slide3() {
 /*  SLIDE 4: TRACTION AND GTM                                     */
 /* ═══════════════════════════════════════════════════════════════ */
 
+const FLOW_STEPS = ["Viral post", "Comment CTA", "Lead magnet", "Free trial"];
+
+const ENTERPRISE_POINTS = [
+  { title: "Higher ACV entry point", body: "Custom automation projects start at higher contract values, creating a stronger revenue base from fewer accounts." },
+  { title: "Faster learning from real customer workflows", body: "Every enterprise engagement surfaces real operational patterns that feed back into the core product." },
+  { title: "Expands product depth through real use cases", body: "Each deployment adds new workflow coverage, making the platform more capable over time." },
+];
+
 function Slide4() {
   const live = useLiveStats();
   const fmtK = (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toLocaleString();
 
   const stats = [
-    { value: live.founders.toLocaleString(), label: "founders" },
-    { value: fmtK(live.tasks), label: "tasks" },
-    { value: `$${Math.round(live.saved / 1000)}K`, label: "saved" },
+    { value: live.founders.toLocaleString(), label: "Founders" },
+    { value: fmtK(live.tasks), label: "Tasks" },
+    { value: `$${Math.round(live.saved / 1000)}K`, label: "Saved" },
   ];
 
   return (
     <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full justify-center overflow-hidden">
-      {/* Main line — centered, same as other slides */}
+      {/* Main line */}
       <div className="text-center mb-6 sm:mb-8">
-        <h2 className="sm:hidden text-[22px] font-bold text-white leading-[1.25] tracking-tight">
-          Content-driven distribution
+        <h2 className="text-[24px] sm:text-[28px] lg:text-[36px] xl:text-[40px] font-bold text-white leading-[1.2] tracking-tight">
+          Content-driven distribution engine
           <br />
-          and custom automation systems
-          <br />
-          for enterprise growth
-        </h2>
-        <h2 className="hidden sm:block text-[28px] lg:text-[36px] xl:text-[40px] font-bold text-white leading-[1.2] tracking-tight">
-          Content-driven distribution and custom automation
-          <br />
-          systems for enterprise growth
+          and network effect
         </h2>
       </div>
 
-      {/* KPI row — 3 metrics, clean */}
+      {/* KPI row — 3 metrics, balanced sizing */}
       <div className="flex justify-center mb-6 sm:mb-8">
-        <div className="flex items-baseline gap-8 sm:gap-14">
+        <div className="flex items-center gap-8 sm:gap-14">
           {stats.map((s) => (
             <div key={s.label} className="text-center">
-              <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tabular-nums">{s.value}</p>
-              <p className="text-[11px] sm:text-xs text-white/50 mt-1">{s.label}</p>
+              <p className="text-lg sm:text-xl lg:text-2xl font-bold text-white tabular-nums">{s.value}</p>
+              <p className="text-xs sm:text-sm text-white/50 mt-0.5">{s.label}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Two panels — centered, max-w-3xl */}
+      {/* Two panels */}
       <div className="flex justify-center">
         <div className="w-full max-w-3xl grid md:grid-cols-2 gap-4">
           {/* Left: Viral Distribution */}
-          <div className="border border-white/[0.12] rounded-xl bg-white/[0.03] px-5 py-4">
-            <div className="mb-3">
-              <p className="text-[10px] font-semibold text-white/70 tracking-[0.15em] uppercase mb-1">Viral Distribution</p>
-              <p className="text-[13px] text-white/60 leading-snug">A content engine designed to turn attention into product entry</p>
+          <div className="flex flex-col border border-white/[0.12] rounded-xl bg-white/[0.03] overflow-hidden">
+            <div className="px-5 py-3 border-b border-white/[0.10]">
+              <span className="text-[10px] font-semibold text-white/70 tracking-[0.15em] uppercase">Viral Distribution</span>
             </div>
+            <div className="px-5 py-4 flex-1">
+              <p className="text-[15px] text-white/80 leading-snug mb-4">A content engine designed to turn attention into product entry</p>
 
-            {/* Vertical flow */}
-            <div className="space-y-0">
-              {["Viral post", "Comment CTA", "Lead magnet", "Free trial"].map((step, i) => (
-                <div key={step}>
-                  <div className="flex items-center gap-2.5 py-2">
-                    <span className="w-5 h-5 rounded-full border border-white/[0.15] flex items-center justify-center shrink-0">
-                      <span className="text-[9px] text-white/50 font-medium">{i + 1}</span>
-                    </span>
-                    <span className="text-[14px] text-white/90">{step}</span>
+              {/* Vertical flow with animation */}
+              <div>
+                {FLOW_STEPS.map((step, i) => (
+                  <div key={step} className="animate-slide-up" style={{ animationDelay: `${i * 150}ms`, animationFillMode: "both" }}>
+                    <div className="flex items-center gap-2.5 py-2">
+                      <span className="w-5 h-5 rounded-full border border-white/[0.15] flex items-center justify-center shrink-0">
+                        <span className="text-[9px] text-white/50 font-medium">{i + 1}</span>
+                      </span>
+                      <span className="text-[14px] text-white/90">{step}</span>
+                    </div>
+                    {i < 3 && (
+                      <div className="ml-[10px] flex flex-col items-center">
+                        <div className="w-px h-3 bg-gradient-to-b from-white/20 to-white/5" />
+                      </div>
+                    )}
                   </div>
-                  {i < 3 && <div className="w-px h-2.5 bg-white/15 ml-[10px]" />}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Right: Enterprise Sales */}
-          <div className="border border-white/[0.12] rounded-xl bg-white/[0.03] px-5 py-4">
-            <div className="mb-4">
-              <p className="text-[10px] font-semibold text-white/70 tracking-[0.15em] uppercase mb-1">Enterprise Sales</p>
-              <p className="text-[13px] text-white/60 leading-snug">Custom automation systems for companies with heavier execution needs</p>
-            </div>
-
-            {/* Three points */}
-            <div className="space-y-3">
-              {[
-                "Higher ACV entry point",
-                "Faster learning from real customer workflows",
-                "Expands product depth through real use cases",
-              ].map((point) => (
-                <div key={point} className="flex items-start gap-2.5">
-                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2} className="shrink-0 mt-0.5 opacity-50">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span className="text-[14px] text-white/85 leading-snug">{point}</span>
-                </div>
-              ))}
-            </div>
+          {/* Right: Enterprise Sales — 3 stacked cards */}
+          <div className="flex flex-col gap-3">
+            {ENTERPRISE_POINTS.map((point) => (
+              <div key={point.title} className="border border-white/[0.08] rounded-xl p-4">
+                <h3 className="text-sm font-semibold text-white mb-1.5">{point.title}</h3>
+                <p className="text-[13px] text-white/50 leading-relaxed">{point.body}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
