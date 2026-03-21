@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useLiveStats } from "@/components/HeroStats";
 
@@ -119,37 +119,214 @@ function Slide1() {
 /*  SLIDE 2: THE PROBLEM                                           */
 /* ═══════════════════════════════════════════════════════════════ */
 
-const PROBLEMS = [
-  {
-    title: "Manual handoffs slow everything down",
-    body: "Work moves through Slack, email, and follow-ups instead of one clear system.",
-  },
-  {
-    title: "Leaders see problems too late",
-    body: "By the time teams piece together what happened, the moment to fix it has already passed.",
-  },
-  {
-    title: "Broken processes stay hidden until they hurt",
-    body: "Most teams do not catch bottlenecks early. They find them after output drops, customers wait, or revenue slips.",
-  },
+/* ── Problem slide task data ─────────────────── */
+
+const TASK_COLUMNS = [
+  ["Find prospects", "Enrich contacts", "Personalize outreach", "Send follow-ups", "Update pipelines"],
+  ["Generate content ideas", "Draft posts", "Repurpose winners", "Write captions", "Track performance"],
+  ["Build workflows", "Connect tools", "Route tasks", "Generate reports", "Fix broken steps"],
 ];
 
-function Slide2() {
+const TOTAL_TASKS = 15;
+const STAGGER_MS = 180;
+const HOLD_MS = 2200;
+const RESET_MS = 600;
+const BOTTOM_REVEAL_AT = 10; // reveal bottom line after this many tasks completed
+
+/* ── Checkbox SVG (unchecked / checked) ──────── */
+
+function TaskCheckbox({ checked }: { checked: boolean }) {
   return (
-    <SlideLayout
-      pill="The Problem"
-      title="Growth breaks when execution depends on people chasing people."
+    <span
+      className="inline-flex items-center justify-center shrink-0 rounded transition-colors duration-300"
+      style={{ width: 18, height: 18, border: checked ? "none" : "1.5px solid rgba(255,255,255,0.15)", background: checked ? "#6C63FF" : "transparent" }}
     >
-      <div className="h-px bg-white/[0.08] mb-6" />
-      <div className="grid md:grid-cols-3 gap-4 sm:gap-5">
-        {PROBLEMS.map((p) => (
-          <div key={p.title} className="border border-white/[0.08] rounded-xl p-5">
-            <h3 className="text-sm sm:text-[15px] font-semibold text-white mb-2">{p.title}</h3>
-            <p className="text-xs sm:text-sm text-white/50 leading-relaxed">{p.body}</p>
-          </div>
-        ))}
+      {checked && (
+        <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={3}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+      )}
+    </span>
+  );
+}
+
+/* ── Single task row with animated strike-through ── */
+
+function TaskRow({ label, checked }: { label: string; checked: boolean }) {
+  return (
+    <div className="flex items-center gap-3 py-[6px]">
+      <TaskCheckbox checked={checked} />
+      <span className="relative text-sm text-white/70 select-none" style={{ opacity: checked ? 0.45 : 1, transition: "opacity 0.4s ease" }}>
+        {label}
+        {/* Animated strike-through line */}
+        <span
+          className="absolute left-0 top-1/2 h-[1.5px] bg-white/40 origin-left"
+          style={{
+            width: checked ? "100%" : "0%",
+            transition: "width 0.4s ease",
+          }}
+        />
+      </span>
+    </div>
+  );
+}
+
+/* ── Desktop 3-column grid ──────────────────── */
+
+function TaskGridDesktop({ completed }: { completed: number }) {
+  // Row-by-row across columns: row0-col0, row0-col1, row0-col2, row1-col0, ...
+  const isChecked = (col: number, row: number) => {
+    const index = row * 3 + col;
+    return index < completed;
+  };
+
+  return (
+    <div className="hidden md:grid grid-cols-3 gap-x-10 lg:gap-x-16 gap-y-0">
+      {TASK_COLUMNS.map((tasks, colIdx) => (
+        <div key={colIdx}>
+          {tasks.map((task, rowIdx) => (
+            <TaskRow key={task} label={task} checked={isChecked(colIdx, rowIdx)} />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ── Mobile: single column with rotating 5-task blocks ── */
+
+function TaskGridMobile({ completed, blockIndex }: { completed: number; blockIndex: number }) {
+  const block = TASK_COLUMNS[blockIndex % 3];
+  return (
+    <div className="md:hidden">
+      {block.map((task, i) => (
+        <TaskRow key={`${blockIndex}-${task}`} label={task} checked={i < completed} />
+      ))}
+    </div>
+  );
+}
+
+/* ── Slide 2: The Problem ───────────────────── */
+
+function Slide2() {
+  const [gridVisible, setGridVisible] = useState(false);
+  const [completed, setCompleted] = useState(0);
+  const [bottomVisible, setBottomVisible] = useState(false);
+  const [mobileCompleted, setMobileCompleted] = useState(0);
+  const [mobileBlock, setMobileBlock] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Desktop animation loop
+  const runDesktopLoop = useCallback(() => {
+    let count = 0;
+
+    const tick = () => {
+      count++;
+      setCompleted(count);
+
+      if (count >= BOTTOM_REVEAL_AT && !bottomVisible) {
+        setBottomVisible(true);
+      }
+
+      if (count < TOTAL_TASKS) {
+        timerRef.current = setTimeout(tick, STAGGER_MS);
+      } else {
+        // All done — hold, then reset and repeat
+        timerRef.current = setTimeout(() => {
+          setCompleted(0);
+          timerRef.current = setTimeout(() => {
+            runDesktopLoop();
+          }, RESET_MS);
+        }, HOLD_MS);
+      }
+    };
+
+    timerRef.current = setTimeout(tick, STAGGER_MS);
+  }, []); // bottomVisible intentionally omitted — we set it once
+
+  // Mobile animation loop: 5 tasks at a time, then swap block
+  const mobileTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const runMobileLoop = useCallback(() => {
+    let count = 0;
+
+    const tick = () => {
+      count++;
+      setMobileCompleted(count);
+
+      if (count >= 3 && !bottomVisible) {
+        setBottomVisible(true);
+      }
+
+      if (count < 5) {
+        mobileTimerRef.current = setTimeout(tick, STAGGER_MS);
+      } else {
+        // Hold, then swap to next block
+        mobileTimerRef.current = setTimeout(() => {
+          setMobileCompleted(0);
+          setMobileBlock((prev) => prev + 1);
+          mobileTimerRef.current = setTimeout(() => {
+            runMobileLoop();
+          }, RESET_MS);
+        }, HOLD_MS);
+      }
+    };
+
+    mobileTimerRef.current = setTimeout(tick, STAGGER_MS);
+  }, []);
+
+  useEffect(() => {
+    // Fade in grid shortly after mount
+    const initTimer = setTimeout(() => {
+      setGridVisible(true);
+      // Start both loops — CSS will show/hide the right one
+      runDesktopLoop();
+      runMobileLoop();
+    }, 400);
+
+    return () => {
+      clearTimeout(initTimer);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      if (mobileTimerRef.current) clearTimeout(mobileTimerRef.current);
+    };
+  }, [runDesktopLoop, runMobileLoop]);
+
+  return (
+    <div className="flex flex-col h-full px-5 sm:px-10 lg:px-14 max-w-6xl mx-auto w-full justify-center overflow-hidden">
+      {/* Title — centered, large, static */}
+      <div className="text-center mb-10 sm:mb-14">
+        <h2 className="text-2xl sm:text-3xl lg:text-[42px] xl:text-5xl font-bold text-white leading-[1.15] tracking-tight">
+          Most growing businesses are buried in work
+          <br />
+          humans shouldn&apos;t do anymore.
+        </h2>
       </div>
-    </SlideLayout>
+
+      {/* Task grid — fades in */}
+      <div
+        className="max-w-4xl mx-auto w-full"
+        style={{
+          opacity: gridVisible ? 1 : 0,
+          transition: "opacity 0.6s ease",
+        }}
+      >
+        <TaskGridDesktop completed={completed} />
+        <TaskGridMobile completed={mobileCompleted} blockIndex={mobileBlock} />
+      </div>
+
+      {/* Bottom line */}
+      <div
+        className="text-center mt-10 sm:mt-14"
+        style={{
+          opacity: bottomVisible ? 1 : 0,
+          transition: "opacity 0.8s ease",
+        }}
+      >
+        <p className="text-base sm:text-lg lg:text-xl font-semibold text-white/70">
+          Founders can delegate 90% of it to Ultron within 24 hours&nbsp;&rarr;
+        </p>
+      </div>
+    </div>
   );
 }
 
