@@ -468,7 +468,7 @@ function AgentFleetPanel() {
 
 function Slide3() {
   return (
-    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full justify-center overflow-hidden">
+    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full overflow-hidden pt-[8%] sm:pt-[7%]">
       {/* Title — centered, SAME as Problem slide */}
       <div className="text-center mb-8 sm:mb-10">
         <h2 className="sm:hidden text-[26px] font-bold text-white leading-[1.25] tracking-tight">
