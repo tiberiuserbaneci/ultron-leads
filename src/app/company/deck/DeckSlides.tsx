@@ -895,33 +895,33 @@ function Slide7() {
   return (
     <SlideLayout
       pill="Business Model"
-      title="Simple entry point. Usage aligned with value."
+      title="Simple entry point and usage aligned with value."
     >
       <div className="grid md:grid-cols-3 gap-4 sm:gap-5">
-        {/* Subscription */}
+        {/* Entry */}
         <div className="border border-white/[0.08] rounded-xl p-6">
+          <p className="text-[10px] text-white/30 font-semibold tracking-wider uppercase mb-3">Entry</p>
           <p className="text-3xl sm:text-4xl font-bold text-white mb-2">$19<span className="text-base font-normal text-white/40">/mo</span></p>
-          <p className="text-sm font-medium text-white/80 mb-2">Base subscription</p>
           <p className="text-xs sm:text-sm text-white/40 leading-relaxed">
-            Low-friction onboarding into the Ultron product and distribution ecosystem
+            Low-friction entry into the Ultron product and distribution ecosystem
           </p>
         </div>
 
         {/* Usage */}
         <div className="border border-white/[0.08] rounded-xl p-6">
+          <p className="text-[10px] text-white/30 font-semibold tracking-wider uppercase mb-3">Usage</p>
           <p className="text-3xl sm:text-4xl font-bold text-white mb-2">5%<span className="text-base font-normal text-white/40"> fee</span></p>
-          <p className="text-sm font-medium text-white/80 mb-2">On consumed API tokens</p>
           <p className="text-xs sm:text-sm text-white/40 leading-relaxed">
-            Usage-based monetization aligned with actual execution volume. Revenue scales with product usage.
+            On consumed API tokens. Revenue scales with actual execution volume.
           </p>
         </div>
 
         {/* Expansion */}
         <div className="border border-white/[0.08] rounded-xl p-6">
+          <p className="text-[10px] text-white/30 font-semibold tracking-wider uppercase mb-3">Expansion</p>
           <p className="text-3xl sm:text-4xl font-bold text-white mb-2">Custom</p>
-          <p className="text-sm font-medium text-white/80 mb-2">Expansion builds</p>
           <p className="text-xs sm:text-sm text-white/40 leading-relaxed">
-            Custom builds and operational deployments for companies with larger internal automation needs
+            Operational builds for companies with larger internal automation needs
           </p>
         </div>
       </div>
@@ -935,25 +935,17 @@ function Slide7() {
 
 const USE_OF_FUNDS = [
   {
-    title: "Scale distribution",
+    title: "Distribution",
     body: "Expand the content engine, account network, and traffic systems that drive top-of-funnel growth",
   },
   {
-    title: "Deepen product",
+    title: "Product",
     body: "Improve core product quality, add more use cases, and strengthen the execution layer across GTM and operations",
   },
   {
-    title: "Grow capacity",
+    title: "Capacity",
     body: "Support engineering, product iteration, and the systems required to handle increased usage and customer demand",
   },
-];
-
-const MILESTONES = [
-  "Scale the distribution network",
-  "Expand supported workflows and integrations",
-  "Improve product reliability and throughput",
-  "Increase self-serve adoption",
-  "Grow enterprise deployments",
 ];
 
 function Slide8() {
@@ -965,31 +957,14 @@ function Slide8() {
       <div className="h-px bg-white/[0.08] mb-6" />
 
       {/* Use of funds */}
-      <div className="grid md:grid-cols-3 gap-4 sm:gap-5 mb-6">
-        {USE_OF_FUNDS.map((item, i) => (
+      <div className="grid md:grid-cols-3 gap-4 sm:gap-5">
+        {USE_OF_FUNDS.map((item) => (
           <div key={item.title} className="border border-white/[0.08] rounded-xl p-5">
-            <span className="text-[10px] text-white/30 font-medium tracking-wider uppercase">{`0${i + 1}`}</span>
-            <h3 className="text-sm font-semibold text-white mt-2 mb-2">{item.title}</h3>
+            <h3 className="text-sm font-semibold text-white mb-2">{item.title}</h3>
             <p className="text-xs sm:text-sm text-white/50 leading-relaxed">{item.body}</p>
           </div>
         ))}
       </div>
-
-      {/* Milestones */}
-      <div className="border border-white/[0.08] rounded-xl p-5">
-        <p className="text-[10px] text-white/30 font-semibold tracking-wider uppercase mb-3">Milestones</p>
-        <div className="flex flex-wrap gap-2">
-          {MILESTONES.map((m) => (
-            <span key={m} className="text-xs text-white/60 bg-white/[0.04] border border-white/[0.06] rounded-lg px-3 py-1.5">
-              {m}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <p className="mt-5 text-sm text-white/40 leading-relaxed">
-        The goal is to turn Ultron from an early execution system into the default operating layer for founder-led growth.
-      </p>
     </SlideLayout>
   );
 }
