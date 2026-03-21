@@ -408,44 +408,43 @@ const ARCH_TOOLS = [
 function WorkflowPanel() {
   return (
     <div className="flex flex-col border border-white/[0.08] rounded-xl bg-white/[0.02] overflow-hidden h-full">
-      <div className="px-4 py-3 border-b border-white/[0.06]">
-        <span className="text-[10px] font-semibold text-white/40 tracking-[0.15em] uppercase">Workflow</span>
+      <div className="px-4 sm:px-5 py-2.5 border-b border-white/[0.06]">
+        <span className="text-[10px] font-semibold text-white/50 tracking-[0.15em] uppercase">Workflow</span>
       </div>
-      <div className="flex-1 overflow-y-auto px-4 py-3 min-h-0 custom-scrollbar" style={{ maxHeight: 320 }}>
-        {/* Transcript lines */}
-        <div className="space-y-[2px]">
+      <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 min-h-0">
+        <div className="space-y-[3px]">
           {TRANSCRIPT_LINES.map((line, i) => {
-            if (line.type === "gap") return <div key={i} className="h-2" />;
+            if (line.type === "gap") return <div key={i} className="h-2.5" />;
             if (line.type === "sub") {
               return (
-                <div key={i} className="flex items-start gap-1.5 pl-4">
-                  <span className="text-white/20 text-[11px] leading-[18px] select-none">└</span>
-                  <span className={`text-[11px] leading-[18px] font-mono ${line.accent ? "text-green-400/80" : "text-white/35"}`}>
+                <div key={i} className="flex items-start gap-1.5 pl-5">
+                  <span className="text-white/25 text-[12px] leading-[20px] select-none">└</span>
+                  <span className={`text-[12px] leading-[20px] font-mono ${line.accent ? "text-green-400/90" : "text-white/50"}`}>
                     {line.text}
                   </span>
                 </div>
               );
             }
             return (
-              <div key={i} className="flex items-start gap-2">
-                <span className="w-[5px] h-[5px] rounded-full bg-white/30 mt-[7px] shrink-0" />
-                <span className="text-[11px] leading-[18px] font-mono text-white/55">{line.text}</span>
+              <div key={i} className="flex items-start gap-2.5">
+                <span className="w-[5px] h-[5px] rounded-full bg-white/40 mt-[8px] shrink-0" />
+                <span className="text-[12px] leading-[20px] font-mono text-white/70">{line.text}</span>
               </div>
             );
           })}
         </div>
 
         {/* Status table */}
-        <div className="mt-3 border border-white/[0.06] rounded-lg overflow-hidden">
+        <div className="mt-4 border border-white/[0.08] rounded-lg overflow-hidden">
           {TRANSCRIPT_STATUS.map((row) => (
             <div key={row.label} className="flex border-b border-white/[0.06] last:border-b-0">
-              <span className="text-[10px] font-semibold text-white/40 px-3 py-1.5 w-16 shrink-0">{row.label}</span>
-              <span className={`text-[10px] px-3 py-1.5 ${row.accent ? "text-green-400/80 font-semibold" : "text-white/55"}`}>{row.value}</span>
+              <span className="text-[11px] font-semibold text-white/50 px-3 py-2 w-[72px] shrink-0">{row.label}</span>
+              <span className={`text-[11px] px-3 py-2 ${row.accent ? "text-green-400/90 font-semibold" : "text-white/65"}`}>{row.value}</span>
             </div>
           ))}
         </div>
 
-        <p className="text-[10px] text-white/30 mt-3 leading-relaxed">
+        <p className="text-[11px] text-white/40 mt-3 leading-relaxed">
           New leads are automatically enriched, scored, and routed to the right rep.
         </p>
       </div>
@@ -458,52 +457,59 @@ function WorkflowPanel() {
 function ArchitecturePanel() {
   return (
     <div className="flex flex-col border border-white/[0.08] rounded-xl bg-white/[0.02] overflow-hidden h-full">
-      <div className="px-4 py-3 border-b border-white/[0.06]">
-        <span className="text-[10px] font-semibold text-white/40 tracking-[0.15em] uppercase">Ultron&apos;s Architecture</span>
+      <div className="px-4 sm:px-5 py-2.5 border-b border-white/[0.06]">
+        <span className="text-[10px] font-semibold text-white/50 tracking-[0.15em] uppercase">Ultron&apos;s Architecture</span>
       </div>
-      <div className="flex-1 flex flex-col items-center justify-between px-4 py-4 gap-3 min-h-0">
-        {/* OpenClaw — control layer */}
-        <div className="flex items-center gap-2 bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-2.5">
-          <Image src="/logo openclaw.png" alt="OpenClaw" width={16} height={16} className="rounded-sm shrink-0" />
+      <div className="flex-1 flex flex-col items-center px-4 sm:px-5 py-5 min-h-0">
+        {/* OpenClaw — control layer (dominant node) */}
+        <div className="flex items-center gap-2.5 bg-white/[0.05] border border-white/[0.10] rounded-xl px-5 py-3">
+          <Image src="/logo openclaw.png" alt="OpenClaw" width={20} height={20} className="rounded-sm shrink-0" />
           <div>
-            <p className="text-[12px] font-semibold text-white leading-none">OpenClaw</p>
-            <p className="text-[9px] text-white/35 mt-0.5">Control layer</p>
+            <p className="text-[14px] font-semibold text-white leading-none">OpenClaw</p>
+            <p className="text-[10px] text-white/45 mt-1">Control layer</p>
           </div>
         </div>
 
-        {/* Connector lines down */}
-        <div className="flex items-center justify-center gap-6 sm:gap-8 w-full">
-          {CLAUDE_AGENTS.map((_, i) => (
-            <div key={i} className="flex flex-col items-center">
-              <div className="w-px h-3 bg-white/10" />
-              <div className="w-1 h-1 rounded-full bg-white/15" />
-            </div>
+        {/* Connector: OpenClaw → 4 agents (fan-out lines) */}
+        <div className="relative w-full flex justify-center my-1" style={{ height: 28 }}>
+          {/* Center vertical stem */}
+          <div className="absolute left-1/2 top-0 w-px h-3 bg-white/15 -translate-x-1/2" />
+          {/* Horizontal bar */}
+          <div className="absolute top-3 left-[12.5%] right-[12.5%] h-px bg-white/15" />
+          {/* 4 vertical drops */}
+          {[12.5, 37.5, 62.5, 87.5].map((pct) => (
+            <div key={pct} className="absolute h-3 w-px bg-white/15" style={{ left: `${pct}%`, top: 12 }} />
           ))}
         </div>
 
-        {/* Claude Code agents — parallel execution */}
+        {/* Claude Code agents — parallel execution (4 nodes) */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full">
           {CLAUDE_AGENTS.map((agent) => (
-            <div key={agent.label} className="flex items-center gap-1.5 bg-white/[0.03] border border-white/[0.06] rounded-lg px-2.5 py-2">
-              <Image src="/logo claude code.png" alt="Claude Code" width={12} height={12} className="rounded-sm shrink-0" />
-              <div>
-                <p className="text-[10px] text-white/60 leading-none">{agent.label}</p>
-              </div>
+            <div key={agent.label} className="flex items-center gap-2 bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2.5 justify-center">
+              <Image src="/logo claude code.png" alt="Claude Code" width={14} height={14} className="rounded-sm shrink-0" />
+              <span className="text-[12px] text-white/70 font-medium">{agent.label}</span>
             </div>
           ))}
         </div>
 
-        {/* Connector lines down */}
-        <div className="flex items-center justify-center w-full">
-          <div className="w-px h-3 bg-white/10" />
+        {/* Connector: agents → tools (merge lines) */}
+        <div className="relative w-full flex justify-center my-1" style={{ height: 28 }}>
+          {/* 4 vertical stems up */}
+          {[12.5, 37.5, 62.5, 87.5].map((pct) => (
+            <div key={pct} className="absolute h-3 w-px bg-white/12" style={{ left: `${pct}%`, top: 0 }} />
+          ))}
+          {/* Horizontal bar */}
+          <div className="absolute top-3 left-[12.5%] right-[12.5%] h-px bg-white/12" />
+          {/* Center vertical drop */}
+          <div className="absolute left-1/2 top-3 w-px h-3 bg-white/12 -translate-x-1/2" />
         </div>
 
         {/* Connected tools */}
-        <div className="flex flex-wrap justify-center gap-1.5">
+        <div className="flex flex-wrap justify-center gap-2">
           {ARCH_TOOLS.map((tool) => (
-            <div key={tool.name} className="flex items-center gap-1.5 bg-white/[0.02] border border-white/[0.06] rounded-md px-2 py-1.5">
-              <Image src={tool.logo} alt={tool.name} width={12} height={12} className="rounded-sm shrink-0" />
-              <span className="text-[9px] text-white/45">{tool.name}</span>
+            <div key={tool.name} className="flex items-center gap-1.5 bg-white/[0.03] border border-white/[0.06] rounded-lg px-2.5 py-1.5">
+              <Image src={tool.logo} alt={tool.name} width={14} height={14} className="rounded-sm shrink-0" />
+              <span className="text-[11px] text-white/55">{tool.name}</span>
             </div>
           ))}
         </div>
@@ -516,45 +522,36 @@ function ArchitecturePanel() {
 
 function Slide3() {
   return (
-    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full pt-5 sm:pt-6 pb-3 sm:pb-5 overflow-hidden">
-      {/* Eyebrow */}
-      <div className="mb-3 sm:mb-4">
-        <span className="inline-block text-[11px] sm:text-sm font-semibold tracking-[0.2em] uppercase text-white/40">
-          The Solution
-        </span>
-      </div>
-
-      {/* Main line */}
-      <h2 className="text-[22px] sm:text-[28px] lg:text-[36px] font-bold text-white leading-[1.2] tracking-tight mb-4 sm:mb-5 max-w-2xl">
+    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full pt-6 sm:pt-8 pb-3 sm:pb-5 overflow-hidden">
+      {/* Main line — no eyebrow */}
+      <h2 className="text-[24px] sm:text-[28px] lg:text-[36px] font-bold text-white leading-[1.2] tracking-tight max-w-xl lg:max-w-2xl">
         Built for companies that want to scale results,
         <br />
         not headcount
       </h2>
 
-      {/* Agent Fleet selector — always open */}
-      <div className="mb-5 sm:mb-6 inline-block self-start">
-        {/* Pill trigger */}
-        <div className="inline-flex items-center gap-1.5 bg-white/[0.06] border border-white/[0.10] rounded-t-xl px-4 py-2 cursor-default">
-          <span className="text-[13px] font-medium text-white">Agent Fleet</span>
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-40 rotate-180">
+      {/* Agent Fleet selector — compact, always open */}
+      <div className="mt-3 sm:mt-4 mb-4 sm:mb-5 inline-block self-start">
+        <div className="inline-flex items-center gap-1 bg-white/[0.05] border border-white/[0.08] rounded-t-lg px-3 py-1.5 cursor-default">
+          <span className="text-[11px] font-medium text-white/80">Agent Fleet</span>
+          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-30 rotate-180">
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </div>
-        {/* Expanded dropdown */}
-        <div className="bg-[#111] border border-white/[0.08] border-t-0 rounded-b-xl px-1 py-1 w-72">
-          <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg">
-            <Image src="/logo openclaw.png" alt="OpenClaw" width={14} height={14} className="rounded-sm shrink-0" />
-            <span className="text-[12px] text-white/60">OpenClaw as the control layer</span>
+        <div className="bg-[#0f0f0f] border border-white/[0.08] border-t-0 rounded-b-lg w-56">
+          <div className="flex items-center gap-2 px-3 py-1.5">
+            <Image src="/logo openclaw.png" alt="OpenClaw" width={12} height={12} className="rounded-sm shrink-0" />
+            <span className="text-[11px] text-white/55">OpenClaw as the control layer</span>
           </div>
-          <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg">
-            <Image src="/logo claude code.png" alt="Claude Code" width={14} height={14} className="rounded-sm shrink-0" />
-            <span className="text-[12px] text-white/60">Claude Code for parallel execution</span>
+          <div className="flex items-center gap-2 px-3 py-1.5">
+            <Image src="/logo claude code.png" alt="Claude Code" width={12} height={12} className="rounded-sm shrink-0" />
+            <span className="text-[11px] text-white/55">Claude Code for parallel execution</span>
           </div>
         </div>
       </div>
 
-      {/* Two-panel layout */}
-      <div className="flex-1 min-h-0 grid md:grid-cols-2 gap-4">
+      {/* Two-panel layout — takes remaining space */}
+      <div className="flex-1 min-h-0 grid md:grid-cols-2 gap-3 sm:gap-4">
         <WorkflowPanel />
         <ArchitecturePanel />
       </div>
