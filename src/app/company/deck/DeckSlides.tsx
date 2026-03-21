@@ -536,102 +536,98 @@ function Slide3() {
 /*  SLIDE 4: TRACTION AND GTM                                     */
 /* ═══════════════════════════════════════════════════════════════ */
 
-function TractionStats() {
+function Slide4() {
   const live = useLiveStats();
   const fmtK = (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toLocaleString();
 
   const stats = [
     { value: live.founders.toLocaleString(), label: "founders" },
-    { value: fmtK(live.agents), label: "agents" },
     { value: fmtK(live.tasks), label: "tasks" },
-    { value: fmtK(live.apiCalls), label: "API calls" },
     { value: `$${Math.round(live.saved / 1000)}K`, label: "saved" },
   ];
 
   return (
-    <div className="grid grid-cols-5 gap-2 sm:gap-4">
-      {stats.map((s) => (
-        <div key={s.label} className="text-center">
-          <p className="text-lg sm:text-2xl lg:text-3xl font-bold text-white tabular-nums">{s.value}</p>
-          <p className="text-[10px] sm:text-xs text-white/40 mt-1">{s.label}</p>
+    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full justify-center overflow-hidden">
+      {/* Main line — centered, same as other slides */}
+      <div className="text-center mb-6 sm:mb-8">
+        <h2 className="sm:hidden text-[22px] font-bold text-white leading-[1.25] tracking-tight">
+          Content-driven distribution
+          <br />
+          and custom automation systems
+          <br />
+          for enterprise growth
+        </h2>
+        <h2 className="hidden sm:block text-[28px] lg:text-[36px] xl:text-[40px] font-bold text-white leading-[1.2] tracking-tight">
+          Content-driven distribution and custom automation
+          <br />
+          systems for enterprise growth
+        </h2>
+      </div>
+
+      {/* KPI row — 3 metrics, clean */}
+      <div className="flex justify-center mb-6 sm:mb-8">
+        <div className="flex items-baseline gap-8 sm:gap-14">
+          {stats.map((s) => (
+            <div key={s.label} className="text-center">
+              <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tabular-nums">{s.value}</p>
+              <p className="text-[11px] sm:text-xs text-white/50 mt-1">{s.label}</p>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  );
-}
+      </div>
 
-function GtmViral() {
-  return (
-    <div>
-      <h4 className="text-base sm:text-lg font-semibold text-white mb-2">
-        A distribution system built for interest-based reach
-      </h4>
-      <p className="text-sm text-white/50 leading-relaxed mb-4">
-        We are building a network of 9 Instagram accounts that funnel attention from viral content into comments, lead magnets, and product entry points.
-      </p>
-      <div className="flex items-center gap-2 sm:gap-3 flex-wrap mb-3">
-        {["Viral post", "Comment CTA", "Lead magnet", "Product"].map((step, i) => (
-          <div key={step} className="flex items-center gap-2 sm:gap-3">
-            <span className="text-xs sm:text-sm text-white/70 bg-white/[0.05] border border-white/[0.08] rounded-lg px-3 py-1.5">{step}</span>
-            {i < 3 && <span className="text-white/20 text-xs">&rarr;</span>}
+      {/* Two panels — centered, max-w-3xl */}
+      <div className="flex justify-center">
+        <div className="w-full max-w-3xl grid md:grid-cols-2 gap-4">
+          {/* Left: Viral Distribution */}
+          <div className="border border-white/[0.12] rounded-xl bg-white/[0.03] px-5 py-4">
+            <div className="mb-3">
+              <p className="text-[10px] font-semibold text-white/70 tracking-[0.15em] uppercase mb-1">Viral Distribution</p>
+              <p className="text-[13px] text-white/60 leading-snug">A content engine designed to turn attention into product entry</p>
+            </div>
+
+            {/* Vertical flow */}
+            <div className="space-y-0">
+              {["Viral post", "Comment CTA", "Lead magnet", "Free trial"].map((step, i) => (
+                <div key={step}>
+                  <div className="flex items-center gap-2.5 py-2">
+                    <span className="w-5 h-5 rounded-full border border-white/[0.15] flex items-center justify-center shrink-0">
+                      <span className="text-[9px] text-white/50 font-medium">{i + 1}</span>
+                    </span>
+                    <span className="text-[14px] text-white/90">{step}</span>
+                  </div>
+                  {i < 3 && <div className="w-px h-2.5 bg-white/15 ml-[10px]" />}
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
-      </div>
-      <p className="text-xs text-white/40">
-        The system is designed to scale into roughly 45,000 individual content pieces per month.
-      </p>
-    </div>
-  );
-}
 
-function GtmEnterprise() {
-  return (
-    <div>
-      <h4 className="text-base sm:text-lg font-semibold text-white mb-2">
-        Custom agentic automation for operations teams
-      </h4>
-      <p className="text-sm text-white/50 leading-relaxed mb-4">
-        Alongside self-serve growth, Ultron sells tailored automation systems for companies that want agentic workflows across operations, reporting, coordination, and internal execution.
-      </p>
-      <div className="space-y-2">
-        {[
-          "Higher ACV entry point",
-          "Faster learning from real customer workflows",
-          "Expands product depth through real use cases",
-        ].map((point) => (
-          <div key={point} className="flex items-start gap-2.5">
-            <div className="w-1 h-1 rounded-full bg-white/30 mt-2 shrink-0" />
-            <span className="text-sm text-white/60">{point}</span>
+          {/* Right: Enterprise Sales */}
+          <div className="border border-white/[0.12] rounded-xl bg-white/[0.03] px-5 py-4">
+            <div className="mb-4">
+              <p className="text-[10px] font-semibold text-white/70 tracking-[0.15em] uppercase mb-1">Enterprise Sales</p>
+              <p className="text-[13px] text-white/60 leading-snug">Custom automation systems for companies with heavier execution needs</p>
+            </div>
+
+            {/* Three points */}
+            <div className="space-y-3">
+              {[
+                "Higher ACV entry point",
+                "Faster learning from real customer workflows",
+                "Expands product depth through real use cases",
+              ].map((point) => (
+                <div key={point} className="flex items-start gap-2.5">
+                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2} className="shrink-0 mt-0.5 opacity-50">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-[14px] text-white/85 leading-snug">{point}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
+        </div>
       </div>
     </div>
-  );
-}
-
-function Slide4() {
-  const [gtmTab, setGtmTab] = useState(0);
-
-  return (
-    <SlideLayout pill="Traction and GTM">
-      {/* Live stats in title position */}
-      <div className="mb-6 sm:mb-8">
-        <TractionStats />
-      </div>
-
-      <div className="h-px bg-white/[0.08] mb-5" />
-
-      {/* GTM switcher */}
-      <div className="mb-4">
-        <SlideTabSwitcher
-          tabs={["Viral Marketing", "Enterprise Sales"]}
-          active={gtmTab}
-          onChange={setGtmTab}
-        />
-      </div>
-
-      {gtmTab === 0 ? <GtmViral /> : <GtmEnterprise />}
-    </SlideLayout>
   );
 }
 
