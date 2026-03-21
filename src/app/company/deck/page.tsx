@@ -113,9 +113,9 @@ export default function DeckPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] -mt-[72px] pt-[72px] -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw] overflow-x-hidden flex flex-col">
+    <div className={`bg-[#0a0a0a] -mt-[72px] pt-[72px] -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw] overflow-x-hidden flex flex-col ${tab === "deck" ? "h-[100dvh]" : "min-h-screen"}`}>
       {/* ── Top bar: Tab switcher + More menu ────────────────── */}
-      <div className="max-w-[1920px] mx-auto px-6 sm:px-8 pt-6 sm:pt-8 flex items-center justify-center gap-3">
+      <div className="max-w-[1920px] mx-auto px-6 sm:px-8 pt-3 sm:pt-4 flex items-center justify-center gap-3">
         {/* Tab switcher */}
         <div className="flex items-center bg-white/[0.04] rounded-full p-1 border border-white/[0.06]">
           <button
@@ -226,7 +226,7 @@ export default function DeckPage() {
       </div>
 
       {/* ── Content area ───────────────────────────────────────── */}
-      <div className="flex-1 max-w-[1920px] mx-auto w-full px-6 sm:px-8 md:px-12 pt-6 sm:pt-8 pb-8 sm:pb-12">
+      <div className="flex-1 min-h-0 max-w-[1920px] mx-auto w-full px-4 sm:px-8 md:px-12 pt-3 sm:pt-4 pb-4 sm:pb-6">
         {tab === "summary" ? (
           <ExecutiveSummary />
         ) : (
@@ -241,8 +241,8 @@ export default function DeckPage() {
         )}
       </div>
 
-      {/* ── Dark Footer ──────────────────────────────────────── */}
-      <DeckFooter />
+      {/* ── Dark Footer — hidden on deck tab to maximize slide space ── */}
+      {tab === "summary" && <DeckFooter />}
     </div>
   );
 }
@@ -603,8 +603,9 @@ function InvestmentDeck({
   next: () => void;
 }) {
   return (
-    <>
-      <div className="relative w-full pb-[56.25%]">
+    <div className="flex flex-col h-full">
+      {/* Slide area — fills remaining space */}
+      <div className="flex-1 min-h-0 relative">
         <div className="absolute inset-0 rounded-lg sm:rounded-xl overflow-hidden bg-[#111] border border-white/[0.06] shadow-2xl">
           {slides.map((slide, i) => (
             <div
@@ -620,45 +621,48 @@ function InvestmentDeck({
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-4 sm:gap-6 mt-4 sm:mt-6">
-        <button
-          onClick={prev}
-          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-white/50 hover:text-white hover:bg-white/[0.1] transition-colors shrink-0"
-          aria-label="Previous slide"
-        >
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
+      {/* Controls — fixed at bottom */}
+      <div className="shrink-0 pt-3 sm:pt-4">
+        <div className="flex items-center justify-center gap-4 sm:gap-6">
+          <button
+            onClick={prev}
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-white/50 hover:text-white hover:bg-white/[0.1] transition-colors shrink-0"
+            aria-label="Previous slide"
+          >
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
 
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-colors ${
-                i === current ? "bg-white" : "bg-white/20 hover:bg-white/40"
-              }`}
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-colors ${
+                  i === current ? "bg-white" : "bg-white/20 hover:bg-white/40"
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+
+          <button
+            onClick={next}
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-white/50 hover:text-white hover:bg-white/[0.1] transition-colors shrink-0"
+            aria-label="Next slide"
+          >
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
 
-        <button
-          onClick={next}
-          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-white/50 hover:text-white hover:bg-white/[0.1] transition-colors shrink-0"
-          aria-label="Next slide"
-        >
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+        <div className="text-center mt-1.5 sm:mt-2 text-white/30 text-xs sm:text-sm font-mono">
+          {current + 1} / {total}
+        </div>
       </div>
-
-      <div className="text-center mt-2 sm:mt-3 text-white/30 text-xs sm:text-sm font-mono">
-        {current + 1} / {total}
-      </div>
-    </>
+    </div>
   );
 }
 

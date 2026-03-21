@@ -130,7 +130,7 @@ export default function NexityPage() {
   return (
     <div className="bg-[#faf8f5]">
       {/* ─── HERO ─── */}
-      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden -mt-[72px] pt-[72px]">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden -mt-[72px] pt-[72px]">
         {/* Video background — hidden on mobile */}
         <div className="absolute inset-0 hidden md:block">
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
@@ -145,7 +145,7 @@ export default function NexityPage() {
           >
             <source src="/hero-background-nxt.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-white/85" />
+          <div className="absolute inset-0 bg-white/60" />
         </div>
 
         {/* Mobile: plain white bg */}
