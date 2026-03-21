@@ -10,7 +10,7 @@ import { useLiveStats } from "@/components/HeroStats";
 
 function SlidePill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-block text-[10px] sm:text-xs font-semibold tracking-[0.12em] uppercase text-white/40 border border-white/10 rounded-full px-3 sm:px-4 py-1">
+    <span className="inline-block text-[10px] sm:text-xs font-semibold tracking-[0.15em] uppercase text-white/40 border border-white/10 rounded-full px-4 py-1">
       {children}
     </span>
   );
@@ -44,6 +44,40 @@ function SlideTabSwitcher({
   );
 }
 
+/**
+ * Consistent slide layout for slides 2-8.
+ * Pill centered at top → title below → content below.
+ * Keeps vertical positioning identical across all content slides.
+ */
+function SlideLayout({
+  pill,
+  title,
+  children,
+}: {
+  pill: string;
+  title?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full pt-8 sm:pt-10 pb-6 overflow-y-auto">
+      {/* Pill — always top center */}
+      <div className="text-center mb-5 sm:mb-6">
+        <SlidePill>{pill}</SlidePill>
+      </div>
+
+      {/* Title — consistent position */}
+      {title && (
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight max-w-3xl mb-6 sm:mb-8">
+          {title}
+        </h2>
+      )}
+
+      {/* Content */}
+      <div className="flex-1 min-h-0">{children}</div>
+    </div>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════════ */
 /*  SLIDE 1: MEET ULTRON                                           */
 /* ═══════════════════════════════════════════════════════════════ */
@@ -54,16 +88,13 @@ function Slide1() {
       <Image
         src="/logo.png"
         alt="Ultron"
-        width={80}
-        height={80}
-        className="rounded-xl animate-logo-spin mb-8"
+        width={140}
+        height={140}
+        className="rounded-2xl animate-logo-spin mb-10"
       />
-      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight">
+      <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold text-white tracking-tight">
         Meet Ultron
       </h1>
-      <p className="mt-4 text-white/40 text-base sm:text-lg">
-        The execution layer for founder-led growth
-      </p>
     </div>
   );
 }
@@ -89,23 +120,20 @@ const PROBLEMS = [
 
 function Slide2() {
   return (
-    <div className="flex flex-col justify-center h-full px-6 sm:px-10 lg:px-16 max-w-5xl mx-auto w-full">
-      <SlidePill>The Problem</SlidePill>
-      <h2 className="mt-6 text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight max-w-2xl">
-        Growth breaks when execution depends on people chasing people.
-      </h2>
-
-      <div className="h-px bg-white/[0.08] mt-8 sm:mt-10 mb-6 sm:mb-8" />
-
-      <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
+    <SlideLayout
+      pill="The Problem"
+      title="Growth breaks when execution depends on people chasing people."
+    >
+      <div className="h-px bg-white/[0.08] mb-6" />
+      <div className="grid md:grid-cols-3 gap-4 sm:gap-5">
         {PROBLEMS.map((p) => (
-          <div key={p.title} className="border border-white/[0.08] rounded-xl p-5 sm:p-6">
+          <div key={p.title} className="border border-white/[0.08] rounded-xl p-5">
             <h3 className="text-sm sm:text-[15px] font-semibold text-white mb-2">{p.title}</h3>
             <p className="text-xs sm:text-sm text-white/50 leading-relaxed">{p.body}</p>
           </div>
         ))}
       </div>
-    </div>
+    </SlideLayout>
   );
 }
 
@@ -146,29 +174,28 @@ const EXECUTION_BLOCKS = [
 function SolutionTab1() {
   return (
     <>
-      <div className="grid sm:grid-cols-2 gap-x-8 lg:gap-x-16 gap-y-4 mb-6 sm:mb-8">
-        <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white leading-tight">
+      <div className="grid sm:grid-cols-2 gap-x-8 lg:gap-x-14 gap-y-4 mb-5">
+        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white leading-tight">
           Deploy OpenClaw and Claude Code agent fleets in minutes
         </h3>
-        <p className="text-sm sm:text-[15px] text-white/50 leading-relaxed self-end">
+        <p className="text-sm text-white/50 leading-relaxed self-end">
           OpenClaw coordinates the system. Claude Code handles parallel execution. Together they deploy agents, wire integrations, test pipelines, fix issues, and keep work moving without constant manual supervision.
         </p>
       </div>
 
-      {/* Control layer + agents */}
-      <div className="border border-white/[0.08] rounded-xl p-4 sm:p-6">
-        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-white/[0.06]">
-          <Image src="/logo openclaw.png" alt="OpenClaw" width={20} height={20} className="rounded" />
-          <span className="text-xs font-semibold text-white/60 tracking-wider uppercase">Control Layer</span>
+      <div className="border border-white/[0.08] rounded-xl p-4 sm:p-5">
+        <div className="flex items-center gap-3 mb-3 pb-3 border-b border-white/[0.06]">
+          <Image src="/logo openclaw.png" alt="OpenClaw" width={18} height={18} className="rounded" />
+          <span className="text-[10px] font-semibold text-white/60 tracking-wider uppercase">Control Layer</span>
           <div className="flex-1 h-px bg-white/[0.06]" />
-          <Image src="/logo claude code.png" alt="Claude Code" width={20} height={20} className="rounded" />
-          <span className="text-xs font-semibold text-white/60 tracking-wider uppercase">Execution</span>
+          <Image src="/logo claude code.png" alt="Claude Code" width={18} height={18} className="rounded" />
+          <span className="text-[10px] font-semibold text-white/60 tracking-wider uppercase">Execution</span>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
           {AGENTS.map((a) => (
-            <div key={a.name} className="bg-white/[0.03] border border-white/[0.06] rounded-lg p-3 sm:p-4">
-              <p className="text-xs sm:text-sm font-medium text-white mb-1">{a.name}</p>
-              <p className="text-[10px] sm:text-xs text-white/40">{a.desc}</p>
+            <div key={a.name} className="bg-white/[0.03] border border-white/[0.06] rounded-lg p-3">
+              <p className="text-xs sm:text-sm font-medium text-white mb-0.5">{a.name}</p>
+              <p className="text-[10px] text-white/40">{a.desc}</p>
             </div>
           ))}
         </div>
@@ -180,20 +207,20 @@ function SolutionTab1() {
 function SolutionTab2() {
   return (
     <>
-      <div className="grid sm:grid-cols-2 gap-x-8 lg:gap-x-16 gap-y-4 mb-6 sm:mb-8">
-        <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white leading-tight">
+      <div className="grid sm:grid-cols-2 gap-x-8 lg:gap-x-14 gap-y-4 mb-5">
+        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white leading-tight">
           100+ GTM integrations. One subscription, access to the apps you need.
         </h3>
-        <p className="text-sm sm:text-[15px] text-white/50 leading-relaxed self-end">
+        <p className="text-sm text-white/50 leading-relaxed self-end">
           CRMs, email, calendars, enrichment tools, scraping tools, and outbound systems. Ultron agents can read, write, and act across the GTM stack while we handle vendor complexity, billing, and testing.
         </p>
       </div>
 
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 sm:gap-3">
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
         {INTEGRATIONS_GRID.map((item) => (
-          <div key={item.name} className="flex items-center gap-2.5 bg-white/[0.03] border border-white/[0.06] rounded-lg p-3">
-            <Image src={item.logo} alt={item.name} width={24} height={24} className="rounded shrink-0" />
-            <span className="text-xs sm:text-sm text-white/70 truncate">{item.name}</span>
+          <div key={item.name} className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.06] rounded-lg p-2.5">
+            <Image src={item.logo} alt={item.name} width={22} height={22} className="rounded shrink-0" />
+            <span className="text-xs text-white/70 truncate">{item.name}</span>
           </div>
         ))}
       </div>
@@ -204,19 +231,19 @@ function SolutionTab2() {
 function SolutionTab3() {
   return (
     <>
-      <div className="grid sm:grid-cols-2 gap-x-8 lg:gap-x-16 gap-y-4 mb-6 sm:mb-8">
-        <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white leading-tight">
+      <div className="grid sm:grid-cols-2 gap-x-8 lg:gap-x-14 gap-y-4 mb-5">
+        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white leading-tight">
           From prompt-driven work to system-driven execution
         </h3>
-        <p className="text-sm sm:text-[15px] text-white/50 leading-relaxed self-end">
+        <p className="text-sm text-white/50 leading-relaxed self-end">
           Most AI products stop at assistance. Ultron is built for repeatable execution across research, lead generation, outreach, content, and follow-up, inside one operating layer.
         </p>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
+      <div className="grid sm:grid-cols-2 gap-3">
         {EXECUTION_BLOCKS.map((b) => (
-          <div key={b.title} className="border border-white/[0.08] rounded-xl p-5 sm:p-6">
-            <h4 className="text-sm sm:text-[15px] font-semibold text-white mb-2">{b.title}</h4>
+          <div key={b.title} className="border border-white/[0.08] rounded-xl p-5">
+            <h4 className="text-sm font-semibold text-white mb-1.5">{b.title}</h4>
             <p className="text-xs sm:text-sm text-white/50 leading-relaxed">{b.body}</p>
           </div>
         ))}
@@ -230,22 +257,18 @@ function Slide3() {
   const tabs = ["Agent Fleet", "Integrations", "Execution"];
 
   return (
-    <div className="flex flex-col justify-start h-full px-6 sm:px-10 lg:px-16 max-w-5xl mx-auto w-full py-6 sm:py-8 overflow-y-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 sm:mb-8">
-        <SlidePill>The Solution</SlidePill>
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight">
-          Built for 100x founder-led businesses
-        </h2>
-      </div>
-
-      <div className="mb-6 sm:mb-8">
+    <SlideLayout
+      pill="The Solution"
+      title="Built for 100x founder-led businesses"
+    >
+      <div className="mb-5">
         <SlideTabSwitcher tabs={tabs} active={solutionTab} onChange={setSolutionTab} />
       </div>
 
       {solutionTab === 0 && <SolutionTab1 />}
       {solutionTab === 1 && <SolutionTab2 />}
       {solutionTab === 2 && <SolutionTab3 />}
-    </div>
+    </SlideLayout>
   );
 }
 
@@ -280,17 +303,17 @@ function TractionStats() {
 function GtmViral() {
   return (
     <div>
-      <h4 className="text-base sm:text-lg font-semibold text-white mb-3">
+      <h4 className="text-base sm:text-lg font-semibold text-white mb-2">
         A distribution system built for interest-based reach
       </h4>
-      <p className="text-sm text-white/50 leading-relaxed mb-5">
+      <p className="text-sm text-white/50 leading-relaxed mb-4">
         We are building a network of 9 Instagram accounts that funnel attention from viral content into comments, lead magnets, and product entry points.
       </p>
-      <div className="flex items-center gap-2 sm:gap-3 flex-wrap mb-4">
+      <div className="flex items-center gap-2 sm:gap-3 flex-wrap mb-3">
         {["Viral post", "Comment CTA", "Lead magnet", "Product"].map((step, i) => (
           <div key={step} className="flex items-center gap-2 sm:gap-3">
             <span className="text-xs sm:text-sm text-white/70 bg-white/[0.05] border border-white/[0.08] rounded-lg px-3 py-1.5">{step}</span>
-            {i < 3 && <span className="text-white/20 text-xs">→</span>}
+            {i < 3 && <span className="text-white/20 text-xs">&rarr;</span>}
           </div>
         ))}
       </div>
@@ -304,10 +327,10 @@ function GtmViral() {
 function GtmEnterprise() {
   return (
     <div>
-      <h4 className="text-base sm:text-lg font-semibold text-white mb-3">
+      <h4 className="text-base sm:text-lg font-semibold text-white mb-2">
         Custom agentic automation for operations teams
       </h4>
-      <p className="text-sm text-white/50 leading-relaxed mb-5">
+      <p className="text-sm text-white/50 leading-relaxed mb-4">
         Alongside self-serve growth, Ultron sells tailored automation systems for companies that want agentic workflows across operations, reporting, coordination, and internal execution.
       </p>
       <div className="space-y-2">
@@ -330,18 +353,16 @@ function Slide4() {
   const [gtmTab, setGtmTab] = useState(0);
 
   return (
-    <div className="flex flex-col justify-start h-full px-6 sm:px-10 lg:px-16 max-w-5xl mx-auto w-full py-6 sm:py-8 overflow-y-auto">
-      <SlidePill>Traction and GTM</SlidePill>
-
-      {/* Live stats */}
-      <div className="mt-6 sm:mt-8 mb-8 sm:mb-10">
+    <SlideLayout pill="Traction and GTM">
+      {/* Live stats in title position */}
+      <div className="mb-6 sm:mb-8">
         <TractionStats />
       </div>
 
-      <div className="h-px bg-white/[0.08] mb-6 sm:mb-8" />
+      <div className="h-px bg-white/[0.08] mb-5" />
 
       {/* GTM switcher */}
-      <div className="mb-5 sm:mb-6">
+      <div className="mb-4">
         <SlideTabSwitcher
           tabs={["Viral Marketing", "Enterprise Sales"]}
           active={gtmTab}
@@ -350,7 +371,7 @@ function Slide4() {
       </div>
 
       {gtmTab === 0 ? <GtmViral /> : <GtmEnterprise />}
-    </div>
+    </SlideLayout>
   );
 }
 
@@ -375,26 +396,25 @@ const WHY_NOW_REASONS = [
 
 function Slide5() {
   return (
-    <div className="flex flex-col justify-center h-full px-6 sm:px-10 lg:px-16 max-w-5xl mx-auto w-full">
-      <SlidePill>Why Now</SlidePill>
-      <h2 className="mt-6 text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight max-w-2xl">
-        Distribution has changed faster than most companies have adapted.
-      </h2>
-      <p className="mt-4 text-sm sm:text-[15px] text-white/50 leading-relaxed max-w-2xl">
+    <SlideLayout
+      pill="Why Now"
+      title="Distribution has changed faster than most companies have adapted."
+    >
+      <p className="text-sm text-white/50 leading-relaxed max-w-2xl mb-6">
         Social feeds are increasingly driven by recommendations, not just follower graphs. That creates a window where strong content can earn reach on interest alone. Ultron is building for that shift with a distribution network designed to scale to roughly 45,000 pieces of content per month while the market is still early.
       </p>
 
-      <div className="h-px bg-white/[0.08] mt-8 mb-6 sm:mt-10 sm:mb-8" />
+      <div className="h-px bg-white/[0.08] mb-6" />
 
-      <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid md:grid-cols-3 gap-4 sm:gap-5">
         {WHY_NOW_REASONS.map((r) => (
-          <div key={r.title} className="border border-white/[0.08] rounded-xl p-5 sm:p-6">
-            <h3 className="text-sm sm:text-[15px] font-semibold text-white mb-2">{r.title}</h3>
+          <div key={r.title} className="border border-white/[0.08] rounded-xl p-5">
+            <h3 className="text-sm font-semibold text-white mb-2">{r.title}</h3>
             <p className="text-xs sm:text-sm text-white/50 leading-relaxed">{r.body}</p>
           </div>
         ))}
       </div>
-    </div>
+    </SlideLayout>
   );
 }
 
@@ -413,19 +433,17 @@ const COMP_ROWS: CompRow[] = [
 
 function Slide6() {
   return (
-    <div className="flex flex-col justify-start h-full px-6 sm:px-10 lg:px-16 max-w-5xl mx-auto w-full py-6 sm:py-8 overflow-y-auto">
-      <SlidePill>Competition</SlidePill>
-      <h2 className="mt-6 mb-6 sm:mb-8 text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight max-w-2xl">
-        The market has builders. Ultron is building an execution company.
-      </h2>
-
+    <SlideLayout
+      pill="Competition"
+      title="The market has builders. Ultron is building an execution company."
+    >
       {/* Matrix */}
-      <div className="border border-white/[0.08] rounded-xl overflow-hidden">
+      <div className="border border-white/[0.08] rounded-xl overflow-hidden mb-5">
         {/* Header */}
         <div className="grid grid-cols-5 bg-white/[0.03]">
-          <div className="p-3 sm:p-4" />
+          <div className="p-3" />
           {["Ultron", "n8n", "Zapier", "Gumloop"].map((name) => (
-            <div key={name} className={`p-3 sm:p-4 border-l border-white/[0.06] ${name === "Ultron" ? "bg-white/[0.04]" : ""}`}>
+            <div key={name} className={`p-3 border-l border-white/[0.06] ${name === "Ultron" ? "bg-white/[0.04]" : ""}`}>
               <span className={`text-xs sm:text-sm font-semibold ${name === "Ultron" ? "text-white" : "text-white/50"}`}>{name}</span>
             </div>
           ))}
@@ -434,19 +452,19 @@ function Slide6() {
         {/* Rows */}
         {COMP_ROWS.map((row) => (
           <div key={row.label} className="grid grid-cols-5 border-t border-white/[0.06]">
-            <div className="p-3 sm:p-4">
-              <span className="text-[10px] sm:text-xs text-white/40 uppercase tracking-wider font-medium">{row.label}</span>
+            <div className="p-3">
+              <span className="text-[10px] text-white/40 uppercase tracking-wider font-medium">{row.label}</span>
             </div>
-            <div className="p-3 sm:p-4 border-l border-white/[0.06] bg-white/[0.04]">
+            <div className="p-3 border-l border-white/[0.06] bg-white/[0.04]">
               <span className="text-xs sm:text-sm text-white">{row.ultron}</span>
             </div>
-            <div className="p-3 sm:p-4 border-l border-white/[0.06]">
+            <div className="p-3 border-l border-white/[0.06]">
               <span className="text-xs sm:text-sm text-white/50">{row.n8n}</span>
             </div>
-            <div className="p-3 sm:p-4 border-l border-white/[0.06]">
+            <div className="p-3 border-l border-white/[0.06]">
               <span className="text-xs sm:text-sm text-white/50">{row.zapier}</span>
             </div>
-            <div className="p-3 sm:p-4 border-l border-white/[0.06]">
+            <div className="p-3 border-l border-white/[0.06]">
               <span className="text-xs sm:text-sm text-white/50">{row.gumloop}</span>
             </div>
           </div>
@@ -454,7 +472,7 @@ function Slide6() {
       </div>
 
       {/* Ultron edge */}
-      <div className="mt-5 sm:mt-6 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         {[
           "Packaged execution over general automation",
           "Designed around GTM throughput",
@@ -469,7 +487,7 @@ function Slide6() {
           </div>
         ))}
       </div>
-    </div>
+    </SlideLayout>
   );
 }
 
@@ -479,41 +497,39 @@ function Slide6() {
 
 function Slide7() {
   return (
-    <div className="flex flex-col justify-center h-full px-6 sm:px-10 lg:px-16 max-w-5xl mx-auto w-full">
-      <SlidePill>Business Model</SlidePill>
-      <h2 className="mt-6 text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight mb-8 sm:mb-10">
-        Simple entry point. Usage aligned with value.
-      </h2>
-
-      <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
+    <SlideLayout
+      pill="Business Model"
+      title="Simple entry point. Usage aligned with value."
+    >
+      <div className="grid md:grid-cols-3 gap-4 sm:gap-5">
         {/* Subscription */}
-        <div className="border border-white/[0.08] rounded-xl p-6 sm:p-8">
-          <p className="text-3xl sm:text-4xl font-bold text-white mb-2">$19<span className="text-base sm:text-lg font-normal text-white/40">/mo</span></p>
-          <p className="text-sm sm:text-[15px] font-medium text-white/80 mb-3">Base subscription</p>
+        <div className="border border-white/[0.08] rounded-xl p-6">
+          <p className="text-3xl sm:text-4xl font-bold text-white mb-2">$19<span className="text-base font-normal text-white/40">/mo</span></p>
+          <p className="text-sm font-medium text-white/80 mb-2">Base subscription</p>
           <p className="text-xs sm:text-sm text-white/40 leading-relaxed">
             Low-friction onboarding into the Ultron product and distribution ecosystem
           </p>
         </div>
 
         {/* Usage */}
-        <div className="border border-white/[0.08] rounded-xl p-6 sm:p-8">
-          <p className="text-3xl sm:text-4xl font-bold text-white mb-2">5%<span className="text-base sm:text-lg font-normal text-white/40"> fee</span></p>
-          <p className="text-sm sm:text-[15px] font-medium text-white/80 mb-3">On consumed API tokens</p>
+        <div className="border border-white/[0.08] rounded-xl p-6">
+          <p className="text-3xl sm:text-4xl font-bold text-white mb-2">5%<span className="text-base font-normal text-white/40"> fee</span></p>
+          <p className="text-sm font-medium text-white/80 mb-2">On consumed API tokens</p>
           <p className="text-xs sm:text-sm text-white/40 leading-relaxed">
             Usage-based monetization aligned with actual execution volume. Revenue scales with product usage.
           </p>
         </div>
 
         {/* Expansion */}
-        <div className="border border-white/[0.08] rounded-xl p-6 sm:p-8">
+        <div className="border border-white/[0.08] rounded-xl p-6">
           <p className="text-3xl sm:text-4xl font-bold text-white mb-2">Custom</p>
-          <p className="text-sm sm:text-[15px] font-medium text-white/80 mb-3">Expansion builds</p>
+          <p className="text-sm font-medium text-white/80 mb-2">Expansion builds</p>
           <p className="text-xs sm:text-sm text-white/40 leading-relaxed">
             Custom builds and operational deployments for companies with larger internal automation needs
           </p>
         </div>
       </div>
-    </div>
+    </SlideLayout>
   );
 }
 
@@ -546,62 +562,150 @@ const MILESTONES = [
 
 function Slide8() {
   return (
-    <div className="flex flex-col justify-start h-full px-6 sm:px-10 lg:px-16 max-w-5xl mx-auto w-full py-6 sm:py-8 overflow-y-auto">
-      <SlidePill>The Ask</SlidePill>
-
-      <h2 className="mt-6 text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight">
-        Raising $1.5M at a $7M pre-money valuation
-      </h2>
-
-      <div className="h-px bg-white/[0.08] mt-6 sm:mt-8 mb-6 sm:mb-8" />
+    <SlideLayout
+      pill="The Ask"
+      title="Raising $1.5M at a $7M pre-money valuation"
+    >
+      <div className="h-px bg-white/[0.08] mb-6" />
 
       {/* Use of funds */}
-      <div className="grid md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+      <div className="grid md:grid-cols-3 gap-4 sm:gap-5 mb-6">
         {USE_OF_FUNDS.map((item, i) => (
-          <div key={item.title} className="border border-white/[0.08] rounded-xl p-5 sm:p-6">
+          <div key={item.title} className="border border-white/[0.08] rounded-xl p-5">
             <span className="text-[10px] text-white/30 font-medium tracking-wider uppercase">{`0${i + 1}`}</span>
-            <h3 className="text-sm sm:text-[15px] font-semibold text-white mt-2 mb-2">{item.title}</h3>
+            <h3 className="text-sm font-semibold text-white mt-2 mb-2">{item.title}</h3>
             <p className="text-xs sm:text-sm text-white/50 leading-relaxed">{item.body}</p>
           </div>
         ))}
       </div>
 
       {/* Milestones */}
-      <div className="border border-white/[0.08] rounded-xl p-5 sm:p-6">
-        <p className="text-[10px] sm:text-xs text-white/30 font-semibold tracking-wider uppercase mb-4">Milestones</p>
+      <div className="border border-white/[0.08] rounded-xl p-5">
+        <p className="text-[10px] text-white/30 font-semibold tracking-wider uppercase mb-3">Milestones</p>
         <div className="flex flex-wrap gap-2">
           {MILESTONES.map((m) => (
-            <span key={m} className="text-xs sm:text-sm text-white/60 bg-white/[0.04] border border-white/[0.06] rounded-lg px-3 py-1.5">
+            <span key={m} className="text-xs text-white/60 bg-white/[0.04] border border-white/[0.06] rounded-lg px-3 py-1.5">
               {m}
             </span>
           ))}
         </div>
       </div>
 
-      <p className="mt-5 sm:mt-6 text-sm text-white/40 leading-relaxed">
+      <p className="mt-5 text-sm text-white/40 leading-relaxed">
         The goal is to turn Ultron from an early execution system into the default operating layer for founder-led growth.
       </p>
-    </div>
+    </SlideLayout>
   );
 }
 
 /* ═══════════════════════════════════════════════════════════════ */
-/*  SLIDE 9: CLOSING                                               */
+/*  SLIDE 9: CLOSING — CTA                                        */
 /* ═══════════════════════════════════════════════════════════════ */
 
+const REQUEST_DOCS = ["Financial Report", "Data Room", "Updates"];
+
 function Slide9() {
+  const [selected, setSelected] = useState<Set<string>>(new Set(["Financial Report"]));
+  const [email, setEmail] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const toggle = (doc: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(doc)) {
+        if (next.size > 1) next.delete(doc);
+      } else {
+        next.add(doc);
+      }
+      return next;
+    });
+  };
+
+  const handleSend = async () => {
+    if (!email.trim() || selected.size === 0) return;
+    setSending(true);
+    try {
+      const res = await fetch("/api/deck-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, documents: Array.from(selected) }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      setSent(true);
+      setTimeout(() => { setSent(false); setEmail(""); }, 3000);
+    } catch {
+      /* silent */
+    } finally {
+      setSending(false);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center h-full text-center px-6">
       <Image
         src="/logo.png"
         alt="Ultron"
-        width={72}
-        height={72}
-        className="rounded-xl animate-logo-spin mb-6"
+        width={80}
+        height={80}
+        className="rounded-xl animate-logo-spin mb-10"
       />
-      <p className="text-white/40 text-base sm:text-lg">
-        Meet Ultron
-      </p>
+
+      {/* Schedule a call */}
+      <a
+        href="https://calendly.com/catalinfetean/30min"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2.5 bg-white text-black font-semibold text-sm sm:text-base rounded-full px-6 sm:px-8 py-3 hover:bg-white/90 transition-colors mb-8"
+      >
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="shrink-0">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        Schedule a Call
+      </a>
+
+      {/* Request documents */}
+      <div className="w-full max-w-sm">
+        <p className="text-white/30 text-[10px] uppercase tracking-wider font-semibold mb-3">
+          Request Documents
+        </p>
+        <div className="flex justify-center gap-2 mb-4">
+          {REQUEST_DOCS.map((doc) => (
+            <button
+              key={doc}
+              onClick={() => toggle(doc)}
+              className={`text-xs rounded-full px-3 py-1.5 transition-colors ${
+                selected.has(doc)
+                  ? "text-white border border-white/20 bg-white/[0.08]"
+                  : "text-white/40 border border-white/[0.06] hover:text-white/70"
+              }`}
+            >
+              {doc}
+            </button>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            placeholder="investor@email.com"
+            className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 outline-none focus:border-white/20 transition-colors"
+          />
+          <button
+            onClick={handleSend}
+            disabled={!email.trim() || sending || selected.size === 0}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              sent
+                ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                : "bg-white text-black hover:bg-white/90 disabled:opacity-30 disabled:cursor-not-allowed"
+            }`}
+          >
+            {sent ? "Sent" : sending ? "..." : "Send"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

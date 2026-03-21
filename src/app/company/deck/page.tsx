@@ -601,7 +601,7 @@ function InvestmentDeck({
     <div className="flex flex-col h-full">
       {/* Slide area — fills remaining space */}
       <div className="flex-1 min-h-0 relative">
-        <div className="absolute inset-0 rounded-lg sm:rounded-xl overflow-hidden bg-[#111] border border-white/[0.06] shadow-2xl">
+        <div className="absolute inset-0 rounded-lg sm:rounded-xl overflow-hidden bg-black border border-white/[0.06] shadow-2xl">
           {slides.map((slide, i) => {
             const SlideComponent = slide.component;
             return (
