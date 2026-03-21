@@ -607,51 +607,16 @@ function Slide4() {
 }
 
 /* ═══════════════════════════════════════════════════════════════ */
-/*  SLIDE 5: WHY NOW                                               */
-/* ═══════════════════════════════════════════════════════════════ */
-
-const WHY_NOW_REASONS = [
-  {
-    title: "Interest-based distribution is now real",
-    body: "Instagram recommendations already push content through Reels, Explore, Feed, and reposts beyond direct follower relationships.",
-  },
-  {
-    title: "AI is moving from assistant to operator",
-    body: "The market is shifting from simple chat interfaces to systems that can act across tools, workflows, and business processes.",
-  },
-  {
-    title: "The category is still open",
-    body: "Most products today are still horizontal builders, automation tools, or chat layers. There is room for a focused execution product built around founder-led GTM.",
-  },
-];
-
-function Slide5() {
-  return (
-    <SlideLayout
-      pill="Why Now"
-      title="Distribution has changed faster than most companies have adapted."
-    >
-      <p className="text-sm text-white/50 leading-relaxed max-w-2xl mb-6">
-        Social feeds are increasingly driven by recommendations, not just follower graphs. That creates a window where strong content can earn reach on interest alone. Ultron is building for that shift with a distribution network designed to scale to roughly 45,000 pieces of content per month while the market is still early.
-      </p>
-
-      <div className="h-px bg-white/[0.08] mb-6" />
-
-      <div className="grid md:grid-cols-3 gap-4 sm:gap-5">
-        {WHY_NOW_REASONS.map((r) => (
-          <div key={r.title} className="border border-white/[0.08] rounded-xl p-5">
-            <h3 className="text-sm font-semibold text-white mb-2">{r.title}</h3>
-            <p className="text-xs sm:text-sm text-white/50 leading-relaxed">{r.body}</p>
-          </div>
-        ))}
-      </div>
-    </SlideLayout>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════ */
 /*  SLIDE 6: COMPETITION                                           */
 /* ═══════════════════════════════════════════════════════════════ */
+
+const COMPARISON_PAIRS = [
+  { old: "Work moves between people", neo: "Work is handled by specialized agents" },
+  { old: "Scaling requires more headcount", neo: "Scaling runs on parallel execution" },
+  { old: "Knowledge is spread everywhere", neo: "Knowledge becomes shared memory" },
+  { old: "More tools create more confusion", neo: "Tools are coordinated natively" },
+  { old: "Output depends on incentives", neo: "Output compounds exponentially" },
+];
 
 type CompRow = { label: string; ultron: string; n8n: string; zapier: string; gumloop: string };
 
@@ -662,63 +627,260 @@ const COMP_ROWS: CompRow[] = [
   { label: "Best fit", ultron: "Output, distribution, and execution in one layer", n8n: "Deep workflow control", zapier: "Automating across many apps", gumloop: "Building AI workflows without code" },
 ];
 
-function Slide6() {
+const COMP_EDGES = [
+  "Packaged execution over general automation",
+  "Designed around GTM throughput",
+  "Agents, integrations, and distribution combined",
+  "Clear path from attention to execution",
+];
+
+const COMP_STAGGER = 400;
+const COMP_HOLD = 2400;
+const COMP_RESET = 800;
+
+/* ── Desktop comparison row ─────────────────── */
+
+function ComparisonRowDesktop({ old, neo, scratched }: { old: string; neo: string; scratched: boolean }) {
   return (
-    <SlideLayout
-      pill="Competition"
-      title="The market has builders. Ultron is building an execution company."
-    >
-      {/* Matrix */}
-      <div className="border border-white/[0.08] rounded-xl overflow-hidden mb-5">
-        {/* Header */}
-        <div className="grid grid-cols-5 bg-white/[0.03]">
-          <div className="p-3" />
-          {["Ultron", "n8n", "Zapier", "Gumloop"].map((name) => (
-            <div key={name} className={`p-3 border-l border-white/[0.06] ${name === "Ultron" ? "bg-white/[0.04]" : ""}`}>
-              <span className={`text-xs sm:text-sm font-semibold ${name === "Ultron" ? "text-white" : "text-white/50"}`}>{name}</span>
+    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 lg:gap-6 py-[7px]">
+      {/* Left — old model, gets scratch treatment */}
+      <div className="text-right">
+        <span
+          className="relative inline text-[14px] lg:text-[15px] text-white/60 select-none"
+          style={{ opacity: scratched ? 0.35 : 1, transition: "opacity 0.4s ease" }}
+        >
+          {old}
+          <span
+            className="absolute left-0 top-1/2 h-[1px] bg-white/40 origin-left"
+            style={{ width: scratched ? "100%" : "0%", transition: "width 0.4s ease" }}
+          />
+        </span>
+      </div>
+      {/* Arrow */}
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={1.5} className="shrink-0 opacity-30">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+      </svg>
+      {/* Right — new model, stays clean */}
+      <span className="text-[14px] lg:text-[15px] text-white/90 select-none">{neo}</span>
+    </div>
+  );
+}
+
+/* ── Matrix dropdown (desktop only) ─────────── */
+
+function CompMatrixDropdown() {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative inline-flex">
+      <button
+        onClick={() => setOpen(!open)}
+        className="text-[13px] text-white/40 hover:text-white/60 transition-colors flex items-center gap-1.5"
+      >
+        <span>See competitive matrix</span>
+        <svg
+          width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}
+          className="transition-transform duration-200"
+          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+        </svg>
+      </button>
+
+      {open && (
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-[680px] bg-[#111] border border-white/[0.08] rounded-xl shadow-2xl p-4 z-50 animate-[fadeIn_0.15s_ease-out]">
+          {/* Matrix table */}
+          <div className="border border-white/[0.08] rounded-lg overflow-hidden mb-3">
+            <div className="grid grid-cols-5 bg-white/[0.03]">
+              <div className="p-2.5" />
+              {["Ultron", "n8n", "Zapier", "Gumloop"].map((name) => (
+                <div key={name} className={`p-2.5 border-l border-white/[0.06] ${name === "Ultron" ? "bg-white/[0.04]" : ""}`}>
+                  <span className={`text-xs font-semibold ${name === "Ultron" ? "text-white" : "text-white/50"}`}>{name}</span>
+                </div>
+              ))}
             </div>
-          ))}
+            {COMP_ROWS.map((row) => (
+              <div key={row.label} className="grid grid-cols-5 border-t border-white/[0.06]">
+                <div className="p-2.5">
+                  <span className="text-[9px] text-white/40 uppercase tracking-wider font-medium">{row.label}</span>
+                </div>
+                <div className="p-2.5 border-l border-white/[0.06] bg-white/[0.04]">
+                  <span className="text-[11px] text-white">{row.ultron}</span>
+                </div>
+                <div className="p-2.5 border-l border-white/[0.06]">
+                  <span className="text-[11px] text-white/50">{row.n8n}</span>
+                </div>
+                <div className="p-2.5 border-l border-white/[0.06]">
+                  <span className="text-[11px] text-white/50">{row.zapier}</span>
+                </div>
+                <div className="p-2.5 border-l border-white/[0.06]">
+                  <span className="text-[11px] text-white/50">{row.gumloop}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Edge statements */}
+          <div className="grid grid-cols-4 gap-1.5">
+            {COMP_EDGES.map((edge) => (
+              <div key={edge} className="flex items-start gap-1.5 p-2">
+                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2} className="shrink-0 mt-0.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-[10px] text-white/50">{edge}</span>
+              </div>
+            ))}
+          </div>
         </div>
+      )}
+    </div>
+  );
+}
 
-        {/* Rows */}
-        {COMP_ROWS.map((row) => (
-          <div key={row.label} className="grid grid-cols-5 border-t border-white/[0.06]">
-            <div className="p-3">
-              <span className="text-[10px] text-white/40 uppercase tracking-wider font-medium">{row.label}</span>
-            </div>
-            <div className="p-3 border-l border-white/[0.06] bg-white/[0.04]">
-              <span className="text-xs sm:text-sm text-white">{row.ultron}</span>
-            </div>
-            <div className="p-3 border-l border-white/[0.06]">
-              <span className="text-xs sm:text-sm text-white/50">{row.n8n}</span>
-            </div>
-            <div className="p-3 border-l border-white/[0.06]">
-              <span className="text-xs sm:text-sm text-white/50">{row.zapier}</span>
-            </div>
-            <div className="p-3 border-l border-white/[0.06]">
-              <span className="text-xs sm:text-sm text-white/50">{row.gumloop}</span>
-            </div>
-          </div>
-        ))}
+/* ── The slide ─────────────────────────────── */
+
+function Slide6() {
+  const [scratched, setScratched] = useState(0);
+  const [visible, setVisible] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Mobile state: current pair index, phase: "old" | "scratch" | "new"
+  const [mobilePair, setMobilePair] = useState(0);
+  const [mobilePhase, setMobilePhase] = useState<"old" | "scratch" | "new">("old");
+  const mobileTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const runDesktopLoop = useCallback(() => {
+    let count = 0;
+    const tick = () => {
+      count++;
+      setScratched(count);
+      if (count < COMPARISON_PAIRS.length) {
+        timerRef.current = setTimeout(tick, COMP_STAGGER);
+      } else {
+        timerRef.current = setTimeout(() => {
+          setScratched(0);
+          timerRef.current = setTimeout(runDesktopLoop, COMP_RESET);
+        }, COMP_HOLD);
+      }
+    };
+    timerRef.current = setTimeout(tick, COMP_STAGGER);
+  }, []);
+
+  const runMobileLoop = useCallback(() => {
+    let pair = 0;
+    const nextPair = () => {
+      pair = pair % COMPARISON_PAIRS.length;
+      setMobilePair(pair);
+      setMobilePhase("old");
+      // Show old line → scratch it → show new line → hold → next
+      mobileTimerRef.current = setTimeout(() => {
+        setMobilePhase("scratch");
+        mobileTimerRef.current = setTimeout(() => {
+          setMobilePhase("new");
+          mobileTimerRef.current = setTimeout(() => {
+            pair++;
+            if (pair >= COMPARISON_PAIRS.length) {
+              // Full cycle done — hold then restart
+              mobileTimerRef.current = setTimeout(() => {
+                pair = 0;
+                nextPair();
+              }, COMP_RESET);
+            } else {
+              nextPair();
+            }
+          }, COMP_HOLD / 2);
+        }, 400);
+      }, 600);
+    };
+    nextPair();
+  }, []);
+
+  useEffect(() => {
+    const initTimer = setTimeout(() => {
+      setVisible(true);
+      runDesktopLoop();
+      runMobileLoop();
+    }, 400);
+    return () => {
+      clearTimeout(initTimer);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      if (mobileTimerRef.current) clearTimeout(mobileTimerRef.current);
+    };
+  }, [runDesktopLoop, runMobileLoop]);
+
+  return (
+    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full justify-center overflow-hidden">
+      {/* Title */}
+      <div className="text-center mb-8 sm:mb-10">
+        <h2 className="sm:hidden text-[24px] font-bold text-white leading-[1.25] tracking-tight">
+          We are living through
+          <br />
+          the final cycle of the
+          <br />
+          corporate machine.
+        </h2>
+        <h2 className="hidden sm:block text-[28px] lg:text-[36px] xl:text-[40px] font-bold text-white leading-[1.2] tracking-tight">
+          We are living through the final cycle
+          <br />
+          of the corporate machine.
+        </h2>
       </div>
 
-      {/* Ultron edge */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        {[
-          "Packaged execution over general automation",
-          "Designed around GTM throughput",
-          "Agents, integrations, and distribution combined",
-          "Clear path from attention to execution",
-        ].map((edge) => (
-          <div key={edge} className="flex items-start gap-2 bg-white/[0.03] border border-white/[0.06] rounded-lg p-3">
-            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2} className="shrink-0 mt-0.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <span className="text-[10px] sm:text-xs text-white/60">{edge}</span>
+      {/* Comparison block */}
+      <div
+        className="flex justify-center"
+        style={{ opacity: visible ? 1 : 0, transition: "opacity 0.6s ease" }}
+      >
+        <div className="w-full max-w-3xl">
+          {/* Desktop: two columns + arrows */}
+          <div className="hidden md:block">
+            {COMPARISON_PAIRS.map((pair, i) => (
+              <ComparisonRowDesktop key={i} old={pair.old} neo={pair.neo} scratched={i < scratched} />
+            ))}
           </div>
-        ))}
+
+          {/* Mobile: one pair at a time */}
+          <div className="md:hidden flex justify-center">
+            <div className="text-center space-y-3 min-h-[80px]">
+              {/* Old line */}
+              <div style={{ opacity: mobilePhase === "new" ? 0 : 1, transition: "opacity 0.3s ease" }}>
+                <span
+                  className="relative inline text-[16px] text-white/60"
+                  style={{ opacity: mobilePhase === "scratch" ? 0.35 : 1, transition: "opacity 0.4s ease" }}
+                >
+                  {COMPARISON_PAIRS[mobilePair].old}
+                  <span
+                    className="absolute left-0 top-1/2 h-[1px] bg-white/40 origin-left"
+                    style={{ width: mobilePhase === "scratch" ? "100%" : "0%", transition: "width 0.4s ease" }}
+                  />
+                </span>
+              </div>
+              {/* New line */}
+              <div style={{ opacity: mobilePhase === "new" ? 1 : 0, transition: "opacity 0.3s ease" }}>
+                <span className="text-[16px] text-white/90 font-medium">
+                  {COMPARISON_PAIRS[mobilePair].neo}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </SlideLayout>
+
+      {/* Bottom area — matrix dropdown (desktop only) */}
+      <div
+        className="hidden md:flex justify-center mt-8 sm:mt-10"
+        style={{ opacity: visible ? 1 : 0, transition: "opacity 0.8s ease" }}
+      >
+        <CompMatrixDropdown />
+      </div>
+    </div>
   );
 }
 
@@ -977,9 +1139,8 @@ export const DECK_SLIDES = [
   { id: 2, component: Slide2 },
   { id: 3, component: Slide3 },
   { id: 4, component: Slide4 },
-  { id: 5, component: Slide5 },
-  { id: 6, component: Slide6 },
-  { id: 7, component: Slide7 },
-  { id: 8, component: Slide8 },
-  { id: 9, component: Slide9 },
+  { id: 5, component: Slide6 },
+  { id: 6, component: Slide7 },
+  { id: 7, component: Slide8 },
+  { id: 8, component: Slide9 },
 ];
