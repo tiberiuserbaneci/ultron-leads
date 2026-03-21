@@ -557,7 +557,7 @@ function Slide4() {
   return (
     <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full justify-center overflow-hidden">
       {/* Main line */}
-      <div className="text-center mb-6 sm:mb-8">
+      <div className="text-center mb-4 sm:mb-6">
         <h2 className="text-[24px] sm:text-[28px] lg:text-[36px] xl:text-[40px] font-bold text-white leading-[1.2] tracking-tight">
           Content-driven distribution engine
           <br />
@@ -566,7 +566,7 @@ function Slide4() {
       </div>
 
       {/* KPI row — 3 metrics, balanced sizing */}
-      <div className="flex justify-center mb-6 sm:mb-8">
+      <div className="flex justify-center mb-4 sm:mb-6">
         <div className="flex items-center gap-8 sm:gap-14">
           {stats.map((s) => (
             <div key={s.label} className="text-center">
@@ -579,42 +579,38 @@ function Slide4() {
 
       {/* Two panels */}
       <div className="flex justify-center">
-        <div className="w-full max-w-3xl grid md:grid-cols-2 gap-4">
+        <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
           {/* Left: Viral Distribution */}
           <div className="flex flex-col border border-white/[0.12] rounded-xl bg-white/[0.03] overflow-hidden">
-            <div className="px-5 py-3 border-b border-white/[0.10]">
+            <div className="px-4 py-2.5 border-b border-white/[0.10]">
               <span className="text-[10px] font-semibold text-white/70 tracking-[0.15em] uppercase">Viral Distribution</span>
             </div>
-            <div className="px-5 py-4 flex-1">
-              <p className="text-[15px] text-white/80 leading-snug mb-4">A content engine designed to turn attention into product entry</p>
+            <div className="px-4 py-3">
+              <p className="text-[14px] text-white/80 leading-snug mb-3">A content engine designed to turn attention into product entry</p>
 
-              {/* Vertical flow with animation */}
+              {/* Compact vertical flow */}
               <div>
                 {FLOW_STEPS.map((step, i) => (
-                  <div key={step} className="animate-slide-up" style={{ animationDelay: `${i * 150}ms`, animationFillMode: "both" }}>
-                    <div className="flex items-center gap-2.5 py-2">
-                      <span className="w-5 h-5 rounded-full border border-white/[0.15] flex items-center justify-center shrink-0">
-                        <span className="text-[9px] text-white/50 font-medium">{i + 1}</span>
+                  <div key={step} className="animate-slide-up" style={{ animationDelay: `${i * 120}ms`, animationFillMode: "both" }}>
+                    <div className="flex items-center gap-2 py-1">
+                      <span className="w-[18px] h-[18px] rounded-full border border-white/[0.15] flex items-center justify-center shrink-0">
+                        <span className="text-[8px] text-white/50 font-medium">{i + 1}</span>
                       </span>
-                      <span className="text-[14px] text-white/90">{step}</span>
+                      <span className="text-[13px] text-white/90">{step}</span>
                     </div>
-                    {i < 3 && (
-                      <div className="ml-[10px] flex flex-col items-center">
-                        <div className="w-px h-3 bg-gradient-to-b from-white/20 to-white/5" />
-                      </div>
-                    )}
+                    {i < 3 && <div className="w-px h-1.5 bg-white/15 ml-[9px]" />}
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Right: Enterprise Sales — 3 stacked cards */}
-          <div className="flex flex-col gap-3">
+          {/* Right: 3 stacked cards */}
+          <div className="flex flex-col gap-2.5">
             {ENTERPRISE_POINTS.map((point) => (
-              <div key={point.title} className="border border-white/[0.08] rounded-xl p-4">
-                <h3 className="text-sm font-semibold text-white mb-1.5">{point.title}</h3>
-                <p className="text-[13px] text-white/50 leading-relaxed">{point.body}</p>
+              <div key={point.title} className="border border-white/[0.08] rounded-xl px-4 py-3">
+                <h3 className="text-[13px] font-semibold text-white mb-1">{point.title}</h3>
+                <p className="text-[12px] text-white/50 leading-relaxed">{point.body}</p>
               </div>
             ))}
           </div>
