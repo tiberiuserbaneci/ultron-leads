@@ -454,42 +454,24 @@ function AgentFleetPanel() {
 
       <div className="flex-1 flex flex-col px-5 py-4">
         {/* Description lines */}
-        <div className="space-y-1.5 mb-5">
-          <div className="flex items-center gap-2">
-            <Image src="/logo openclaw.png" alt="OpenClaw" width={14} height={14} className="rounded-sm shrink-0" />
-            <span className="text-[13px] text-white/80">OpenClaw as the control layer</span>
+        <div className="space-y-2 mb-auto">
+          <div className="flex items-center gap-2.5">
+            <Image src="/logo openclaw.png" alt="OpenClaw" width={16} height={16} className="rounded-sm shrink-0" />
+            <span className="text-[14px] text-white/85">OpenClaw as the control layer</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Image src="/logo claude.png" alt="Claude" width={14} height={14} className="rounded-sm shrink-0" />
-            <span className="text-[13px] text-white/80">Claude Code for parallel execution</span>
+          <div className="flex items-center gap-2.5">
+            <Image src="/logo claude.png" alt="Claude" width={16} height={16} className="rounded-sm shrink-0" />
+            <span className="text-[14px] text-white/85">Claude Code for parallel execution</span>
           </div>
         </div>
 
-        {/* L-shape agent visualization */}
-        <div className="flex-1 flex items-center justify-center">
-          <div className="flex items-center gap-0">
-            {/* Left column: Research + Enrichment */}
-            <div className="flex flex-col items-end gap-2.5">
-              <span className="text-[14px] text-white/85">Research</span>
-              <span className="text-[14px] text-white/85">Enrichment</span>
-            </div>
-
-            {/* Center: lines + OpenClaw logo */}
-            <div className="flex flex-col items-center mx-3">
-              <div className="flex items-center">
-                <div className="w-5 h-px bg-white/20" />
-                <Image src="/logo openclaw.png" alt="OpenClaw" width={28} height={28} className="rounded-md shrink-0" />
-                <div className="w-5 h-px bg-white/20" />
-              </div>
-              <p className="text-[8px] text-white/35 mt-0.5 tracking-widest uppercase">Control</p>
-            </div>
-
-            {/* Right column: Outreach + Content */}
-            <div className="flex flex-col items-start gap-2.5">
-              <span className="text-[14px] text-white/85">Outreach</span>
-              <span className="text-[14px] text-white/85">Content</span>
-            </div>
-          </div>
+        {/* Agent list — large, clean, fills the remaining space */}
+        <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+          {["Research", "Enrichment", "Outreach", "Content"].map((name) => (
+            <span key={name} className="text-[18px] text-white/90 font-medium">
+              {name}
+            </span>
+          ))}
         </div>
       </div>
     </div>
