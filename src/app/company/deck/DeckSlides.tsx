@@ -59,15 +59,15 @@ function SlideLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full pt-8 sm:pt-10 pb-6 overflow-y-auto">
+    <div className="flex flex-col h-full px-4 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full pt-5 sm:pt-8 pb-4 sm:pb-6 overflow-y-auto">
       {/* Pill — always top center */}
-      <div className="text-center mb-5 sm:mb-6">
+      <div className="text-center mb-3 sm:mb-5">
         <SlidePill>{pill}</SlidePill>
       </div>
 
       {/* Title — consistent position */}
       {title && (
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight max-w-3xl mb-6 sm:mb-8">
+        <h2 className="text-xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight max-w-3xl mb-4 sm:mb-6">
           {title}
         </h2>
       )}

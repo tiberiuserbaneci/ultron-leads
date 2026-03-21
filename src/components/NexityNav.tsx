@@ -112,7 +112,7 @@ export default function NexityNav() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[60]">
-      <div className={`backdrop-blur-md border-b border-[#e5e5e5] ${mobileMenuOpen ? "bg-white" : "bg-white/90"}`}>
+      <div className={`border-b border-[#e5e5e5] bg-white`}>
         <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-[72px]">
             {/* Logo */}

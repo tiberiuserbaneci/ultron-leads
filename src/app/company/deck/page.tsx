@@ -221,7 +221,7 @@ export default function DeckPage() {
       </div>
 
       {/* ── Content area ───────────────────────────────────────── */}
-      <div className="flex-1 min-h-0 max-w-[1920px] mx-auto w-full px-4 sm:px-8 md:px-12 pt-3 sm:pt-4 pb-4 sm:pb-6">
+      <div className={`flex-1 min-h-0 max-w-[1920px] mx-auto w-full ${tab === "deck" ? "px-0 sm:px-8 md:px-12 pt-0 sm:pt-4 pb-0 sm:pb-6" : "px-4 sm:px-8 md:px-12 pt-3 sm:pt-4 pb-4 sm:pb-6"}`}>
         {tab === "summary" ? (
           <ExecutiveSummary />
         ) : (
@@ -597,11 +597,37 @@ function InvestmentDeck({
   prev: () => void;
   next: () => void;
 }) {
+  /* Touch swipe support for mobile */
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const slideRef = useRef<HTMLDivElement>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    // Only swipe if horizontal movement > 50px and > vertical movement
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0) next();
+      else prev();
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
       {/* Slide area — fills remaining space */}
-      <div className="flex-1 min-h-0 relative">
-        <div className="absolute inset-0 rounded-lg sm:rounded-xl overflow-hidden bg-black border border-white/[0.06] shadow-2xl">
+      <div className="flex-1 min-h-0 flex items-center justify-center">
+        {/* Desktop: 16:9 aspect, Mobile: full width no border */}
+        <div
+          ref={slideRef}
+          className="relative w-full sm:rounded-xl overflow-hidden bg-black sm:border sm:border-white/[0.06] sm:shadow-2xl sm:aspect-video h-full sm:h-auto sm:max-h-full"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           {slides.map((slide, i) => {
             const SlideComponent = slide.component;
             return (
@@ -614,11 +640,25 @@ function InvestmentDeck({
               </div>
             );
           })}
+
+          {/* Mobile: dot indicators overlay at bottom */}
+          <div className="sm:hidden absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                  i === current ? "bg-white" : "bg-white/30"
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Controls — fixed at bottom */}
-      <div className="shrink-0 pt-3 sm:pt-4">
+      {/* Controls — desktop only */}
+      <div className="hidden sm:block shrink-0 pt-3 sm:pt-4">
         <div className="flex items-center justify-center gap-4 sm:gap-6">
           <button
             onClick={prev}
@@ -635,7 +675,7 @@ function InvestmentDeck({
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
-                className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-colors ${
+                className={`w-2 h-2 rounded-full transition-colors ${
                   i === current ? "bg-white" : "bg-white/20 hover:bg-white/40"
                 }`}
                 aria-label={`Go to slide ${i + 1}`}

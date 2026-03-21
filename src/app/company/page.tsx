@@ -130,7 +130,7 @@ export default function NexityPage() {
   return (
     <div className="bg-[#faf8f5]">
       {/* ─── HERO ─── */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden -mt-[72px] pt-[72px]">
+      <section className="relative min-h-screen flex items-start sm:items-center justify-center overflow-hidden -mt-[72px] pt-[72px]">
         {/* Video background — hidden on mobile */}
         <div className="absolute inset-0 hidden md:block">
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
@@ -145,7 +145,7 @@ export default function NexityPage() {
           >
             <source src="/hero-background-nxt.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-white/85 via-white/50 to-white/95" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-white/80 to-white/98" />
         </div>
 
         {/* Mobile: plain white bg */}
@@ -155,17 +155,17 @@ export default function NexityPage() {
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#faf8f5] to-transparent z-10 pointer-events-none" />
 
         {/* Content */}
-        <div className="relative z-20 max-w-[1200px] mx-auto px-6 lg:px-8 text-center py-16 lg:py-20">
+        <div className="relative z-20 max-w-[1200px] mx-auto px-6 lg:px-8 text-center pt-8 pb-16 sm:py-16 lg:py-20">
           <Badge>NXT ENTERPRISES</Badge>
-          <h1 className="mt-8 text-4xl sm:text-5xl lg:text-[64px] font-bold leading-[1.1] tracking-tight text-[#1a1a1a]">
+          <h1 className="mt-6 sm:mt-8 text-4xl sm:text-5xl lg:text-[64px] font-bold leading-[1.1] tracking-tight text-[#1a1a1a]">
             AI and Blockchain Infrastructure
             <br />
             <span className="text-[#888]">for the Autonomous Economy</span>
           </h1>
-          <p className="mt-6 text-[#777] text-lg max-w-[600px] mx-auto leading-relaxed">
+          <p className="mt-5 sm:mt-6 text-[#777] text-lg max-w-[600px] mx-auto leading-relaxed">
             The ultimate business brain for more than 2,500 founders.
           </p>
-          <div className="mt-10 flex items-center justify-center gap-4 flex-wrap">
+          <div className="mt-8 sm:mt-10 flex items-center justify-center gap-4 flex-wrap">
             <a
               href="https://51ultron.com"
               className="inline-flex items-center gap-2 text-[15px] font-semibold text-white bg-[#1a1a1a] rounded-full px-8 py-3 hover:bg-[#333] transition-colors"
@@ -181,6 +181,18 @@ export default function NexityPage() {
             </a>
           </div>
         </div>
+
+        {/* Scroll-down arrow */}
+        <button
+          onClick={() => window.scrollBy({ top: window.innerHeight * 0.4, behavior: "smooth" })}
+          aria-label="Scroll down"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 p-2 active:scale-90 transition-transform duration-150 animate-bounce"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#999]">
+            <path d="M12 5v14" />
+            <path d="M19 12l-7 7-7-7" />
+          </svg>
+        </button>
       </section>
 
       {/* ─── PRODUCTS ─── */}
