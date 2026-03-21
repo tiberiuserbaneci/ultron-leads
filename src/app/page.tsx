@@ -8,6 +8,7 @@ import HeroChatBox, { type ViewId } from "@/components/HeroChatBox";
 import { DemoContent } from "@/components/DemoSection";
 import Footer from "@/components/Footer";
 import ROICalculator from "@/app/calculator/ROICalculator";
+import { trackCtaClicked } from "@/lib/analytics";
 
 /* Lazy-loaded embedded views */
 const EmbeddedLive = dynamic(() => import("@/components/EmbeddedLive"), { ssr: false });
@@ -654,12 +655,14 @@ export default function HomePage() {
           <div className="flex items-center justify-center gap-4 mb-16 lg:mb-24">
             <Link
               href="https://app.51ultron.com/signup"
+              onClick={() => trackCtaClicked("Try for free", "home_bottom", "https://app.51ultron.com/signup")}
               className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-8 py-3 hover:bg-[#DA4E24]/10 transition-all"
             >
               Try for free
             </Link>
             <Link
               href="/pricing"
+              onClick={() => trackCtaClicked("View Pricing", "home_bottom", "/pricing")}
               className="text-sm font-semibold text-white border border-[#333] rounded-full px-8 py-3 hover:border-[#555] transition-colors"
             >
               View Pricing

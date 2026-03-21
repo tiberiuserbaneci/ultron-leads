@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { BlogPost } from "@/data/news";
+import { trackBlogPostViewed } from "@/lib/analytics";
 
 /* ── helpers ────────────────────────────────────────────────── */
 function formatDate(iso: string) {
@@ -22,6 +24,10 @@ export default function BlogArticle({
   post: BlogPost;
   related: BlogPost[];
 }) {
+  useEffect(() => {
+    trackBlogPostViewed(post.slug);
+  }, [post.slug]);
+
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-8 py-12 sm:py-20">
       {/* ── Back + meta ────────────────────────────────────── */}

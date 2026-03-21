@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Nav from "@/components/Nav";
+import PostHogProvider from "@/components/PostHogProvider";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://work.51ultron.com"),
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="bg-black text-white min-h-screen">
+        <PostHogProvider>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -100,6 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
+        </PostHogProvider>
       </body>
     </html>
   );

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import type { PromptData, AgentBranch, WorkflowNode, NodeIcon } from "./workflowData";
 import { nodeCostMap } from "./workflowData";
+import { trackCtaClicked, trackDemoClicked } from "@/lib/analytics";
 
 /* ─── Icon Components ─── */
 function NodeIconSvg({ icon, size = 14 }: { icon: NodeIcon; size?: number }) {
@@ -299,6 +300,7 @@ function SummaryCard({ prompt, elapsed, costSaved }: { prompt: PromptData; elaps
 
         <a
           href="https://app.51ultron.com/signup"
+          onClick={() => { trackDemoClicked("demo_workflow"); trackCtaClicked("Deploy this for your business", "demo_workflow", "https://app.51ultron.com/signup"); }}
           className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-8 py-3 hover:bg-[#DA4E24]/10 transition-all inline-flex items-center gap-2"
         >
           Deploy this for your business

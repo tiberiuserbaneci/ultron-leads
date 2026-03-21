@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLiveStats } from "./HeroStats";
+import { trackNavClicked, trackOutboundLinkClicked, trackCtaClicked } from "@/lib/analytics";
 
 /* ───────────────────────── External Link Icon ───────────────────────── */
 function ExternalIcon() {
@@ -191,7 +192,14 @@ function DropdownPanel({
                   <Comp
                     key={item.label}
                     href={item.href}
-                    onClick={onClose}
+                    onClick={() => {
+                      if (isExternal) {
+                        trackOutboundLinkClicked(item.href, item.label, `nav_${menu.label}`);
+                      } else {
+                        trackNavClicked(item.label, item.href, menu.label);
+                      }
+                      onClose();
+                    }}
                     className="flex items-center justify-between gap-3 px-4 py-2.5 text-[15px] text-[#ccc] hover:text-white hover:bg-[#161616] rounded-lg mx-1 transition-colors duration-100"
                     {...extraProps}
                   >
@@ -248,7 +256,14 @@ function MobileAccordion({
                   <Comp
                     key={item.label}
                     href={item.href}
-                    onClick={onClose}
+                    onClick={() => {
+                      if (isExternal) {
+                        trackOutboundLinkClicked(item.href, item.label, `nav_mobile_${menu.label}`);
+                      } else {
+                        trackNavClicked(item.label, item.href, `mobile_${menu.label}`);
+                      }
+                      onClose();
+                    }}
                     className="flex items-center justify-between py-2.5 text-[15px] text-[#ccc] hover:text-white transition-colors"
                     {...extraProps}
                   >
@@ -414,6 +429,7 @@ export default function Nav() {
               {/* Try Ultron — desktop only */}
               <Link
                 href="https://app.51ultron.com/signup"
+                onClick={() => trackCtaClicked("Try Ultron", "nav_desktop", "https://app.51ultron.com/signup")}
                 className="hidden md:inline-flex text-[15px] font-semibold text-white border border-[#DA4E24] rounded-full px-6 py-2 hover:bg-[#DA4E24]/10 transition-colors"
               >
                 Try Ultron
@@ -501,14 +517,14 @@ export default function Nav() {
           <div className="shrink-0 px-6 py-6 border-t border-[#1a1a1a] flex gap-3">
             <Link
               href="/contact"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={() => { trackCtaClicked("Contact Sales", "nav_mobile", "/contact"); setMobileMenuOpen(false); }}
               className="flex-1 text-center text-sm font-semibold text-white border border-[#333] rounded-full py-3 hover:border-[#555] transition-colors"
             >
               Contact Sales
             </Link>
             <Link
               href="https://app.51ultron.com/signup"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={() => { trackCtaClicked("Try Ultron", "nav_mobile", "https://app.51ultron.com/signup"); setMobileMenuOpen(false); }}
               className="flex-1 text-center text-sm font-semibold text-black bg-white rounded-full py-3 hover:bg-[#e0e0e0] transition-colors"
             >
               Try Ultron

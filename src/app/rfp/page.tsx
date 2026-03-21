@@ -27,6 +27,7 @@ import {
   isFieldFilled,
   isValidEmail,
 } from "./data";
+import { trackFormStarted, trackFormSubmitted } from "@/lib/analytics";
 
 /* ─── Field components ───────────────────────────────────── */
 
@@ -475,10 +476,15 @@ export default function RfpPage() {
   const [error, setError] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const rfpStarted = useRef(false);
 
   useEffect(() => setVisible(true), []);
 
   const set = useCallback(<K extends keyof RfpForm>(key: K, value: RfpForm[K]) => {
+    if (!rfpStarted.current) {
+      rfpStarted.current = true;
+      trackFormStarted("rfp");
+    }
     setForm((prev) => ({ ...prev, [key]: value }));
   }, []);
 
@@ -546,6 +552,7 @@ export default function RfpPage() {
       }
       const data = await res.json();
       if (data.success) {
+        trackFormSubmitted("rfp");
         setSubmitted(true);
       } else {
         setError(data.error || "Submission failed. Please try again.");

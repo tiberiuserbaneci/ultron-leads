@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import AssessmentQuiz from "../assess/AssessmentQuiz";
 import Footer from "@/components/Footer";
+import { trackPricingViewed, trackCtaClicked, trackOutboundLinkClicked } from "@/lib/analytics";
 
 /* ───────────────────────── Sparkle Icon ───────────────────────── */
 function Sparkle() {
@@ -137,6 +138,7 @@ function PlanCard({ plan, yearly }: { plan: Plan; yearly: boolean }) {
             href={plan.ctaHref}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackOutboundLinkClicked(plan.ctaHref, plan.cta, `pricing_${plan.name}`)}
             className={`block w-full text-center text-sm font-semibold rounded-full py-3 transition-colors mb-8 ${
               plan.highlight
                 ? "bg-[#DA4E24] text-white hover:bg-[#c44420]"
@@ -148,6 +150,7 @@ function PlanCard({ plan, yearly }: { plan: Plan; yearly: boolean }) {
         ) : (
           <Link
             href={plan.ctaHref}
+            onClick={() => trackCtaClicked(plan.cta, `pricing_${plan.name}`, plan.ctaHref)}
             className={`block w-full text-center text-sm font-semibold rounded-full py-3 transition-colors mb-8 ${
               plan.highlight
                 ? "bg-[#DA4E24] text-white hover:bg-[#c44420]"
@@ -188,6 +191,7 @@ export default function PricingPage() {
 
   useEffect(() => {
     setVisible(true);
+    trackPricingViewed();
   }, []);
 
   return (
@@ -341,12 +345,14 @@ export default function PricingPage() {
           <div className="flex items-center justify-center gap-4 mb-16 lg:mb-24">
             <Link
               href="https://app.51ultron.com/signup"
+              onClick={() => trackCtaClicked("Try for free", "pricing_bottom", "https://app.51ultron.com/signup")}
               className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-8 py-3 hover:bg-[#DA4E24]/10 transition-all"
             >
               Try for free
             </Link>
             <Link
               href="/contact"
+              onClick={() => trackCtaClicked("Contact Sales", "pricing_bottom", "/contact")}
               className="text-sm font-semibold text-white border border-[#333] rounded-full px-8 py-3 hover:border-[#555] transition-colors"
             >
               Contact Sales

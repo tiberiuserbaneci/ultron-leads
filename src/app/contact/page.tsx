@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import { trackFormStarted, trackFormSubmitted, trackCtaClicked } from "@/lib/analytics";
 
 /* ═══════════════════════════════════════════════════════════════ */
 /*                         DATA                                    */
@@ -240,9 +241,15 @@ function SalesForm() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const formStarted = useRef(false);
 
-  const set = (key: keyof typeof form) => (v: string) =>
+  const set = (key: keyof typeof form) => (v: string) => {
+    if (!formStarted.current) {
+      formStarted.current = true;
+      trackFormStarted("sales");
+    }
     setForm((prev) => ({ ...prev, [key]: v }));
+  };
 
   const handleSubmit = async () => {
     setError("");
@@ -268,6 +275,7 @@ function SalesForm() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || "Something went wrong");
       }
+      trackFormSubmitted("sales");
       setSubmitted(true);
     } catch (err: any) {
       setError(err.message || "Failed to submit. Please try again.");
@@ -405,9 +413,15 @@ function AgreementForm({ helpType }: { helpType: HelpType }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const formStarted = useRef(false);
 
-  const set = (key: keyof typeof form) => (v: string) =>
+  const set = (key: keyof typeof form) => (v: string) => {
+    if (!formStarted.current) {
+      formStarted.current = true;
+      trackFormStarted("agreement");
+    }
     setForm((prev) => ({ ...prev, [key]: v }));
+  };
 
   const handleSubmit = async () => {
     setError("");
@@ -433,6 +447,7 @@ function AgreementForm({ helpType }: { helpType: HelpType }) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || "Something went wrong");
       }
+      trackFormSubmitted("agreement");
       setSubmitted(true);
     } catch (err: any) {
       setError(err.message || "Failed to submit. Please try again.");
@@ -649,12 +664,14 @@ export default function ContactPage() {
           <div className="flex items-center justify-center gap-4 mb-16 lg:mb-24">
             <Link
               href="https://app.51ultron.com/signup"
+              onClick={() => trackCtaClicked("Try for free", "contact_bottom", "https://app.51ultron.com/signup")}
               className="text-sm font-semibold text-white border border-[#DA4E24] rounded-full px-8 py-3 hover:bg-[#DA4E24]/10 transition-all"
             >
               Try for free
             </Link>
             <Link
               href="/pricing"
+              onClick={() => trackCtaClicked("View Pricing", "contact_bottom", "/pricing")}
               className="text-sm font-semibold text-white border border-[#333] rounded-full px-8 py-3 hover:border-[#555] transition-colors"
             >
               View Pricing
