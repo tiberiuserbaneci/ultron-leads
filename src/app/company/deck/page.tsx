@@ -55,6 +55,21 @@ export default function DeckPage() {
   const prev = useCallback(() => setCurrent((c) => (c - 1 + total) % total), [total]);
   const next = useCallback(() => setCurrent((c) => (c + 1) % total), [total]);
 
+  /* Lock body scroll on deck tab */
+  useEffect(() => {
+    if (tab === "deck") {
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    } else {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    };
+  }, [tab]);
+
   /* keyboard nav (only in deck tab) */
   useEffect(() => {
     if (tab !== "deck") return;

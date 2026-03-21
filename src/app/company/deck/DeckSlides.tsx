@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useLiveStats } from "@/components/HeroStats";
 
@@ -8,9 +8,9 @@ import { useLiveStats } from "@/components/HeroStats";
 /*  SHARED HELPERS                                                 */
 /* ═══════════════════════════════════════════════════════════════ */
 
-function SlidePill({ children }: { children: React.ReactNode }) {
+function SlideLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-block text-xs sm:text-sm font-bold tracking-[0.15em] uppercase text-white/60 border border-white/15 rounded-full px-5 py-1.5">
+    <span className="inline-block text-[11px] sm:text-sm font-semibold tracking-[0.2em] uppercase text-white/40">
       {children}
     </span>
   );
@@ -59,15 +59,15 @@ function SlideLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col h-full px-4 sm:px-10 lg:px-14 max-w-6xl mx-auto w-full pt-4 sm:pt-6 pb-3 sm:pb-5 overflow-hidden">
-      {/* Pill — always top left */}
-      <div className="mb-2 sm:mb-4">
-        <SlidePill>{pill}</SlidePill>
+    <div className="flex flex-col h-full px-5 sm:px-10 lg:px-14 max-w-6xl mx-auto w-full pt-5 sm:pt-6 pb-3 sm:pb-5 overflow-hidden">
+      {/* Label — always top left */}
+      <div className="mb-3 sm:mb-4">
+        <SlideLabel>{pill}</SlideLabel>
       </div>
 
-      {/* Title — consistent position */}
+      {/* Title — bigger on mobile */}
       {title && (
-        <h2 className="text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-white leading-tight max-w-3xl mb-3 sm:mb-5">
+        <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-white leading-tight max-w-3xl mb-4 sm:mb-5">
           {title}
         </h2>
       )}
@@ -98,16 +98,16 @@ function Slide1() {
           meet Ultron
         </h1>
       </div>
-      {/* Mobile: stacked, proportionate */}
+      {/* Mobile: stacked, bigger */}
       <div className="flex sm:hidden flex-col items-center text-center">
         <Image
           src="/logo.png"
           alt="Ultron"
-          width={64}
-          height={64}
-          className="rounded-xl animate-logo-spin mb-5"
+          width={96}
+          height={96}
+          className="rounded-2xl animate-logo-spin mb-6"
         />
-        <h1 className="text-4xl font-bold text-white tracking-tight">
+        <h1 className="text-5xl font-bold text-white tracking-tight">
           meet Ultron
         </h1>
       </div>
@@ -620,74 +620,27 @@ function Slide8() {
 
 function Slide9() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [email, setEmail] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const openIntercom = () => {
     try { (window as any).Intercom?.("show"); } catch { /* silent */ }
   };
 
-  return (
-    <div className="flex flex-col items-center justify-center h-full text-center px-6">
-      <Image
-        src="/logo.png"
-        alt="Ultron"
-        width={100}
-        height={100}
-        className="rounded-xl animate-logo-spin mb-10"
-      />
-
-      {/* CTAs */}
-      <div className="flex items-center gap-3">
-        {/* Main CTA: Schedule a Call — triggers Intercom */}
-        <button
-          onClick={openIntercom}
-          className="inline-flex items-center gap-2.5 bg-white text-black font-semibold text-sm sm:text-base rounded-full px-6 sm:px-8 py-3 hover:bg-white/90 transition-colors"
-        >
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="shrink-0">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          Schedule a Call
-        </button>
-
-        {/* Desktop: second CTA with dropdown */}
-        <div className="relative hidden sm:block">
-          <button
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="inline-flex items-center gap-2 text-white/70 border border-white/15 font-medium text-sm rounded-full px-6 py-3 hover:text-white hover:border-white/30 transition-colors"
-          >
-            Request Documents
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={`transition-transform ${dropdownOpen ? "rotate-180" : ""}`}>
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </button>
-
-          {dropdownOpen && <Slide9Dropdown onClose={() => setDropdownOpen(false)} />}
-        </div>
-
-        {/* Mobile: icon button for dropdown */}
-        <div className="relative sm:hidden">
-          <button
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="w-12 h-12 rounded-full border border-white/15 flex items-center justify-center text-white/60 hover:text-white hover:border-white/30 transition-colors"
-            aria-label="Request documents"
-          >
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-            </svg>
-          </button>
-
-          {dropdownOpen && <Slide9Dropdown onClose={() => setDropdownOpen(false)} />}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/** Dropdown for Slide 9 — same as the 3-dot menu request documents section */
-function Slide9Dropdown({ onClose }: { onClose: () => void }) {
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [email, setEmail] = useState("");
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
+  /* Close on click outside */
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [dropdownOpen]);
 
   const toggle = (doc: string) => {
     setSelected((prev) => {
@@ -709,12 +662,12 @@ function Slide9Dropdown({ onClose }: { onClose: () => void }) {
       });
       if (!res.ok) throw new Error("Failed");
       setSent(true);
-      setTimeout(() => { setSent(false); setEmail(""); onClose(); }, 2000);
+      setTimeout(() => { setSent(false); setEmail(""); setDropdownOpen(false); }, 2000);
     } catch { /* silent */ } finally { setSending(false); }
   };
 
-  return (
-    <div className="absolute left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 bottom-full mb-2 w-72 bg-[#141414] border border-white/[0.08] rounded-xl shadow-2xl p-4 z-50 text-left">
+  const dropdown = dropdownOpen && (
+    <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-72 bg-[#141414] border border-white/[0.08] rounded-xl shadow-2xl p-4 z-50 text-left">
       <label className="block text-white/30 text-xs uppercase tracking-wider mb-2 px-1">Request Documents</label>
       <div className="flex flex-col gap-1 mb-3">
         {["Updates", "Financial Report", "Data Room"].map((opt) => (
@@ -755,6 +708,46 @@ function Slide9Dropdown({ onClose }: { onClose: () => void }) {
         >
           {sent ? "Sent" : sending ? "..." : "Send"}
         </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col items-center justify-center h-full text-center px-6">
+      <Image
+        src="/logo.png"
+        alt="Ultron"
+        width={100}
+        height={100}
+        className="rounded-xl animate-logo-spin mb-10"
+      />
+
+      {/* CTAs — both buttons same height */}
+      <div ref={dropdownRef} className="relative flex items-stretch gap-3">
+        <button
+          onClick={openIntercom}
+          className="inline-flex items-center gap-2.5 bg-white text-black font-semibold text-sm sm:text-base rounded-full px-6 sm:px-8 py-3.5 hover:bg-white/90 transition-colors"
+        >
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="shrink-0">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          Schedule a Call
+        </button>
+
+        <button
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+          className="inline-flex items-center gap-2 text-white/70 border border-white/15 font-medium text-sm sm:text-base rounded-full px-5 sm:px-6 py-3.5 hover:text-white hover:border-white/30 transition-colors"
+        >
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} className="shrink-0 sm:hidden">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+          </svg>
+          <span className="hidden sm:inline">Request Documents</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={`transition-transform ${dropdownOpen ? "rotate-180" : ""}`}>
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+
+        {dropdown}
       </div>
     </div>
   );
