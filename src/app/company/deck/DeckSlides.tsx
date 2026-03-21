@@ -544,7 +544,12 @@ function Slide4() {
     <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full overflow-hidden pt-[8%] sm:pt-[7%]">
       {/* Main line */}
       <div className="text-center mb-4 sm:mb-6">
-        <h2 className="text-[24px] sm:text-[28px] lg:text-[36px] xl:text-[40px] font-bold text-white leading-[1.2] tracking-tight">
+        <h2 className="sm:hidden text-[24px] font-bold text-white leading-[1.2] tracking-tight">
+          Content-driven distribution
+          <br />
+          and network effect
+        </h2>
+        <h2 className="hidden sm:block text-[28px] lg:text-[36px] xl:text-[40px] font-bold text-white leading-[1.2] tracking-tight">
           Content-driven distribution engine
           <br />
           and network effect
@@ -575,24 +580,19 @@ function Slide4() {
               <p className="text-[14px] text-white/80 leading-snug mb-3">A content engine designed to turn attention into product entry</p>
 
               {/* Compact vertical flow */}
-              <div>
+              <div className="space-y-1">
                 {FLOW_STEPS.map((step, i) => (
-                  <div key={step} className="animate-slide-up" style={{ animationDelay: `${i * 120}ms`, animationFillMode: "both" }}>
-                    <div className="flex items-center gap-2 py-1">
-                      <span className="w-[18px] h-[18px] rounded-full border border-white/[0.15] flex items-center justify-center shrink-0">
-                        <span className="text-[8px] text-white/50 font-medium">{i + 1}</span>
-                      </span>
-                      <span className="text-[13px] text-white/90">{step}</span>
-                    </div>
-                    {i < FLOW_STEPS.length - 1 && <div className="w-px h-1.5 bg-white/15 ml-[9px]" />}
+                  <div key={step} className="flex items-center gap-2.5 animate-slide-up" style={{ animationDelay: `${i * 120}ms`, animationFillMode: "both" }}>
+                    <span className="w-[5px] h-[5px] rounded-full bg-white/50 shrink-0" />
+                    <span className="text-[13px] text-white/90">{step}</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Right: 3 stacked cards */}
-          <div className="flex flex-col gap-2.5">
+          {/* Right: 3 stacked cards — hidden on mobile */}
+          <div className="hidden md:flex flex-col gap-2.5">
             {ENTERPRISE_POINTS.map((point) => (
               <div key={point.title} className="border border-white/[0.08] rounded-xl px-4 py-3">
                 <h3 className="text-[13px] font-semibold text-white mb-1">{point.title}</h3>
