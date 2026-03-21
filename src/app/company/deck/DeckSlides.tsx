@@ -410,7 +410,7 @@ function WorkflowPanel() {
               return (
                 <div key={i} className="flex items-start gap-1.5 pl-5">
                   <span className="text-white/35 text-[13px] leading-[22px] select-none">└</span>
-                  <span className={`text-[13px] leading-[22px] font-mono ${line.accent ? "text-green-400" : "text-white/70"}`}>
+                  <span className={`text-[13px] leading-[22px] ${line.accent ? "text-green-400" : "text-white/70"}`}>
                     {line.text}
                   </span>
                 </div>
@@ -419,7 +419,7 @@ function WorkflowPanel() {
             return (
               <div key={i} className="flex items-start gap-2.5">
                 <span className="w-[5px] h-[5px] rounded-full bg-white/60 mt-[9px] shrink-0" />
-                <span className="text-[13px] leading-[22px] font-mono text-white/90">{line.text}</span>
+                <span className="text-[13px] leading-[22px] text-white/90">{line.text}</span>
               </div>
             );
           })}
@@ -446,85 +446,48 @@ function WorkflowPanel() {
 /* ── Agent Fleet panel (right box — desktop only) ── */
 
 function AgentFleetPanel() {
-  const [open, setOpen] = useState(false);
-
   return (
     <div className="flex flex-col border border-white/[0.12] rounded-xl bg-white/[0.03] overflow-hidden h-full">
-      {/* Header — clickable dropdown trigger */}
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center justify-between px-5 py-3 border-b border-white/[0.10] cursor-pointer hover:bg-white/[0.03] transition-colors w-full text-left"
-      >
+      <div className="px-5 py-3 border-b border-white/[0.10]">
         <span className="text-[10px] font-semibold text-white/70 tracking-[0.15em] uppercase">Agent Fleet</span>
-        <svg
-          width="10"
-          height="10"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="white"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={`opacity-50 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </button>
+      </div>
 
-      {/* Dropdown content */}
-      <div
-        className="overflow-hidden transition-all duration-300 ease-out"
-        style={{ maxHeight: open ? 80 : 0, opacity: open ? 1 : 0 }}
-      >
-        <div className="px-5 py-2.5 space-y-1.5 border-b border-white/[0.08]">
+      <div className="flex-1 flex flex-col px-5 py-4">
+        {/* Description lines */}
+        <div className="space-y-1.5 mb-5">
           <div className="flex items-center gap-2">
             <Image src="/logo openclaw.png" alt="OpenClaw" width={14} height={14} className="rounded-sm shrink-0" />
             <span className="text-[13px] text-white/80">OpenClaw as the control layer</span>
           </div>
           <div className="flex items-center gap-2">
-            <Image src="/logo claude code.png" alt="Claude Code" width={14} height={14} className="rounded-sm shrink-0" />
+            <Image src="/logo claude.png" alt="Claude" width={14} height={14} className="rounded-sm shrink-0" />
             <span className="text-[13px] text-white/80">Claude Code for parallel execution</span>
           </div>
         </div>
-      </div>
 
-      {/* Agent fleet visualization — L-shape layout with OpenClaw center */}
-      <div className="flex-1 flex items-center justify-center px-5 py-4">
-        <div className="flex items-start gap-0">
-          {/* Left column: Research + Enrichment stacked vertically */}
-          <div className="flex flex-col items-end gap-3">
-            <div className="flex items-center gap-2">
-              <Image src="/logo claude.png" alt="Claude" width={20} height={20} className="rounded-sm shrink-0" />
-              <span className="text-[15px] text-white/90 font-medium">Research</span>
+        {/* L-shape agent visualization */}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex items-center gap-0">
+            {/* Left column: Research + Enrichment */}
+            <div className="flex flex-col items-end gap-2.5">
+              <span className="text-[14px] text-white/85">Research</span>
+              <span className="text-[14px] text-white/85">Enrichment</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Image src="/logo claude.png" alt="Claude" width={20} height={20} className="rounded-sm shrink-0" />
-              <span className="text-[15px] text-white/90 font-medium">Enrichment</span>
-            </div>
-          </div>
 
-          {/* Center: connecting lines + OpenClaw logo */}
-          <div className="flex flex-col items-center mx-4 gap-0">
-            {/* Horizontal line from left agents */}
-            <div className="flex items-center">
-              <div className="w-4 h-px bg-white/20" />
-              <div className="relative">
-                <Image src="/logo openclaw.png" alt="OpenClaw" width={32} height={32} className="rounded-md shrink-0" />
+            {/* Center: lines + OpenClaw logo */}
+            <div className="flex flex-col items-center mx-3">
+              <div className="flex items-center">
+                <div className="w-5 h-px bg-white/20" />
+                <Image src="/logo openclaw.png" alt="OpenClaw" width={28} height={28} className="rounded-md shrink-0" />
+                <div className="w-5 h-px bg-white/20" />
               </div>
-              <div className="w-4 h-px bg-white/20" />
+              <p className="text-[8px] text-white/35 mt-0.5 tracking-widest uppercase">Control</p>
             </div>
-            <p className="text-[9px] text-white/40 mt-1 tracking-wide uppercase">Control</p>
-          </div>
 
-          {/* Right column: Outreach + Content stacked vertically */}
-          <div className="flex flex-col items-start gap-3">
-            <div className="flex items-center gap-2">
-              <Image src="/logo claude.png" alt="Claude" width={20} height={20} className="rounded-sm shrink-0" />
-              <span className="text-[15px] text-white/90 font-medium">Outreach</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Image src="/logo claude.png" alt="Claude" width={20} height={20} className="rounded-sm shrink-0" />
-              <span className="text-[15px] text-white/90 font-medium">Content</span>
+            {/* Right column: Outreach + Content */}
+            <div className="flex flex-col items-start gap-2.5">
+              <span className="text-[14px] text-white/85">Outreach</span>
+              <span className="text-[14px] text-white/85">Content</span>
             </div>
           </div>
         </div>
@@ -543,10 +506,10 @@ function Slide3() {
         <h2 className="sm:hidden text-[26px] font-bold text-white leading-[1.25] tracking-tight">
           Built for companies that want
           <br />
-          to scale results, not headcount
+          to scale results not headcount
         </h2>
         <h2 className="hidden sm:block text-[28px] lg:text-[36px] xl:text-[40px] font-bold text-white leading-[1.2] tracking-tight">
-          Built for companies that want to scale results,
+          Built for companies that want to scale results
           <br />
           not headcount
         </h2>
@@ -563,10 +526,10 @@ function Slide3() {
 
           {/* Mobile: workflow + always-open agent fleet info */}
           <div className="md:hidden space-y-3">
-            <div style={{ height: 240 }}>
+            <div style={{ height: 280 }}>
               <WorkflowPanel />
             </div>
-            {/* Agent Fleet — always open, no dropdown, just the two lines */}
+            {/* Agent Fleet — always open, just the two lines */}
             <div className="border border-white/[0.12] rounded-xl bg-white/[0.03] px-5 py-3">
               <p className="text-[10px] font-semibold text-white/70 tracking-[0.15em] uppercase mb-2">Agent Fleet</p>
               <div className="space-y-1.5">
@@ -575,7 +538,7 @@ function Slide3() {
                   <span className="text-[13px] text-white/80">OpenClaw as the control layer</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Image src="/logo claude code.png" alt="Claude Code" width={14} height={14} className="rounded-sm shrink-0" />
+                  <Image src="/logo claude.png" alt="Claude" width={14} height={14} className="rounded-sm shrink-0" />
                   <span className="text-[13px] text-white/80">Claude Code for parallel execution</span>
                 </div>
               </div>
