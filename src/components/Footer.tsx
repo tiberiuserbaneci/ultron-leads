@@ -95,7 +95,7 @@ export default function Footer() {
         {/* Footer bottom bar */}
         <div className="border-t border-[#222] px-8 lg:px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <span className="text-sm text-[#666]">&copy; 2026 Powered by NXT Enterprises</span>
-          <div className="flex items-center gap-6">
+          <div className="hidden sm:flex items-center gap-6">
             <Link href="/privacy-policy" className="text-sm text-[#666] hover:text-white transition-colors">
               Privacy Policy
             </Link>

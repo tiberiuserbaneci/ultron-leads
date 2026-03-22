@@ -323,6 +323,21 @@ export default function HomePage() {
         </section>
       )}
 
+      {/* Sticky "Back to overview" — visible across all embedded views */}
+      {activeView != null && !isThinking && (
+        <div className="sticky bottom-6 z-50 flex justify-center pointer-events-none">
+          <button
+            onClick={() => handleSetView(null)}
+            className="pointer-events-auto inline-flex items-center gap-2 text-sm text-[#999] bg-[#111] hover:text-white border border-[#333] hover:border-[#555] rounded-full px-6 py-2.5 transition-all shadow-lg shadow-black/50"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 5l-7 7 7 7"/>
+            </svg>
+            Back to overview
+          </button>
+        </div>
+      )}
+
       {/* ─── MARKETING SECTIONS (shown when no view active) ─── */}
       {activeView == null && !isThinking && (
         <>
@@ -358,7 +373,7 @@ export default function HomePage() {
                       />
                     </div>
                   </div>
-                  <div className="px-5 pb-5 sm:px-6 sm:pb-6">
+                  <div className="px-5 pb-5 sm:px-6 sm:pb-6 md:pt-0 pt-5">
                     <h3 className="text-lg sm:text-xl font-bold mb-2">OpenClaw Mission Control</h3>
                     <p className="text-[#999] text-sm leading-relaxed">
                       Ultron runs autonomously 24/7 across Telegram, WhatsApp and native dashboard.
@@ -378,10 +393,10 @@ export default function HomePage() {
                       />
                     </div>
                   </div>
-                  <div className="px-5 pb-5 sm:px-6 sm:pb-6">
+                  <div className="px-5 pb-5 sm:px-6 sm:pb-6 md:pt-0 pt-5">
                     <h3 className="text-lg sm:text-xl font-bold mb-2">AI Sales Engine</h3>
                     <p className="text-[#999] text-sm leading-relaxed">
-                      Ultron finds, researches, and reaches out to your ideal customers autonomously. You wake up to booked meetings.
+                      Ultron finds, researches, and reaches out to your ideal customers autonomously.<span className="hidden md:inline"> You wake up to booked meetings.</span>
                     </p>
                   </div>
                 </FeatureCard>
@@ -401,7 +416,7 @@ export default function HomePage() {
                       />
                     </div>
                   </div>
-                  <div className="px-5 pb-5 sm:px-6 sm:pb-6">
+                  <div className="px-5 pb-5 sm:px-6 sm:pb-6 md:pt-0 pt-5">
                     <h3 className="text-lg sm:text-xl font-bold mb-2">Automation Empire Builder</h3>
                     <p className="text-[#999] text-sm leading-relaxed">
                       Deploys unlimited AI agents internally to scale your<br className="hidden md:inline" /> ops or externally as a product your clients pay for.
@@ -421,7 +436,7 @@ export default function HomePage() {
                       />
                     </div>
                   </div>
-                  <div className="px-5 pb-5 sm:px-6 sm:pb-6">
+                  <div className="px-5 pb-5 sm:px-6 sm:pb-6 md:pt-0 pt-5">
                     <h3 className="text-lg sm:text-xl font-bold mb-2">Viral-Ready Playbooks</h3>
                     <p className="text-[#999] text-sm leading-relaxed">
                       Scrapes viral strategies, extracts what works, and generates winning content.

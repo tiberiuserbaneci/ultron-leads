@@ -217,18 +217,8 @@ function TopStatusBar({
           <span className="font-terminal text-[10px] text-[#444] hidden lg:inline">{time}</span>
         </div>
 
-        {/* Center stats */}
-        <div className="flex-1 flex justify-center gap-6 lg:gap-10">
-          {stats.map((s) => (
-            <div key={s.label} className="text-center">
-              <div className="font-terminal text-base sm:text-lg font-bold text-white" style={{ textShadow: "0 0 20px rgba(218,78,36,0.15)" }}>
-                {s.value}
-              </div>
-              <div className="text-[9px] text-[#555] tracking-wider">{s.label}</div>
-              <Sparkline data={s.sparkline} width={50} height={16} />
-            </div>
-          ))}
-        </div>
+        {/* Center — spacer (metrics moved to navbar) */}
+        <div className="flex-1" />
 
         {/* Right */}
         <div className="flex items-center gap-3 lg:w-[20%] lg:justify-end">

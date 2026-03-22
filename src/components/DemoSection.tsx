@@ -8,6 +8,21 @@ import Footer from "@/components/Footer";
 
 const WorkflowVisualizer = dynamic(() => import("@/app/demo/WorkflowVisualizer"), { ssr: false });
 
+/* Curated prompt slugs for the landing page (embedded mode) */
+const LANDING_PAGE_SLUGS = new Set([
+  "make-me-20k",
+  "overnight",
+  "content-recovery",
+  "steal-ghl-clients",
+  "agency-pipeline",
+  "client-onboarding",
+  "reverse-engineer",
+  "cold-outreach-saas",
+]);
+
+/* Categories to hide on landing page */
+const HIDDEN_LANDING_CATEGORIES = new Set(["all", "revenue"]);
+
 /* ─── Haptic helper ─── */
 function haptic(ms = 15) {
   try { navigator?.vibrate?.(ms); } catch {}
@@ -234,10 +249,13 @@ function PromptCard({
 }
 
 /* ─── Category Tabs ─── */
-function CategoryTabs({ active, onChange }: { active: Category; onChange: (c: Category) => void }) {
+function CategoryTabs({ active, onChange, embedded }: { active: Category; onChange: (c: Category) => void; embedded?: boolean }) {
+  const visibleCategories = embedded
+    ? categories.filter((c) => !HIDDEN_LANDING_CATEGORIES.has(c.id))
+    : categories;
   return (
     <div className="flex flex-wrap justify-center gap-2.5 mb-8">
-      {categories.map((cat) => (
+      {visibleCategories.map((cat) => (
         <button
           key={cat.id}
           onClick={() => onChange(cat.id)}
@@ -331,9 +349,13 @@ export function DemoContent({
   const workflowRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
 
+  const basePrompts = embedded
+    ? prompts.filter((p) => LANDING_PAGE_SLUGS.has(p.slug))
+    : prompts;
+
   const filteredPrompts = activeCategory === "all"
-    ? prompts
-    : prompts.filter((p) => p.category === activeCategory);
+    ? basePrompts
+    : basePrompts.filter((p) => p.category === activeCategory);
 
   // URL parameter handling
   useEffect(() => {
@@ -486,7 +508,7 @@ export function DemoContent({
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
         >
-          <CategoryTabs active={activeCategory} onChange={setActiveCategory} />
+          <CategoryTabs active={activeCategory} onChange={setActiveCategory} embedded={embedded} />
           <div className="grid sm:grid-cols-2 gap-3">
             {filteredPrompts.map((p) => (
               <PromptCard
