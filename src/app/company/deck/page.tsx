@@ -137,13 +137,13 @@ export default function DeckPage() {
   };
 
   return (
-    <div className={`bg-[#0a0a0a] -mt-16 sm:mt-0 -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw] flex flex-col ${tab === "deck" ? "h-[calc(100dvh-64px)] sm:h-dvh overflow-hidden" : "min-h-screen"}`}>
+    <div className={`bg-[#0a0a0a] -mt-16 sm:fixed sm:inset-0 sm:z-[70] sm:mt-0 -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw] sm:left-0 sm:right-0 sm:-ml-0 sm:mx-0 flex flex-col ${tab === "deck" ? "h-[calc(100dvh-64px)] sm:h-dvh overflow-hidden" : "min-h-screen sm:overflow-auto"}`}>
       {/* ── Top bar: Tab switcher + More menu ────────────────── */}
-      <div className="shrink-0 max-w-[1920px] w-full mx-auto px-6 sm:px-8 pt-2 pb-2 relative flex items-center justify-center gap-3">
-        {/* Back to overview — desktop only, left-aligned */}
+      <div className="shrink-0 max-w-[1920px] w-full mx-auto px-6 sm:px-8 pt-2 pb-2 flex items-center justify-center gap-3">
+        {/* Back to overview — desktop only */}
         <Link
           href="/company"
-          className="hidden sm:flex items-center gap-1.5 text-white/30 hover:text-white/60 transition-colors text-sm absolute left-8"
+          className="hidden sm:flex items-center gap-1.5 text-white/50 hover:text-white/70 transition-colors text-sm shrink-0"
         >
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -151,7 +151,7 @@ export default function DeckPage() {
           Overview
         </Link>
 
-        {/* Tab switcher — centered */}
+        {/* Tab switcher */}
         <div className="flex items-center bg-white/[0.04] rounded-full p-1 border border-white/[0.06]">
           <button
             onClick={() => switchTab("summary")}
@@ -732,7 +732,6 @@ function InvestmentDeck({
                 </div>
               </div>
             </div>
-          </div>
 
           {/* Right arrow — desktop only */}
           <button
@@ -744,6 +743,7 @@ function InvestmentDeck({
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </button>
+        </div>
       </div>
     </div>
   );

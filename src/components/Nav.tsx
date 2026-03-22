@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useLiveStats } from "./HeroStats";
@@ -286,8 +285,6 @@ function MobileAccordion({
 /* ═══════════════════════════════════════════════════════════════ */
 
 export default function Nav() {
-  const pathname = usePathname();
-  const isDeckPage = pathname === "/company/deck" || pathname === "/investors/deck";
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [statsOpen, setStatsOpen] = useState(false);
@@ -342,7 +339,7 @@ export default function Nav() {
   }
 
   return (
-    <nav ref={navRef} className={`fixed top-0 left-0 right-0 z-[60] ${isDeckPage ? "sm:hidden" : ""}`}>
+    <nav ref={navRef} className="fixed top-0 left-0 right-0 z-[60]">
       {/* Top bar */}
       <div className={`backdrop-blur-md ${mobileMenuOpen ? "bg-black" : "bg-black/90"}`}>
         <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
