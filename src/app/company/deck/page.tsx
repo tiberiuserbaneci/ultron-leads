@@ -653,18 +653,17 @@ function InvestmentDeck({
             );
           })}
 
-          {/* Mobile: dot indicators overlay at bottom */}
-          <div className="sm:hidden absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrent(i)}
-                className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                  i === current ? "bg-white" : "bg-white/30"
-                }`}
-                aria-label={`Go to slide ${i + 1}`}
+          {/* Mobile: progress bar overlay at bottom */}
+          <div className="sm:hidden absolute bottom-4 left-5 right-5 z-10">
+            <div className="h-[3px] rounded-full bg-white/10 overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500 ease-out"
+                style={{
+                  width: `${((current + 1) / slides.length) * 100}%`,
+                  background: "#c2410c",
+                }}
               />
-            ))}
+            </div>
           </div>
         </div>
       </div>

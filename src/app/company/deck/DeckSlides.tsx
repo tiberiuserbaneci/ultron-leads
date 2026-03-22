@@ -10,7 +10,7 @@ import { useLiveStats } from "@/components/HeroStats";
 
 function SlideLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-block text-[11px] sm:text-sm font-semibold tracking-[0.2em] uppercase text-white/40">
+    <span className="inline-block text-[11px] sm:text-sm font-semibold tracking-[0.2em] uppercase text-orange-700 sm:text-white/40">
       {children}
     </span>
   );
@@ -192,17 +192,31 @@ function TaskGridDesktop({ completed }: { completed: number }) {
   );
 }
 
-/* ── Mobile: single column with rotating 5-task blocks ── */
+/* ── Mobile: 4-column grid showing all 15 tasks ── */
 
-function TaskGridMobile({ completed, blockIndex }: { completed: number; blockIndex: number }) {
-  const block = TASK_COLUMNS[blockIndex % 3];
+const ALL_TASKS = TASK_COLUMNS.flat();
+
+function TaskGridMobile({ completed }: { completed: number; blockIndex: number }) {
   return (
-    <div className="md:hidden flex justify-center">
-      <div>
-        {block.map((task, i) => (
-          <TaskRow key={`${blockIndex}-${task}`} label={task} checked={i < completed} />
-        ))}
-      </div>
+    <div className="md:hidden grid grid-cols-4 gap-x-2 gap-y-1">
+      {ALL_TASKS.map((task, i) => {
+        const checked = i < completed;
+        return (
+          <div key={task} className="flex items-center gap-1 py-[3px]">
+            <TaskCheckbox checked={checked} />
+            <span
+              className="relative text-[10px] text-white/60 select-none truncate"
+              style={{ opacity: checked ? 0.4 : 1, transition: "opacity 0.4s ease" }}
+            >
+              {task}
+              <span
+                className="absolute left-0 top-1/2 h-[1px] bg-white/35 origin-left"
+                style={{ width: checked ? "100%" : "0%", transition: "width 0.4s ease" }}
+              />
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -214,7 +228,6 @@ function Slide2() {
   const [completed, setCompleted] = useState(0);
   const [bottomVisible, setBottomVisible] = useState(false);
   const [mobileCompleted, setMobileCompleted] = useState(0);
-  const [mobileBlock, setMobileBlock] = useState(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Desktop animation loop
@@ -245,7 +258,7 @@ function Slide2() {
     timerRef.current = setTimeout(tick, STAGGER_MS);
   }, []); // bottomVisible intentionally omitted — we set it once
 
-  // Mobile animation loop: 5 tasks at a time, then swap block
+  // Mobile animation loop: all 15 tasks
   const mobileTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const runMobileLoop = useCallback(() => {
@@ -255,17 +268,15 @@ function Slide2() {
       count++;
       setMobileCompleted(count);
 
-      if (count >= 3 && !bottomVisible) {
+      if (count >= BOTTOM_REVEAL_AT && !bottomVisible) {
         setBottomVisible(true);
       }
 
-      if (count < 5) {
+      if (count < TOTAL_TASKS) {
         mobileTimerRef.current = setTimeout(tick, STAGGER_MS);
       } else {
-        // Hold, then swap to next block
         mobileTimerRef.current = setTimeout(() => {
           setMobileCompleted(0);
-          setMobileBlock((prev) => prev + 1);
           mobileTimerRef.current = setTimeout(() => {
             runMobileLoop();
           }, RESET_MS);
@@ -322,7 +333,7 @@ function Slide2() {
       >
         <div className="w-full max-w-3xl">
           <TaskGridDesktop completed={completed} />
-          <TaskGridMobile completed={mobileCompleted} blockIndex={mobileBlock} />
+          <TaskGridMobile completed={mobileCompleted} blockIndex={0} />
         </div>
       </div>
 
@@ -494,11 +505,8 @@ function Slide3() {
             <AgentFleetPanel />
           </div>
 
-          {/* Mobile: workflow + always-open agent fleet info */}
+          {/* Mobile: agent fleet on top, then taller workflow (no scroll) */}
           <div className="md:hidden space-y-3">
-            <div style={{ height: 280 }}>
-              <WorkflowPanel />
-            </div>
             {/* Agent Fleet — always open, just the two lines */}
             <div className="border border-white/[0.12] rounded-xl bg-white/[0.03] px-5 py-3">
               <p className="text-[10px] font-semibold text-white/70 tracking-[0.15em] uppercase mb-2">Agent Fleet</p>
@@ -510,6 +518,43 @@ function Slide3() {
                 <div className="flex items-center gap-2">
                   <Image src="/logo claude.png" alt="Claude" width={14} height={14} className="rounded-sm shrink-0" />
                   <span className="text-[13px] text-white/80">Claude Code for parallel execution</span>
+                </div>
+              </div>
+            </div>
+            {/* Workflow — tall enough to show full transcript, no scroll */}
+            <div className="flex flex-col border border-white/[0.12] rounded-xl bg-white/[0.03] overflow-hidden">
+              <div className="px-5 py-3 border-b border-white/[0.10]">
+                <span className="text-[10px] font-semibold text-white/70 tracking-[0.15em] uppercase">Workflow</span>
+              </div>
+              <div className="px-5 py-4">
+                <div className="space-y-[3px]">
+                  {TRANSCRIPT_LINES.map((line, i) => {
+                    if (line.type === "gap") return <div key={i} className="h-2" />;
+                    if (line.type === "sub") {
+                      if (line.text === "All tests passed") {
+                        return (
+                          <div key={i} className="flex items-center gap-1.5 pl-5">
+                            <span className="text-white/35 text-[11px] leading-[18px] select-none">└</span>
+                            {line.logo && <Image src={line.logo} alt="" width={10} height={10} className="rounded-sm shrink-0" />}
+                            <span className="text-[11px] leading-[18px] text-green-400">{line.text}</span>
+                          </div>
+                        );
+                      }
+                      return (
+                        <div key={i} className="flex items-center gap-1.5 pl-5">
+                          <span className="text-white/35 text-[11px] leading-[18px] select-none">└</span>
+                          {line.logo && <Image src={line.logo} alt="" width={10} height={10} className="rounded-sm shrink-0" />}
+                          <span className={`text-[11px] leading-[18px] ${line.accent ? "text-green-400" : "text-white/70"}`}>{line.text}</span>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div key={i} className="flex items-start gap-2">
+                        <span className="w-[4px] h-[4px] rounded-full bg-white/60 mt-[7px] shrink-0" />
+                        <span className="text-[11px] leading-[18px] text-white/90">{line.text}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -574,7 +619,7 @@ function Slide4() {
 
       {/* Two panels */}
       <div className="flex justify-center">
-        <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+        <div className="w-full max-w-3xl grid grid-cols-2 gap-3 sm:gap-4">
           {/* Left: Viral Distribution */}
           <div className="flex flex-col border border-white/[0.12] rounded-xl bg-white/[0.03] overflow-hidden">
             <div className="px-4 py-2.5 border-b border-white/[0.10]">
@@ -595,12 +640,12 @@ function Slide4() {
             </div>
           </div>
 
-          {/* Right: 3 stacked cards — hidden on mobile */}
-          <div className="hidden md:flex flex-col gap-2.5">
+          {/* Right: 3 stacked cards */}
+          <div className="flex flex-col gap-2 md:gap-2.5">
             {ENTERPRISE_POINTS.map((point) => (
-              <div key={point.title} className="border border-white/[0.08] rounded-xl px-4 py-3">
-                <h3 className="text-[13px] font-semibold text-white mb-1">{point.title}</h3>
-                <p className="text-[12px] text-white/50 leading-relaxed">{point.body}</p>
+              <div key={point.title} className="border border-white/[0.08] rounded-xl px-4 py-2 md:py-3">
+                <h3 className="text-[12px] md:text-[13px] font-semibold text-white mb-0.5 md:mb-1">{point.title}</h3>
+                <p className="text-[11px] md:text-[12px] text-white/50 leading-snug md:leading-relaxed">{point.body}</p>
               </div>
             ))}
           </div>
@@ -869,6 +914,41 @@ function Slide6() {
         </div>
       </div>
 
+      {/* Mobile: compact competitor matrix */}
+      <div className="md:hidden mt-4" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.6s ease 0.3s" }}>
+        <div className="border border-white/[0.10] rounded-xl overflow-hidden">
+          {/* Header row */}
+          <div className="grid grid-cols-5 bg-white/[0.03]">
+            <div className="p-2" />
+            {["Ultron", "n8n", "Zapier", "Gumloop"].map((name) => (
+              <div key={name} className={`p-2 border-l border-white/[0.08] ${name === "Ultron" ? "bg-white/[0.05]" : ""}`}>
+                <span className={`text-[9px] font-semibold ${name === "Ultron" ? "text-white" : "text-white/50"}`}>{name}</span>
+              </div>
+            ))}
+          </div>
+          {/* Data rows */}
+          {COMP_ROWS.map((row) => (
+            <div key={row.label} className="grid grid-cols-5 border-t border-white/[0.08]">
+              <div className="p-2">
+                <span className="text-[8px] text-white/40 uppercase tracking-wider font-medium">{row.label}</span>
+              </div>
+              <div className="p-2 border-l border-white/[0.08] bg-white/[0.05]">
+                <span className="text-[9px] text-white leading-tight">{row.ultron}</span>
+              </div>
+              <div className="p-2 border-l border-white/[0.08]">
+                <span className="text-[9px] text-white/60 leading-tight">{row.n8n}</span>
+              </div>
+              <div className="p-2 border-l border-white/[0.08]">
+                <span className="text-[9px] text-white/60 leading-tight">{row.zapier}</span>
+              </div>
+              <div className="p-2 border-l border-white/[0.08]">
+                <span className="text-[9px] text-white/60 leading-tight">{row.gumloop}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Bottom area — matrix trigger (desktop only) */}
       <div
         className="hidden md:flex justify-center mt-8 sm:mt-10"
@@ -901,29 +981,29 @@ function Slide7() {
       pill="Business Model"
       title="Simple entry point and usage aligned with value."
     >
-      <div className="grid md:grid-cols-3 gap-4 sm:gap-5">
+      <div className="grid md:grid-cols-3 gap-3 sm:gap-5">
         {/* Entry */}
-        <div className="border border-white/[0.08] rounded-xl p-6">
-          <p className="text-[10px] text-white/30 font-semibold tracking-wider uppercase mb-3">Entry</p>
-          <p className="text-3xl sm:text-4xl font-bold text-white mb-2">$19<span className="text-base font-normal text-white/40">/mo</span></p>
+        <div className="border border-white/[0.08] rounded-xl p-5 sm:p-6 min-h-[130px] sm:min-h-0">
+          <p className="text-[10px] text-white/30 font-semibold tracking-wider uppercase mb-2 sm:mb-3">Entry</p>
+          <p className="text-3xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">$19<span className="text-base font-normal text-white/40">/mo</span></p>
           <p className="text-xs sm:text-sm text-white/40 leading-relaxed">
             Low-friction entry into the Ultron product and distribution ecosystem
           </p>
         </div>
 
         {/* Usage */}
-        <div className="border border-white/[0.08] rounded-xl p-6">
-          <p className="text-[10px] text-white/30 font-semibold tracking-wider uppercase mb-3">Usage</p>
-          <p className="text-3xl sm:text-4xl font-bold text-white mb-2">5%<span className="text-base font-normal text-white/40"> fee</span></p>
+        <div className="border border-white/[0.08] rounded-xl p-5 sm:p-6 min-h-[130px] sm:min-h-0">
+          <p className="text-[10px] text-white/30 font-semibold tracking-wider uppercase mb-2 sm:mb-3">Usage</p>
+          <p className="text-3xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">5%<span className="text-base font-normal text-white/40"> fee</span></p>
           <p className="text-xs sm:text-sm text-white/40 leading-relaxed">
             On consumed API tokens. Revenue scales with actual execution volume.
           </p>
         </div>
 
         {/* Expansion */}
-        <div className="border border-white/[0.08] rounded-xl p-6">
-          <p className="text-[10px] text-white/30 font-semibold tracking-wider uppercase mb-3">Expansion</p>
-          <p className="text-3xl sm:text-4xl font-bold text-white mb-2">Custom</p>
+        <div className="border border-white/[0.08] rounded-xl p-5 sm:p-6 min-h-[130px] sm:min-h-0">
+          <p className="text-[10px] text-white/30 font-semibold tracking-wider uppercase mb-2 sm:mb-3">Expansion</p>
+          <p className="text-3xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">Custom</p>
           <p className="text-xs sm:text-sm text-white/40 leading-relaxed">
             Operational builds for companies with larger internal automation needs
           </p>
@@ -961,9 +1041,9 @@ function Slide8() {
       <div className="h-px bg-white/[0.08] mb-6" />
 
       {/* Use of funds */}
-      <div className="grid md:grid-cols-3 gap-4 sm:gap-5">
+      <div className="grid md:grid-cols-3 gap-3 sm:gap-5">
         {USE_OF_FUNDS.map((item) => (
-          <div key={item.title} className="border border-white/[0.08] rounded-xl p-5">
+          <div key={item.title} className="border border-white/[0.08] rounded-xl p-5 min-h-[130px] sm:min-h-0">
             <h3 className="text-sm font-semibold text-white mb-2">{item.title}</h3>
             <p className="text-xs sm:text-sm text-white/50 leading-relaxed">{item.body}</p>
           </div>
