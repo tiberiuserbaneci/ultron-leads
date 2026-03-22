@@ -145,7 +145,7 @@ export default function NexityPage() {
           >
             <source src="/hero-background-nxt.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/40 to-white/70" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/65 to-white/70" />
         </div>
 
         {/* Mobile: plain white bg */}
