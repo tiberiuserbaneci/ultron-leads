@@ -137,7 +137,7 @@ export default function DeckPage() {
   };
 
   return (
-    <div className={`bg-[#0a0a0a] -mt-16 -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw] flex flex-col ${tab === "deck" ? "h-[calc(100dvh-64px)] overflow-hidden" : "min-h-screen"}`}>
+    <div className={`bg-[#0a0a0a] -mt-16 -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw] flex flex-col ${tab === "deck" ? "h-[calc(100dvh-64px)] sm:h-dvh overflow-hidden" : "min-h-screen"}`}>
       {/* ── Top bar: Tab switcher + More menu ────────────────── */}
       <div className="shrink-0 max-w-[1920px] mx-auto px-6 sm:px-8 pt-2 pb-2 flex items-center justify-center gap-3">
         {/* Tab switcher */}
@@ -665,93 +665,77 @@ function InvestmentDeck({
     <div className="flex flex-col h-full">
       {/* Slide area — fills remaining space */}
       <div className="flex-1 min-h-0 flex items-center justify-center">
-        {/* Glow wrapper */}
-        <div className="relative w-full max-w-[1280px] h-full sm:h-auto sm:max-h-full">
-          {/* Animated orange glow border */}
-          <div className="hidden sm:block absolute -inset-[1.5px] rounded-xl overflow-hidden z-0">
-            <div
-              className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
-              style={{
-                background:
-                  "conic-gradient(from 0deg, transparent 0%, transparent 55%, rgba(218,78,36,0.4) 68%, rgba(218,78,36,0.7) 76%, rgba(218,78,36,0.4) 84%, transparent 100%)",
-              }}
-            />
-          </div>
-          {/* Slider */}
-          <div
-            ref={slideRef}
-            className="relative w-full sm:rounded-xl overflow-hidden bg-black sm:shadow-2xl sm:aspect-video h-full sm:h-auto sm:max-h-full z-[1]"
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-          {slides.map((slide, i) => {
-            const SlideComponent = slide.component;
-            return (
-              <div
-                key={slide.id}
-                className="absolute inset-0 transition-opacity duration-300"
-                style={{ opacity: i === current ? 1 : 0, pointerEvents: i === current ? "auto" : "none" }}
-              >
-                <SlideComponent />
-              </div>
-            );
-          })}
+        {/* Outer wrapper with side arrows on desktop */}
+        <div className="relative w-full sm:flex sm:items-center sm:justify-center sm:gap-0 h-full sm:h-auto sm:max-h-full">
 
-          {/* Mobile: progress bar overlay at bottom */}
-          <div className="sm:hidden absolute bottom-4 left-5 right-5 z-10">
-            <div className="h-[3px] rounded-full bg-white/10 overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-500 ease-out"
-                style={{
-                  width: `${((current + 1) / slides.length) * 100}%`,
-                  background: "#c2410c",
-                }}
-              />
-            </div>
-          </div>
-        </div>
-        </div>
-      </div>
-
-      {/* Controls — desktop only */}
-      <div className="hidden sm:block shrink-0 pt-3 sm:pt-4">
-        <div className="flex items-center justify-center gap-4 sm:gap-6">
+          {/* Left arrow — desktop only */}
           <button
             onClick={prev}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-white/50 hover:text-white hover:bg-white/[0.1] transition-colors shrink-0"
+            className="hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 items-center justify-center w-8 h-8 text-white/20 hover:text-white/60 transition-colors"
             aria-label="Previous slide"
           >
-            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
 
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrent(i)}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  i === current ? "bg-white" : "bg-white/20 hover:bg-white/40"
-                }`}
-                aria-label={`Go to slide ${i + 1}`}
+          {/* Glow wrapper */}
+          <div className="relative w-full max-w-[1280px] h-full sm:h-auto sm:max-h-full sm:mx-10">
+            {/* Animated orange glow border */}
+            <div className="hidden sm:block absolute -inset-[1.5px] rounded-xl overflow-hidden z-0">
+              <div
+                className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
+                style={{
+                  background:
+                    "conic-gradient(from 0deg, transparent 0%, transparent 55%, rgba(218,78,36,0.4) 68%, rgba(218,78,36,0.7) 76%, rgba(218,78,36,0.4) 84%, transparent 100%)",
+                }}
               />
-            ))}
+            </div>
+            {/* Slider */}
+            <div
+              ref={slideRef}
+              className="relative w-full sm:rounded-xl overflow-hidden bg-black sm:shadow-2xl sm:aspect-video h-full sm:h-auto sm:max-h-full z-[1]"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              {slides.map((slide, i) => {
+                const SlideComponent = slide.component;
+                return (
+                  <div
+                    key={slide.id}
+                    className="absolute inset-0 transition-opacity duration-300"
+                    style={{ opacity: i === current ? 1 : 0, pointerEvents: i === current ? "auto" : "none" }}
+                  >
+                    <SlideComponent />
+                  </div>
+                );
+              })}
+
+              {/* Mobile: progress bar overlay at bottom */}
+              <div className="sm:hidden absolute bottom-4 left-5 right-5 z-10">
+                <div className="h-[3px] rounded-full bg-white/10 overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500 ease-out"
+                    style={{
+                      width: `${((current + 1) / slides.length) * 100}%`,
+                      background: "#c2410c",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
+          {/* Right arrow — desktop only */}
           <button
             onClick={next}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-white/50 hover:text-white hover:bg-white/[0.1] transition-colors shrink-0"
+            className="hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 items-center justify-center w-8 h-8 text-white/20 hover:text-white/60 transition-colors"
             aria-label="Next slide"
           >
-            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </button>
-        </div>
-
-        <div className="text-center mt-1.5 sm:mt-2 text-white/30 text-xs sm:text-sm font-mono">
-          {current + 1} / {total}
         </div>
       </div>
     </div>
