@@ -293,18 +293,18 @@ function Slide2() {
   }, [runDesktopLoop, runMobileLoop]);
 
   return (
-    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full justify-center overflow-hidden">
-      {/* Title — centered, controlled size */}
-      <div className="text-center mb-8 sm:mb-10">
-        {/* Mobile: 3 lines */}
-        <h2 className="sm:hidden text-[26px] font-bold text-white leading-[1.25] tracking-tight">
-          Most growing businesses
-          <br />
-          are buried in work
-          <br />
-          humans shouldn&apos;t do anymore.
+    <div className="flex flex-col h-full px-5 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full pt-5 sm:pt-0 sm:justify-center overflow-hidden">
+      {/* Pill — mobile only */}
+      <div className="sm:hidden mb-3">
+        <SlideLabel>The Problem</SlideLabel>
+      </div>
+      {/* Title */}
+      <div className="sm:text-center mb-4 sm:mb-10">
+        {/* Mobile: left-aligned */}
+        <h2 className="sm:hidden text-xl font-bold text-white leading-tight">
+          Most growing businesses are buried in work humans shouldn&apos;t do anymore.
         </h2>
-        {/* Desktop: 2 lines, sized to not wrap awkwardly */}
+        {/* Desktop: centered, 2 lines */}
         <h2 className="hidden sm:block text-[28px] lg:text-[36px] xl:text-[40px] font-bold text-white leading-[1.2] tracking-tight">
           Most growing businesses are buried in work
           <br />
@@ -468,13 +468,15 @@ function AgentFleetPanel() {
 
 function Slide3() {
   return (
-    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full overflow-hidden pt-[8%] sm:pt-[7%]">
-      {/* Title — centered, SAME as Problem slide */}
-      <div className="text-center mb-8 sm:mb-10">
-        <h2 className="sm:hidden text-[26px] font-bold text-white leading-[1.25] tracking-tight">
-          Built for companies that want
-          <br />
-          to scale results not headcount
+    <div className="flex flex-col h-full px-5 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full overflow-hidden pt-5 sm:pt-[7%]">
+      {/* Pill — mobile only */}
+      <div className="sm:hidden mb-3">
+        <SlideLabel>The Solution</SlideLabel>
+      </div>
+      {/* Title */}
+      <div className="sm:text-center mb-4 sm:mb-10">
+        <h2 className="sm:hidden text-xl font-bold text-white leading-tight">
+          Built for companies that want to scale results not headcount
         </h2>
         <h2 className="hidden sm:block text-[28px] lg:text-[36px] xl:text-[40px] font-bold text-white leading-[1.2] tracking-tight">
           Built for companies that want to scale results
@@ -541,13 +543,15 @@ function Slide4() {
   ];
 
   return (
-    <div className="flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full overflow-hidden pt-[8%] sm:pt-[7%]">
+    <div className="flex flex-col h-full px-5 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full overflow-hidden pt-5 sm:pt-[7%]">
+      {/* Pill — mobile only */}
+      <div className="sm:hidden mb-3">
+        <SlideLabel>Traction</SlideLabel>
+      </div>
       {/* Main line */}
-      <div className="text-center mb-4 sm:mb-6">
-        <h2 className="sm:hidden text-[24px] font-bold text-white leading-[1.2] tracking-tight">
-          Content-driven distribution
-          <br />
-          and network effect
+      <div className="sm:text-center mb-4 sm:mb-6">
+        <h2 className="sm:hidden text-xl font-bold text-white leading-tight">
+          Content-driven distribution and network effect
         </h2>
         <h2 className="hidden sm:block text-[28px] lg:text-[36px] xl:text-[40px] font-bold text-white leading-[1.2] tracking-tight">
           Content-driven distribution engine
@@ -807,15 +811,15 @@ function Slide6() {
   }, [runDesktopLoop, runMobileLoop]);
 
   return (
-    <div className="relative flex flex-col h-full px-6 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full justify-center overflow-hidden">
+    <div className="relative flex flex-col h-full px-5 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full pt-5 sm:pt-0 sm:justify-center overflow-hidden">
+      {/* Pill — mobile only */}
+      <div className="sm:hidden mb-3">
+        <SlideLabel>Competition</SlideLabel>
+      </div>
       {/* Title */}
-      <div className="text-center mb-8 sm:mb-10">
-        <h2 className="sm:hidden text-[24px] font-bold text-white leading-[1.25] tracking-tight">
-          We are living through
-          <br />
-          the final cycle of the
-          <br />
-          corporate machine.
+      <div className="sm:text-center mb-4 sm:mb-10">
+        <h2 className="sm:hidden text-xl font-bold text-white leading-tight">
+          We are living through the final cycle of the corporate machine.
         </h2>
         <h2 className="hidden sm:block text-[28px] lg:text-[36px] xl:text-[40px] font-bold text-white leading-[1.2] tracking-tight">
           We are living through the final cycle
