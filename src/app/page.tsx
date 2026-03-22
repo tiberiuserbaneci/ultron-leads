@@ -168,6 +168,15 @@ export default function HomePage() {
       <section className="relative min-h-screen pt-28 sm:pt-32 pb-32 overflow-hidden">
         {/* Background video — diagonal light streaks with glow animation */}
         <div className="absolute inset-0 pointer-events-none select-none">
+          {/* Mobile: static background image */}
+          <Image
+            src="/hero-background.png"
+            alt=""
+            fill
+            className="sm:hidden object-cover"
+            priority
+          />
+          {/* Desktop: background video */}
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
           <video
             autoPlay
@@ -177,7 +186,7 @@ export default function HomePage() {
             controls={false}
             disablePictureInPicture
             preload="auto"
-            className="absolute inset-0 w-full h-full object-cover pointer-events-none [&::-webkit-media-controls]:!hidden [&::-webkit-media-controls-enclosure]:!hidden [&::-webkit-media-controls-panel]:!hidden [&::-webkit-media-controls-start-playback-button]:!hidden"
+            className="hidden sm:block absolute inset-0 w-full h-full object-cover pointer-events-none [&::-webkit-media-controls]:!hidden [&::-webkit-media-controls-enclosure]:!hidden [&::-webkit-media-controls-panel]:!hidden [&::-webkit-media-controls-start-playback-button]:!hidden"
             style={{ WebkitAppearance: "none" } as React.CSSProperties}
           >
             <source src="/hero-background-video.mp4" type="video/mp4" />
