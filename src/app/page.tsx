@@ -348,7 +348,7 @@ export default function HomePage() {
               <div className="grid grid-cols-1 md:grid-cols-[455fr_661fr] md:grid-rows-[492px] gap-5 mb-5">
                 {/* OpenClaw Mission Control */}
                 <FeatureCard>
-                  <div className="flex-1 p-3">
+                  <div className="hidden md:block flex-1 p-3">
                     <div className="aspect-[16/10] md:aspect-auto relative rounded-xl overflow-hidden md:h-full">
                       <Image
                         src="/Group 2147204318@3x.png"
@@ -368,7 +368,7 @@ export default function HomePage() {
 
                 {/* AI Sales Engine */}
                 <FeatureCard>
-                  <div className="flex-1 p-3">
+                  <div className="hidden md:block flex-1 p-3">
                     <div className="aspect-[16/10] md:aspect-auto relative rounded-xl overflow-hidden md:h-full">
                       <Image
                         src="/Group 1321314679@3x.png"
@@ -391,8 +391,8 @@ export default function HomePage() {
               <div className="grid grid-cols-1 md:grid-cols-[739fr_375fr] md:grid-rows-[492px] gap-5">
                 {/* Automation Empire Builder */}
                 <FeatureCard>
-                  <div className="flex-1 p-3">
-                    <div className="aspect-[4/3] md:aspect-auto relative rounded-xl overflow-hidden md:h-full">
+                  <div className="hidden md:block flex-1 p-3">
+                    <div className="md:aspect-auto relative rounded-xl overflow-hidden md:h-full">
                       <Image
                         src="/Group 1321314678@3x.png"
                         alt="Automation Empire Builder"
@@ -411,8 +411,8 @@ export default function HomePage() {
 
                 {/* Viral-Ready Playbooks */}
                 <FeatureCard>
-                  <div className="flex-1 p-3">
-                    <div className="aspect-[4/3] md:aspect-auto relative rounded-xl overflow-hidden md:h-full">
+                  <div className="hidden md:block flex-1 p-3">
+                    <div className="md:aspect-auto relative rounded-xl overflow-hidden md:h-full">
                       <Image
                         src="/Group 1321314677@3x.png"
                         alt="Viral-Ready Playbooks"
