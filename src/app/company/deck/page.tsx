@@ -137,10 +137,21 @@ export default function DeckPage() {
   };
 
   return (
-    <div className={`bg-[#0a0a0a] -mt-16 -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw] flex flex-col ${tab === "deck" ? "h-[calc(100dvh-64px)] sm:h-dvh overflow-hidden" : "min-h-screen"}`}>
+    <div className={`bg-[#0a0a0a] -mt-16 sm:mt-0 -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw] flex flex-col ${tab === "deck" ? "h-[calc(100dvh-64px)] sm:h-dvh overflow-hidden" : "min-h-screen"}`}>
       {/* ── Top bar: Tab switcher + More menu ────────────────── */}
-      <div className="shrink-0 max-w-[1920px] mx-auto px-6 sm:px-8 pt-2 pb-2 flex items-center justify-center gap-3">
-        {/* Tab switcher */}
+      <div className="shrink-0 max-w-[1920px] w-full mx-auto px-6 sm:px-8 pt-2 pb-2 relative flex items-center justify-center gap-3">
+        {/* Back to overview — desktop only, left-aligned */}
+        <Link
+          href="/company"
+          className="hidden sm:flex items-center gap-1.5 text-white/30 hover:text-white/60 transition-colors text-sm absolute left-8"
+        >
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Overview
+        </Link>
+
+        {/* Tab switcher — centered */}
         <div className="flex items-center bg-white/[0.04] rounded-full p-1 border border-white/[0.06]">
           <button
             onClick={() => switchTab("summary")}
@@ -665,22 +676,19 @@ function InvestmentDeck({
     <div className="flex flex-col h-full">
       {/* Slide area — fills remaining space */}
       <div className="flex-1 min-h-0 flex items-center justify-center">
-        {/* Outer wrapper with side arrows on desktop */}
-        <div className="relative w-full sm:flex sm:items-center sm:justify-center sm:gap-0 h-full sm:h-auto sm:max-h-full">
+        {/* Glow wrapper */}
+        <div className="relative w-full max-w-[1280px] h-full sm:h-auto sm:max-h-full sm:mx-auto">
 
           {/* Left arrow — desktop only */}
           <button
             onClick={prev}
-            className="hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 items-center justify-center w-8 h-8 text-white/20 hover:text-white/60 transition-colors"
+            className="hidden sm:flex absolute -left-12 top-1/2 -translate-y-1/2 z-10 items-center justify-center w-8 h-8 text-white/20 hover:text-white/60 transition-colors"
             aria-label="Previous slide"
           >
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-
-          {/* Glow wrapper */}
-          <div className="relative w-full max-w-[1280px] h-full sm:h-auto sm:max-h-full sm:mx-10">
             {/* Animated orange glow border */}
             <div className="hidden sm:block absolute -inset-[1.5px] rounded-xl overflow-hidden z-0">
               <div
@@ -729,14 +737,13 @@ function InvestmentDeck({
           {/* Right arrow — desktop only */}
           <button
             onClick={next}
-            className="hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 items-center justify-center w-8 h-8 text-white/20 hover:text-white/60 transition-colors"
+            className="hidden sm:flex absolute -right-12 top-1/2 -translate-y-1/2 z-10 items-center justify-center w-8 h-8 text-white/20 hover:text-white/60 transition-colors"
             aria-label="Next slide"
           >
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </button>
-        </div>
       </div>
     </div>
   );
