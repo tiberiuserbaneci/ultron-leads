@@ -258,11 +258,7 @@ function ToolsDropdown({
                 try {
                   const w = window as any;
                   if (typeof w.Intercom === "function") {
-                    w.Intercom("boot", w.intercomSettings || {
-                      api_base: "https://api-iam.intercom.io",
-                      app_id: "k6faqs6h",
-                      hide_default_launcher: true,
-                    });
+                    w.Intercom("update", w.intercomSettings);
                     w.Intercom("show");
                   }
                 } catch {}
