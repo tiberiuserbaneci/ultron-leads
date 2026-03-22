@@ -167,7 +167,7 @@ export default function HomePage() {
       {/* ─── HERO ─── */}
       <section className="relative min-h-screen pt-28 sm:pt-32 pb-32 overflow-hidden">
         {/* Background video — diagonal light streaks with glow animation */}
-        <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 pointer-events-none select-none">
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
           <video
             autoPlay
@@ -176,7 +176,9 @@ export default function HomePage() {
             playsInline
             controls={false}
             disablePictureInPicture
-            className="absolute inset-0 w-full h-full object-cover [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden [&::-webkit-media-controls-panel]:hidden"
+            preload="auto"
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none [&::-webkit-media-controls]:!hidden [&::-webkit-media-controls-enclosure]:!hidden [&::-webkit-media-controls-panel]:!hidden [&::-webkit-media-controls-start-playback-button]:!hidden"
+            style={{ WebkitAppearance: "none" } as React.CSSProperties}
           >
             <source src="/hero-background-video.mp4" type="video/mp4" />
           </video>
@@ -390,12 +392,12 @@ export default function HomePage() {
                 {/* Automation Empire Builder */}
                 <FeatureCard>
                   <div className="flex-1 p-3">
-                    <div className="aspect-[16/10] md:aspect-auto relative rounded-xl overflow-hidden md:h-full">
+                    <div className="aspect-[4/3] md:aspect-auto relative rounded-xl overflow-hidden md:h-full">
                       <Image
                         src="/Group 1321314678@3x.png"
                         alt="Automation Empire Builder"
                         fill
-                        className="object-cover md:object-contain md:object-top"
+                        className="object-contain object-center md:object-cover md:object-top"
                       />
                     </div>
                   </div>
@@ -410,12 +412,12 @@ export default function HomePage() {
                 {/* Viral-Ready Playbooks */}
                 <FeatureCard>
                   <div className="flex-1 p-3">
-                    <div className="aspect-[16/10] md:aspect-auto relative rounded-xl overflow-hidden md:h-full">
+                    <div className="aspect-[4/3] md:aspect-auto relative rounded-xl overflow-hidden md:h-full">
                       <Image
                         src="/Group 1321314677@3x.png"
                         alt="Viral-Ready Playbooks"
                         fill
-                        className="object-cover md:object-contain md:object-top"
+                        className="object-contain object-center md:object-cover md:object-top"
                       />
                     </div>
                   </div>
@@ -608,7 +610,7 @@ export default function HomePage() {
                   <span className="text-[#DA4E24]">3.</span>  Ultron executes 24/7
                 </h3>
                 <p className="text-[#999] text-sm leading-relaxed">
-                  Let Ultron do the work for you autonomously.
+                  Let Ultron do the work for you<br /> autonomously.
                 </p>
               </div>
             </FeatureCard>

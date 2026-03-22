@@ -145,7 +145,7 @@ export default function NexityPage() {
           >
             <source src="/hero-background-nxt.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/65 to-white/70" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/[0.85] via-white/70 to-white/75" />
         </div>
 
         {/* Mobile: plain white bg */}
@@ -182,17 +182,6 @@ export default function NexityPage() {
           </div>
         </div>
 
-        {/* Scroll-down arrow */}
-        <button
-          onClick={() => window.scrollBy({ top: window.innerHeight * 0.4, behavior: "smooth" })}
-          aria-label="Scroll down"
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 p-2 active:scale-90 transition-transform duration-150 animate-bounce"
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#999]">
-            <path d="M12 5v14" />
-            <path d="M19 12l-7 7-7-7" />
-          </svg>
-        </button>
       </section>
 
       {/* ─── PRODUCTS ─── */}
