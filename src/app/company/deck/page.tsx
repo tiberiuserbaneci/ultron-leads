@@ -5,6 +5,7 @@ import { useLiveStats } from "@/components/HeroStats";
 import Link from "next/link";
 import Image from "next/image";
 import { DECK_SLIDES } from "./DeckSlides";
+import { generateDeckPdf } from "./generateDeckPdf";
 
 /* ── Tab type ──────────────────────────────────────────────── */
 type Tab = "summary" | "deck";
@@ -45,6 +46,7 @@ export default function DeckPage() {
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const requestRef = useRef<HTMLDivElement>(null);
   const total = slides.length;
 
@@ -179,11 +181,25 @@ export default function DeckPage() {
           {requestOpen && (
             <div className="absolute right-0 top-full mt-2 w-[calc(100vw-48px)] sm:w-80 max-w-80 bg-[#141414] border border-white/[0.08] rounded-xl shadow-2xl p-4 z-50 animate-[fadeIn_0.15s_ease-out]">
               {/* Download option */}
-              <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/[0.06] transition-colors mb-1">
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} className="shrink-0">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                </svg>
-                Download Deck
+              <button
+                disabled={downloading}
+                onClick={async () => {
+                  setDownloading(true);
+                  try { await generateDeckPdf(); } catch (e) { console.error("PDF generation failed", e); }
+                  setDownloading(false);
+                }}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/[0.06] transition-colors mb-1 disabled:opacity-40"
+              >
+                {downloading ? (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="shrink-0 animate-spin">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={2} strokeDasharray="31.4 31.4" strokeLinecap="round" />
+                  </svg>
+                ) : (
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} className="shrink-0">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                  </svg>
+                )}
+                {downloading ? "Generating PDF…" : "Download Deck"}
               </button>
 
               <div className="h-px bg-white/[0.06] my-2" />
