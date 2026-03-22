@@ -195,11 +195,13 @@ function TaskGridDesktop({ completed }: { completed: number }) {
 /* ── Mobile: 4-column grid showing all 15 tasks ── */
 
 const ALL_TASKS = TASK_COLUMNS.flat();
+const MOBILE_TASKS = ALL_TASKS.filter((t) => t !== "Fix broken steps");
+const MOBILE_TOTAL = MOBILE_TASKS.length;
 
 function TaskGridMobile({ completed }: { completed: number; blockIndex: number }) {
   return (
     <div className="md:hidden grid grid-cols-2 gap-x-6 gap-y-[6px]">
-      {ALL_TASKS.map((task, i) => {
+      {MOBILE_TASKS.map((task, i) => {
         const checked = i < completed;
         return (
           <div key={task} className="flex items-center gap-2">
@@ -272,7 +274,7 @@ function Slide2() {
         setBottomVisible(true);
       }
 
-      if (count < TOTAL_TASKS) {
+      if (count < MOBILE_TOTAL) {
         mobileTimerRef.current = setTimeout(tick, STAGGER_MS);
       } else {
         mobileTimerRef.current = setTimeout(() => {
@@ -521,14 +523,14 @@ function Slide3() {
                 </div>
               </div>
             </div>
-            {/* Workflow — tall enough to show full transcript, no scroll */}
+            {/* Workflow — truncated at "New HubSpot contact" for mobile */}
             <div className="flex flex-col border border-white/[0.12] rounded-xl bg-white/[0.03] overflow-hidden">
               <div className="px-5 py-3 border-b border-white/[0.10]">
                 <span className="text-[10px] font-semibold text-white/70 tracking-[0.15em] uppercase">Workflow</span>
               </div>
               <div className="px-5 py-4">
                 <div className="space-y-[3px]">
-                  {TRANSCRIPT_LINES.map((line, i) => {
+                  {TRANSCRIPT_LINES.slice(0, 12).map((line, i) => {
                     if (line.type === "gap") return <div key={i} className="h-2" />;
                     if (line.type === "sub") {
                       if (line.text === "All tests passed") {
@@ -640,10 +642,10 @@ function Slide4() {
             </div>
           </div>
 
-          {/* Right: 3 stacked cards */}
+          {/* Right: 3 stacked cards (last hidden on mobile) */}
           <div className="flex flex-col gap-2 md:gap-2.5">
-            {ENTERPRISE_POINTS.map((point) => (
-              <div key={point.title} className="border border-white/[0.08] rounded-xl px-4 py-2.5 md:py-3">
+            {ENTERPRISE_POINTS.map((point, i) => (
+              <div key={point.title} className={`border border-white/[0.08] rounded-xl px-4 py-2.5 md:py-3${i === ENTERPRISE_POINTS.length - 1 ? " hidden md:block" : ""}`}>
                 <h3 className="text-[13px] font-semibold text-white mb-0.5 md:mb-1">{point.title}</h3>
                 <p className="text-[12px] text-white/50 leading-snug md:leading-relaxed">{point.body}</p>
               </div>
@@ -1068,7 +1070,17 @@ function Slide9() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const openIntercom = () => {
-    try { (window as any).Intercom?.("show"); } catch { /* silent */ }
+    try {
+      const w = window as any;
+      if (typeof w.Intercom === "function") {
+        w.Intercom("boot", w.intercomSettings || {
+          api_base: "https://api-iam.intercom.io",
+          app_id: "k6faqs6h",
+          hide_default_launcher: true,
+        });
+        w.Intercom("show");
+      }
+    } catch { /* silent */ }
   };
 
   /* Close on click outside */
@@ -1179,7 +1191,7 @@ function Slide9() {
 
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
-          className="inline-flex items-center gap-2 text-white/70 border border-white/15 font-medium text-sm sm:text-base rounded-full px-5 sm:px-6 py-3.5 hover:text-white hover:border-white/30 transition-colors"
+          className="hidden sm:inline-flex items-center gap-2 text-white/70 border border-white/15 font-medium text-sm sm:text-base rounded-full px-5 sm:px-6 py-3.5 hover:text-white hover:border-white/30 transition-colors"
         >
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} className="shrink-0 sm:hidden">
             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />

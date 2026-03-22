@@ -553,8 +553,14 @@ function AgreementForm({ helpType }: { helpType: HelpType }) {
 
 function SupportMessage() {
   function openIntercom() {
-    if (typeof window !== "undefined" && (window as any).Intercom) {
-      (window as any).Intercom("show");
+    if (typeof window !== "undefined" && typeof (window as any).Intercom === "function") {
+      const w = window as any;
+      w.Intercom("boot", w.intercomSettings || {
+        api_base: "https://api-iam.intercom.io",
+        app_id: "k6faqs6h",
+        hide_default_launcher: true,
+      });
+      w.Intercom("show");
     }
   }
 
