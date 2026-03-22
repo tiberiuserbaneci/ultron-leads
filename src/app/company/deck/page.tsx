@@ -649,13 +649,25 @@ function InvestmentDeck({
     <div className="flex flex-col h-full">
       {/* Slide area — fills remaining space */}
       <div className="flex-1 min-h-0 flex items-center justify-center">
-        {/* Desktop: 16:9 aspect, capped at 1280px for presentation feel */}
-        <div
-          ref={slideRef}
-          className="relative w-full max-w-[1280px] sm:rounded-xl overflow-hidden bg-black sm:border sm:border-white/[0.06] sm:shadow-2xl sm:aspect-video h-full sm:h-auto sm:max-h-full"
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-        >
+        {/* Glow wrapper */}
+        <div className="relative w-full max-w-[1280px] h-full sm:h-auto sm:max-h-full">
+          {/* Animated orange glow border */}
+          <div className="hidden sm:block absolute -inset-[1.5px] rounded-xl overflow-hidden z-0">
+            <div
+              className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
+              style={{
+                background:
+                  "conic-gradient(from 0deg, transparent 0%, transparent 55%, rgba(218,78,36,0.4) 68%, rgba(218,78,36,0.7) 76%, rgba(218,78,36,0.4) 84%, transparent 100%)",
+              }}
+            />
+          </div>
+          {/* Slider */}
+          <div
+            ref={slideRef}
+            className="relative w-full sm:rounded-xl overflow-hidden bg-black sm:shadow-2xl sm:aspect-video h-full sm:h-auto sm:max-h-full z-[1]"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
           {slides.map((slide, i) => {
             const SlideComponent = slide.component;
             return (
@@ -681,6 +693,7 @@ function InvestmentDeck({
               />
             </div>
           </div>
+        </div>
         </div>
       </div>
 

@@ -10,7 +10,7 @@ import { useLiveStats } from "@/components/HeroStats";
 
 function SlideLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-block text-[11px] sm:text-sm font-semibold tracking-[0.2em] uppercase text-orange-700 sm:text-white/40">
+    <span className="inline-block text-[11px] sm:text-sm font-semibold tracking-[0.2em] uppercase" style={{ color: "#c2410c" }}>
       {children}
     </span>
   );
@@ -305,8 +305,8 @@ function Slide2() {
 
   return (
     <div className="flex flex-col h-full px-5 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full pt-5 sm:pt-0 sm:justify-center overflow-hidden">
-      {/* Pill — mobile only */}
-      <div className="sm:hidden mb-3">
+      {/* Pill */}
+      <div className="mb-3 sm:mb-4 sm:text-center">
         <SlideLabel>The Problem</SlideLabel>
       </div>
       {/* Title */}
@@ -480,8 +480,8 @@ function AgentFleetPanel() {
 function Slide3() {
   return (
     <div className="flex flex-col h-full px-5 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full overflow-hidden pt-5 sm:pt-[7%]">
-      {/* Pill — mobile only */}
-      <div className="sm:hidden mb-3">
+      {/* Pill */}
+      <div className="mb-3 sm:mb-4 sm:text-center">
         <SlideLabel>The Solution</SlideLabel>
       </div>
       {/* Title */}
@@ -589,8 +589,8 @@ function Slide4() {
 
   return (
     <div className="flex flex-col h-full px-5 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full overflow-hidden pt-5 sm:pt-[7%]">
-      {/* Pill — mobile only */}
-      <div className="sm:hidden mb-3">
+      {/* Pill */}
+      <div className="mb-3 sm:mb-4 sm:text-center">
         <SlideLabel>Traction</SlideLabel>
       </div>
       {/* Main line */}
@@ -857,8 +857,8 @@ function Slide6() {
 
   return (
     <div className="relative flex flex-col h-full px-5 sm:px-10 lg:px-14 max-w-5xl mx-auto w-full pt-5 sm:pt-0 sm:justify-center overflow-hidden">
-      {/* Pill — mobile only */}
-      <div className="sm:hidden mb-3">
+      {/* Pill */}
+      <div className="mb-3 sm:mb-4 sm:text-center">
         <SlideLabel>Competition</SlideLabel>
       </div>
       {/* Title */}
