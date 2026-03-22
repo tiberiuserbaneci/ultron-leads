@@ -139,7 +139,7 @@ export default function DeckPage() {
   return (
     <div className={`bg-[#0a0a0a] -mt-16 sm:fixed sm:inset-0 sm:z-[70] sm:mt-0 -mx-[calc((100vw-100%)/2)] w-screen relative left-1/2 right-1/2 -ml-[50vw] sm:left-0 sm:right-0 sm:-ml-0 sm:mx-0 flex flex-col ${tab === "deck" ? "h-[calc(100dvh-64px)] sm:h-dvh overflow-hidden" : "min-h-screen sm:overflow-auto"}`}>
       {/* ── Top bar: Tab switcher + More menu ────────────────── */}
-      <div className="shrink-0 max-w-[1920px] w-full mx-auto px-6 sm:px-8 pt-2 pb-2 flex items-center justify-center gap-3">
+      <div className="shrink-0 max-w-[1920px] w-full mx-auto px-6 sm:px-8 pt-1.5 pb-0 flex items-center justify-center gap-3">
         {/* Back to overview — desktop only */}
         <Link
           href="/company"
@@ -151,24 +151,24 @@ export default function DeckPage() {
           Overview
         </Link>
 
-        {/* Tab switcher */}
-        <div className="flex items-center bg-white/[0.04] rounded-full p-1 border border-white/[0.06]">
+        {/* Tab switcher — minimalist underline style */}
+        <div className="flex items-center gap-1">
           <button
             onClick={() => switchTab("summary")}
-            className={`px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 ${
+            className={`px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-medium transition-all duration-200 border-b-2 ${
               tab === "summary"
-                ? "bg-white text-black"
-                : "text-white/50 hover:text-white/80"
+                ? "text-white border-white"
+                : "text-white/40 border-transparent hover:text-white/70"
             }`}
           >
             Executive Summary
           </button>
           <button
             onClick={() => switchTab("deck")}
-            className={`px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 ${
+            className={`px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-medium transition-all duration-200 border-b-2 ${
               tab === "deck"
-                ? "bg-white text-black"
-                : "text-white/50 hover:text-white/80"
+                ? "text-white border-white"
+                : "text-white/40 border-transparent hover:text-white/70"
             }`}
           >
             Investment Deck
@@ -179,7 +179,7 @@ export default function DeckPage() {
         <div ref={requestRef} className="relative">
           <button
             onClick={() => setRequestOpen(!requestOpen)}
-            className="w-9 h-9 rounded-full bg-white/[0.06] border border-white/[0.06] flex items-center justify-center text-white/50 hover:text-white hover:bg-white/[0.1] transition-colors"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-white/40 hover:text-white/70 transition-colors"
             aria-label="More options"
           >
             <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
@@ -682,7 +682,7 @@ function InvestmentDeck({
           {/* Left arrow — desktop only */}
           <button
             onClick={prev}
-            className="hidden sm:flex absolute -left-12 top-1/2 -translate-y-1/2 z-10 items-center justify-center w-8 h-8 text-white/20 hover:text-white/60 transition-colors"
+            className="hidden sm:flex absolute -left-12 top-1/2 -translate-y-1/2 z-10 items-center justify-center w-8 h-8 text-white/50 hover:text-white/80 transition-colors"
             aria-label="Previous slide"
           >
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -736,7 +736,7 @@ function InvestmentDeck({
           {/* Right arrow — desktop only */}
           <button
             onClick={next}
-            className="hidden sm:flex absolute -right-12 top-1/2 -translate-y-1/2 z-10 items-center justify-center w-8 h-8 text-white/20 hover:text-white/60 transition-colors"
+            className="hidden sm:flex absolute -right-12 top-1/2 -translate-y-1/2 z-10 items-center justify-center w-8 h-8 text-white/50 hover:text-white/80 transition-colors"
             aria-label="Next slide"
           >
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
