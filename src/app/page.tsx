@@ -169,12 +169,11 @@ export default function HomePage() {
         {/* Background video — diagonal light streaks with glow animation */}
         <div className="absolute inset-0 pointer-events-none select-none">
           {/* Mobile: static background image */}
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src="/hero-background.png"
             alt=""
-            fill
-            className="sm:hidden object-cover"
-            priority
+            className="sm:hidden absolute inset-0 w-full h-full object-cover"
           />
           {/* Desktop: background video */}
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
