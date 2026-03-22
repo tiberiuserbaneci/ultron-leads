@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useLiveStats } from "@/components/HeroStats";
+import { openIntercom } from "@/lib/intercom";
 
 /* ═══════════════════════════════════════════════════════════════ */
 /*  SHARED HELPERS                                                 */
@@ -1068,16 +1069,6 @@ function Slide9() {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const openIntercom = () => {
-    try {
-      const w = window as any;
-      if (typeof w.Intercom === "function") {
-        w.Intercom("update", w.intercomSettings);
-        w.Intercom("show");
-      }
-    } catch { /* silent */ }
-  };
 
   /* Close on click outside */
   useEffect(() => {

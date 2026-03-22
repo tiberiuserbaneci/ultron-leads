@@ -394,13 +394,15 @@ function useStreamText(text: string, speed: number, startDelay: number, enabled:
 /* ── Animated loading dots ───────────────────────────────────── */
 function LoadingDots() {
   return (
-    <span className="inline-flex gap-[3px] ml-2 align-middle">
+    <span className="inline" style={{ letterSpacing: "0.05em" }}>
       {[0, 1, 2].map((i) => (
         <span
           key={i}
-          className="inline-block w-[4px] h-[4px] rounded-full bg-white/60"
+          className="inline text-white/50 font-bold"
           style={{ animation: `loadingDot 1.4s ease-in-out ${i * 0.2}s infinite` }}
-        />
+        >
+          .
+        </span>
       ))}
     </span>
   );
@@ -519,7 +521,7 @@ function ExecutiveSummary() {
   }, [p2.done, bulletCount, liveStats.length]);
 
   return (
-    <div className="max-w-3xl mx-auto py-6 sm:py-16 font-[Inter,system-ui,sans-serif]">
+    <div className="max-w-3xl mx-auto py-6 sm:py-8 font-[Inter,system-ui,sans-serif]">
       {/* ── Streaming intro ──────────────────────────────────── */}
       <p className="text-white text-base sm:text-xl leading-relaxed mb-6 sm:mb-8 min-h-[2em]">
         {p1.displayed}
@@ -527,7 +529,7 @@ function ExecutiveSummary() {
       </p>
 
       {p1.done && (
-        <p className="text-white/80 text-sm sm:text-lg leading-relaxed mb-10 sm:mb-14 min-h-[2em]">
+        <p className="text-white/80 text-sm sm:text-lg leading-relaxed mb-6 sm:mb-8 min-h-[2em]">
           {p2.displayed}
           {!p2.done && <span className="inline-block w-[2px] h-[1.1em] bg-white/50 ml-0.5 align-text-bottom animate-pulse" />}
         </p>
@@ -536,7 +538,7 @@ function ExecutiveSummary() {
       {/* ── Live stats bullets ───────────────────────────────── */}
       {p2.done && (
         <div className="mb-12 sm:mb-16">
-          <div className="h-px bg-white/[0.08] mb-8 sm:mb-10" />
+          <div className="h-px bg-white/[0.08] mb-5 sm:mb-6" />
           <div className="space-y-3 sm:space-y-4">
             {liveStats.map((stat, i) => (
               <div
@@ -552,9 +554,8 @@ function ExecutiveSummary() {
                   {stat.value}
                 </span>
                 <span className="text-white/60 text-sm sm:text-base">
-                  {stat.label}
+                  {stat.label}<LoadingDots />
                 </span>
-                <LoadingDots />
               </div>
             ))}
           </div>

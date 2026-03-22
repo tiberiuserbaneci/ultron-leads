@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
+import { openIntercom } from "@/lib/intercom";
 
 export type ViewId = "demo" | "live" | "client-engine" | "agents-map" | "calculator" | null;
 
@@ -255,13 +256,7 @@ function ToolsDropdown({
             onClick={(e) => {
               if (item.isIntercom) {
                 e.preventDefault();
-                try {
-                  const w = window as any;
-                  if (typeof w.Intercom === "function") {
-                    w.Intercom("update", w.intercomSettings);
-                    w.Intercom("show");
-                  }
-                } catch {}
+                openIntercom();
               }
               onClose();
             }}

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { openIntercom } from "@/lib/intercom";
 import Footer from "@/components/Footer";
 import { trackFormStarted, trackFormSubmitted, trackCtaClicked } from "@/lib/analytics";
 
@@ -552,14 +553,6 @@ function AgreementForm({ helpType }: { helpType: HelpType }) {
 /* ═══════════════════════════════════════════════════════════════ */
 
 function SupportMessage() {
-  function openIntercom() {
-    if (typeof window !== "undefined" && typeof (window as any).Intercom === "function") {
-      const w = window as any;
-      w.Intercom("update", w.intercomSettings);
-      w.Intercom("show");
-    }
-  }
-
   return (
     <p className="text-[15px] text-[#999] mt-6">
       For product support, please{" "}
