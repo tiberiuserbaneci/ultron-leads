@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { useLiveStats } from "@/components/HeroStats";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,8 +9,18 @@ import { DECK_SLIDES } from "./DeckSlides";
 /* ── Tab type ──────────────────────────────────────────────── */
 type Tab = "summary" | "deck";
 
-/* ── Slides from DeckSlides ────────────────────────────────── */
-const slides = DECK_SLIDES;
+/* ── Mobile detection hook ─────────────────────────────────── */
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return isMobile;
+}
 
 /* ── Request dropdown options ──────────────────────────────── */
 const REQUEST_OPTIONS = ["Updates", "Financial Report", "Data Room"] as const;
@@ -18,6 +28,11 @@ const REQUEST_OPTIONS = ["Updates", "Financial Report", "Data Room"] as const;
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 export default function DeckPage() {
   const [tab, setTab] = useState<Tab>("summary");
+  const isMobile = useIsMobile();
+  const slides = useMemo(
+    () => isMobile ? DECK_SLIDES.filter((s) => !s.mobileHidden) : DECK_SLIDES,
+    [isMobile]
+  );
 
   /* read tab from URL on mount */
   useEffect(() => {
@@ -213,12 +228,13 @@ export default function DeckPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSend()}
                   placeholder="investor@email.com"
-                  className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 outline-none focus:border-white/20 transition-colors"
+                  className="flex-1 min-w-0 bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 outline-none focus:border-white/20 transition-colors"
                 />
                 <button
+                  type="button"
                   onClick={handleSend}
                   disabled={!email.trim() || sending || selectedRequests.size === 0}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     sent
                       ? "bg-green-500/20 text-green-400 border border-green-500/30"
                       : "bg-white text-black hover:bg-white/90 disabled:opacity-30 disabled:cursor-not-allowed"
@@ -602,7 +618,7 @@ function InvestmentDeck({
   prev,
   next,
 }: {
-  slides: typeof DECK_SLIDES;
+  slides: typeof DECK_SLIDES[number][];
   current: number;
   setCurrent: (i: number) => void;
   total: number;

@@ -59,21 +59,21 @@ function SlideLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col h-full px-5 sm:px-10 lg:px-14 max-w-6xl mx-auto w-full pt-5 sm:pt-6 pb-3 sm:pb-5 overflow-hidden">
-      {/* Label — always top left */}
-      <div className="mb-3 sm:mb-4">
+    <div className="flex flex-col h-full px-5 sm:px-10 lg:px-14 max-w-6xl mx-auto w-full pt-5 sm:pt-0 sm:justify-center overflow-hidden">
+      {/* Label */}
+      <div className="mb-3 sm:mb-4 sm:text-center">
         <SlideLabel>{pill}</SlideLabel>
       </div>
 
-      {/* Title — bigger on mobile */}
+      {/* Title — left on mobile, centered on desktop */}
       {title && (
-        <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-white leading-tight max-w-3xl mb-4 sm:mb-5">
+        <h2 className="text-xl sm:text-[28px] lg:text-[36px] xl:text-[40px] font-bold text-white leading-tight sm:leading-[1.2] sm:tracking-tight sm:text-center mb-4 sm:mb-8">
           {title}
         </h2>
       )}
 
       {/* Content */}
-      <div className="flex-1 min-h-0">{children}</div>
+      <div className="flex-1 sm:flex-none min-h-0">{children}</div>
     </div>
   );
 }
@@ -1138,12 +1138,13 @@ function Slide9() {
           onChange={(e) => setEmail(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
           placeholder="investor@email.com"
-          className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 outline-none focus:border-white/20 transition-colors"
+          className="flex-1 min-w-0 bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 outline-none focus:border-white/20 transition-colors"
         />
         <button
+          type="button"
           onClick={handleSend}
           disabled={!email.trim() || sending || selected.size === 0}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+          className={`shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
             sent ? "bg-green-500/20 text-green-400 border border-green-500/30" : "bg-white text-black hover:bg-white/90 disabled:opacity-30 disabled:cursor-not-allowed"
           }`}
         >
@@ -1166,7 +1167,8 @@ function Slide9() {
       {/* CTAs — both buttons same height */}
       <div ref={dropdownRef} className="relative flex items-stretch gap-3">
         <button
-          onClick={openIntercom}
+          type="button"
+          onClick={(e) => { e.stopPropagation(); openIntercom(); }}
           className="inline-flex items-center gap-2.5 bg-white text-black font-semibold text-sm sm:text-base rounded-full px-6 sm:px-8 py-3.5 hover:bg-white/90 transition-colors"
         >
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="shrink-0">
@@ -1203,7 +1205,7 @@ export const DECK_SLIDES = [
   { id: 2, component: Slide2 },
   { id: 3, component: Slide3 },
   { id: 4, component: Slide4 },
-  { id: 5, component: Slide6 },
+  { id: 5, component: Slide6, mobileHidden: true },
   { id: 6, component: Slide7 },
   { id: 7, component: Slide8 },
   { id: 8, component: Slide9 },
