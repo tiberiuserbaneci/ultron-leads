@@ -198,14 +198,14 @@ const ALL_TASKS = TASK_COLUMNS.flat();
 
 function TaskGridMobile({ completed }: { completed: number; blockIndex: number }) {
   return (
-    <div className="md:hidden grid grid-cols-4 gap-x-2 gap-y-1">
+    <div className="md:hidden grid grid-cols-2 gap-x-6 gap-y-[6px]">
       {ALL_TASKS.map((task, i) => {
         const checked = i < completed;
         return (
-          <div key={task} className="flex items-center gap-1 py-[3px]">
+          <div key={task} className="flex items-center gap-2">
             <TaskCheckbox checked={checked} />
             <span
-              className="relative text-[10px] text-white/60 select-none truncate"
+              className="relative text-[13px] text-white/60 select-none whitespace-nowrap"
               style={{ opacity: checked ? 0.4 : 1, transition: "opacity 0.4s ease" }}
             >
               {task}
@@ -619,7 +619,7 @@ function Slide4() {
 
       {/* Two panels */}
       <div className="flex justify-center">
-        <div className="w-full max-w-3xl grid grid-cols-2 gap-3 sm:gap-4">
+        <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
           {/* Left: Viral Distribution */}
           <div className="flex flex-col border border-white/[0.12] rounded-xl bg-white/[0.03] overflow-hidden">
             <div className="px-4 py-2.5 border-b border-white/[0.10]">
@@ -643,9 +643,9 @@ function Slide4() {
           {/* Right: 3 stacked cards */}
           <div className="flex flex-col gap-2 md:gap-2.5">
             {ENTERPRISE_POINTS.map((point) => (
-              <div key={point.title} className="border border-white/[0.08] rounded-xl px-4 py-2 md:py-3">
-                <h3 className="text-[12px] md:text-[13px] font-semibold text-white mb-0.5 md:mb-1">{point.title}</h3>
-                <p className="text-[11px] md:text-[12px] text-white/50 leading-snug md:leading-relaxed">{point.body}</p>
+              <div key={point.title} className="border border-white/[0.08] rounded-xl px-4 py-2.5 md:py-3">
+                <h3 className="text-[13px] font-semibold text-white mb-0.5 md:mb-1">{point.title}</h3>
+                <p className="text-[12px] text-white/50 leading-snug md:leading-relaxed">{point.body}</p>
               </div>
             ))}
           </div>
@@ -914,38 +914,40 @@ function Slide6() {
         </div>
       </div>
 
-      {/* Mobile: compact competitor matrix */}
+      {/* Mobile: competitor matrix — Ultron + n8n visible, scroll right for Zapier/Gumloop */}
       <div className="md:hidden mt-4" style={{ opacity: visible ? 1 : 0, transition: "opacity 0.6s ease 0.3s" }}>
-        <div className="border border-white/[0.10] rounded-xl overflow-hidden">
-          {/* Header row */}
-          <div className="grid grid-cols-5 bg-white/[0.03]">
-            <div className="p-2" />
-            {["Ultron", "n8n", "Zapier", "Gumloop"].map((name) => (
-              <div key={name} className={`p-2 border-l border-white/[0.08] ${name === "Ultron" ? "bg-white/[0.05]" : ""}`}>
-                <span className={`text-[9px] font-semibold ${name === "Ultron" ? "text-white" : "text-white/50"}`}>{name}</span>
+        <div className="border border-white/[0.10] rounded-xl overflow-x-auto">
+          <div style={{ minWidth: 480 }}>
+            {/* Header row */}
+            <div className="grid grid-cols-[100px_1fr_1fr_1fr_1fr] bg-white/[0.03]">
+              <div className="px-3 py-2.5" />
+              {["Ultron", "n8n", "Zapier", "Gumloop"].map((name) => (
+                <div key={name} className={`px-3 py-2.5 border-l border-white/[0.08] ${name === "Ultron" ? "bg-white/[0.05]" : ""}`}>
+                  <span className={`text-[11px] font-semibold ${name === "Ultron" ? "text-white" : "text-white/50"}`}>{name}</span>
+                </div>
+              ))}
+            </div>
+            {/* Data rows */}
+            {COMP_ROWS.map((row) => (
+              <div key={row.label} className="grid grid-cols-[100px_1fr_1fr_1fr_1fr] border-t border-white/[0.08]">
+                <div className="px-3 py-2.5">
+                  <span className="text-[10px] text-white/40 uppercase tracking-wider font-medium">{row.label}</span>
+                </div>
+                <div className="px-3 py-2.5 border-l border-white/[0.08] bg-white/[0.05]">
+                  <span className="text-[11px] text-white leading-snug">{row.ultron}</span>
+                </div>
+                <div className="px-3 py-2.5 border-l border-white/[0.08]">
+                  <span className="text-[11px] text-white/60 leading-snug">{row.n8n}</span>
+                </div>
+                <div className="px-3 py-2.5 border-l border-white/[0.08]">
+                  <span className="text-[11px] text-white/60 leading-snug">{row.zapier}</span>
+                </div>
+                <div className="px-3 py-2.5 border-l border-white/[0.08]">
+                  <span className="text-[11px] text-white/60 leading-snug">{row.gumloop}</span>
+                </div>
               </div>
             ))}
           </div>
-          {/* Data rows */}
-          {COMP_ROWS.map((row) => (
-            <div key={row.label} className="grid grid-cols-5 border-t border-white/[0.08]">
-              <div className="p-2">
-                <span className="text-[8px] text-white/40 uppercase tracking-wider font-medium">{row.label}</span>
-              </div>
-              <div className="p-2 border-l border-white/[0.08] bg-white/[0.05]">
-                <span className="text-[9px] text-white leading-tight">{row.ultron}</span>
-              </div>
-              <div className="p-2 border-l border-white/[0.08]">
-                <span className="text-[9px] text-white/60 leading-tight">{row.n8n}</span>
-              </div>
-              <div className="p-2 border-l border-white/[0.08]">
-                <span className="text-[9px] text-white/60 leading-tight">{row.zapier}</span>
-              </div>
-              <div className="p-2 border-l border-white/[0.08]">
-                <span className="text-[9px] text-white/60 leading-tight">{row.gumloop}</span>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
 
