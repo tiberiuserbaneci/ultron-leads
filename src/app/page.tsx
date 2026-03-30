@@ -168,12 +168,12 @@ export default function HomePage() {
       <section className="relative min-h-[100svh] pt-28 sm:pt-32 pb-32 overflow-hidden">
         {/* Background video — diagonal light streaks with glow animation */}
         <div className="absolute inset-0 pointer-events-none select-none">
-          {/* Mobile: static background image */}
+          {/* Mobile: static background image — fixed so it never shifts during iOS address bar animation */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/hero-background.png"
             alt=""
-            className="sm:hidden absolute inset-0 w-full h-full object-cover"
+            className="sm:hidden fixed inset-0 w-full h-full object-cover -z-10"
           />
           {/* Desktop: background video */}
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
