@@ -165,7 +165,7 @@ export default function HomePage() {
     <div className="bg-black text-white">
 
       {/* ─── HERO ─── */}
-      <section className="relative min-h-screen pt-28 sm:pt-32 pb-32 overflow-hidden">
+      <section className="relative min-h-[100svh] pt-28 sm:pt-32 pb-32 overflow-hidden">
         {/* Background video — diagonal light streaks with glow animation */}
         <div className="absolute inset-0 pointer-events-none select-none">
           {/* Mobile: static background image */}
