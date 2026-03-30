@@ -53,6 +53,15 @@ const TOOLS_MENU: {
   icon: React.ReactNode;
 }[] = [
   {
+    label: "Interactive Demo",
+    viewId: "demo",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="5 3 19 12 5 21 5 3" />
+      </svg>
+    ),
+  },
+  {
     label: "Command Center",
     viewId: "live",
     icon: (
@@ -158,7 +167,7 @@ function PlusButton({
       onClick={onClick}
       className={`w-7 h-7 rounded-full flex items-center justify-center transition-all flex-shrink-0 ${
         menuOpen
-          ? "bg-[#DA4E24] text-white"
+          ? "bg-white text-black"
           : "bg-transparent text-[#555] border border-[#333] hover:border-[#555] hover:text-white"
       }`}
     >
@@ -181,19 +190,30 @@ function PlusButton({
 }
 
 /* ─── Shared send button ─── */
-function SendButton({ onClick }: { onClick?: () => void }) {
+function SendButton({ onClick, href }: { onClick?: () => void; href?: string }) {
   const arrow = (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="12" y1="19" x2="12" y2="5" />
       <polyline points="5 12 12 5 19 12" />
     </svg>
   );
 
+  if (href) {
+    return (
+      <a
+        href={href}
+        className="w-7 h-7 rounded-full bg-white flex items-center justify-center hover:bg-white/90 transition-colors flex-shrink-0"
+      >
+        {arrow}
+      </a>
+    );
+  }
+
   if (onClick) {
     return (
       <button
         onClick={onClick}
-        className="w-7 h-7 rounded-full bg-[#DA4E24] flex items-center justify-center hover:bg-[#e8633f] transition-colors flex-shrink-0"
+        className="w-7 h-7 rounded-full bg-white flex items-center justify-center hover:bg-white/90 transition-colors flex-shrink-0"
       >
         {arrow}
       </button>
@@ -203,7 +223,7 @@ function SendButton({ onClick }: { onClick?: () => void }) {
   return (
     <a
       href="https://app.51ultron.com"
-      className="w-7 h-7 rounded-full bg-[#DA4E24] flex items-center justify-center hover:bg-[#e8633f] transition-colors flex-shrink-0"
+      className="w-7 h-7 rounded-full bg-white flex items-center justify-center hover:bg-white/90 transition-colors flex-shrink-0"
     >
       {arrow}
     </a>
@@ -303,7 +323,7 @@ function ModelDropdown({
           <Image src={model.logo} alt="" width={16} height={16} className="rounded-sm flex-shrink-0" />
           {model.label}
           {i === selectedModel && (
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#DA4E24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-auto">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-auto">
               <polyline points="20 6 9 17 4 12" />
             </svg>
           )}
@@ -379,7 +399,6 @@ export default function HeroChatBox({
   const modelRef = useRef<HTMLDivElement>(null);
   const integrationsRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const mobileModelRef = useRef<HTMLDivElement>(null);
 
   const hasView = activeView != null;
 
@@ -420,7 +439,7 @@ export default function HeroChatBox({
         if (!inMenu) setMenuOpen(false);
       }
       if (modelOpen) {
-        const inModel = modelRef.current?.contains(e.target as Node) || mobileModelRef.current?.contains(e.target as Node);
+        const inModel = modelRef.current?.contains(e.target as Node);
         if (!inModel) setModelOpen(false);
       }
       if (integrationsOpen) {
@@ -466,7 +485,7 @@ export default function HeroChatBox({
             className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
             style={{
               background:
-                "conic-gradient(from 0deg, transparent 0%, transparent 55%, rgba(218,78,36,0.35) 68%, rgba(218,78,36,0.6) 76%, rgba(218,78,36,0.35) 84%, transparent 100%)",
+                "conic-gradient(from 0deg, transparent 0%, transparent 55%, rgba(255,255,255,0.15) 68%, rgba(255,255,255,0.3) 76%, rgba(255,255,255,0.15) 84%, transparent 100%)",
             }}
           />
         </div>
@@ -476,29 +495,6 @@ export default function HeroChatBox({
           <div className="relative" ref={mobileMenuRef}>
             <PlusButton menuOpen={menuOpen} onClick={() => setMenuOpen(!menuOpen)} />
             {menuOpen && <ToolsDropdown onClose={() => setMenuOpen(false)} onSetView={onSetView} position="top" />}
-          </div>
-
-          {/* Model logo */}
-          <div className="relative" ref={mobileModelRef}>
-            <button
-              onClick={() => setModelOpen(!modelOpen)}
-              className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-[#1a1a1a] transition-colors flex-shrink-0"
-            >
-              <Image
-                src={MODELS[selectedModel].logo}
-                alt=""
-                width={18}
-                height={18}
-                className="rounded-sm"
-              />
-            </button>
-            {modelOpen && (
-              <ModelDropdown
-                selectedModel={selectedModel}
-                onSelect={(i) => { setSelectedModel(i); setModelOpen(false); }}
-                position="top"
-              />
-            )}
           </div>
 
           {/* Rotating phrase */}
@@ -511,8 +507,8 @@ export default function HeroChatBox({
             </p>
           </div>
 
-          {/* Send */}
-          <SendButton onClick={handleToggleDemo} />
+          {/* Send → signup */}
+          <SendButton href="https://app.51ultron.com/signup" />
         </div>
       </div>
 
@@ -524,13 +520,13 @@ export default function HeroChatBox({
             className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] animate-glow-spin"
             style={{
               background:
-                "conic-gradient(from 0deg, transparent 0%, transparent 55%, rgba(218,78,36,0.4) 68%, rgba(218,78,36,0.7) 76%, rgba(218,78,36,0.4) 84%, transparent 100%)",
+                "conic-gradient(from 0deg, transparent 0%, transparent 55%, rgba(255,255,255,0.2) 68%, rgba(255,255,255,0.35) 76%, rgba(255,255,255,0.2) 84%, transparent 100%)",
             }}
           />
         </div>
 
         {/* Outer subtle glow */}
-        <div className="absolute -inset-px rounded-2xl shadow-[0_0_40px_rgba(218,78,36,0.08),0_0_80px_rgba(218,78,36,0.04)] z-0" />
+        <div className="absolute -inset-px rounded-2xl shadow-[0_0_40px_rgba(255,255,255,0.04),0_0_80px_rgba(255,255,255,0.02)] z-0" />
 
         {/* Chat container */}
         <div className="relative z-10 bg-[#0c0c0c] rounded-2xl border border-[#1a1a1a] p-5">
@@ -595,7 +591,7 @@ export default function HeroChatBox({
               <p className="text-[#999] text-[15px] leading-relaxed">
                 {displayText}
                 <span
-                  className={`inline-block w-[2px] h-[16px] bg-[#DA4E24] ml-[1px] align-middle ${
+                  className={`inline-block w-[2px] h-[16px] bg-white ml-[1px] align-middle ${
                     typingDone ? "animate-blink" : "animate-pulse"
                   }`}
                 />
@@ -652,7 +648,7 @@ export default function HeroChatBox({
             {onSetView && (
               <button
                 onClick={handleToggleDemo}
-                className="group flex items-center gap-1.5 text-[13px] font-medium text-[#ddd] bg-[#1a1a1a] rounded-full px-4 py-1.5 border border-[#333] hover:border-[#DA4E24]/50 hover:text-white transition-all min-w-[120px] justify-center"
+                className="group flex items-center gap-1.5 text-[13px] font-medium text-[#ddd] bg-[#1a1a1a] rounded-full px-4 py-1.5 border border-[#333] hover:border-white/30 hover:text-white transition-all min-w-[120px] justify-center"
               >
                 {hasView ? (
                   <>
