@@ -192,9 +192,9 @@ export default function HomePage() {
           </video>
         </div>
 
-        {/* Vector color accent — blended onto dark bg to enhance warm glow */}
+        {/* Vector color accent — blended onto dark bg to enhance warm glow (hidden on mobile: mix-blend-mode causes scroll jank on iOS) */}
         <div
-          className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[70%] pointer-events-none"
+          className="hidden sm:block absolute bottom-[-10%] left-[-10%] w-[60%] h-[70%] pointer-events-none"
           style={{ mixBlendMode: "darken" }}
         >
           <Image

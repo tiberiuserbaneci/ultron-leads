@@ -483,8 +483,8 @@ input[type="range"]:focus { outline: none; }
   animation: heroTextGlow 6s ease-in-out infinite;
 }
 @keyframes heroTextGlow {
-  0%, 100% { opacity: 0.3; filter: blur(0px); }
-  50% { opacity: 0.5; filter: blur(1px); }
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.5; }
 }
 
 /* ── Hero ambient pulse ── */
