@@ -471,10 +471,6 @@ export default function HeroChatBox({
     }
   };
 
-  const handleToggleDemo = () => {
-    onSetView?.(activeView === "demo" ? null : "demo");
-  };
-
   return (
     <>
       {/* ═══ MOBILE: ChatGPT-style single line ═══ */}
@@ -644,31 +640,16 @@ export default function HeroChatBox({
             {/* Spacer */}
             <div className="flex-1" />
 
-            {/* View demo button */}
-            {onSetView && (
-              <button
-                onClick={handleToggleDemo}
-                className="group flex items-center gap-1.5 text-[13px] font-medium text-[#ddd] bg-[#1a1a1a] rounded-full px-4 py-1.5 border border-[#333] hover:border-white/30 hover:text-white transition-all min-w-[120px] justify-center"
-              >
-                {hasView ? (
-                  <>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-0.5 transition-transform">
-                      <polyline points="15 18 9 12 15 6" />
-                    </svg>
-                    <span>Overview</span>
-                  </>
-                ) : (
-                  <>
-                    <span>View demo</span>
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="9 18 15 12 9 6" />
-                    </svg>
-                  </>
-                )}
-              </button>
-            )}
-
-            {!onSetView && <SendButton />}
+            {/* Get Started */}
+            <a
+              href="https://app.51ultron.com/signup"
+              className="group flex items-center gap-1.5 text-[13px] font-medium text-black bg-white rounded-full px-4 py-1.5 hover:bg-white/90 transition-all min-w-[120px] justify-center"
+            >
+              <span>Get Started</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </a>
           </div>
         </div>
       </div>
